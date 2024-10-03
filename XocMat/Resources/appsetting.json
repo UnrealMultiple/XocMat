@@ -1,0 +1,18 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "SignServerUrl": "",
+  "MusicSignServerUrl": "",
+  "Account": {
+    "Uin": 0,
+    "Password": "",
+    "Protocol": "Linux",
+    "AutoReconnect": true,
+    "GetOptimumServer": true
+  }
+}
