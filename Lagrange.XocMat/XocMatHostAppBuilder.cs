@@ -3,11 +3,11 @@ using Lagrange.Core.Utility.Sign;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Net.Security;
 using Lagrange.XocMat.Utility;
 using System.Text.Json;
 using Lagrange.Core.Common.Interface;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Lagrange.XocMat;
 
@@ -18,6 +18,8 @@ public sealed class XocMatHostAppBuilder
     private ConfigurationManager Configuration => _hostAppBuilder.Configuration;
 
     private readonly HostApplicationBuilder _hostAppBuilder;
+
+    public static XocMatApp? App { get; set; }
 
     public XocMatHostAppBuilder(string[] args)
     {
@@ -87,7 +89,6 @@ public sealed class XocMatHostAppBuilder
 
     public XocMatHostAppBuilder ConfigureOneBot()
     {
-        
        
         Services.AddSingleton<SignProvider, OneBotSigner>();
         Services.AddHostedService<XocMatAPI>();
@@ -101,5 +102,10 @@ public sealed class XocMatHostAppBuilder
         return this;
     }
 
-    public XocMatApp Build() => new(_hostAppBuilder.Build());
+    [MemberNotNull(nameof(App))]
+    public XocMatApp Build()
+    { 
+        App = new XocMatApp(_hostAppBuilder.Build());
+        return App;
+    } 
 }
