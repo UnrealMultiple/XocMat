@@ -10,7 +10,7 @@ using Lagrange.Core;
 using Lagrange.Core.Utility.Sign;
 
 
-namespace XocMat.Utility;
+namespace Lagrange.XocMat.Utility;
 
 public class OneBotSigner : SignProvider
 {
