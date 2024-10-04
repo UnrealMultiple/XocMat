@@ -8,23 +8,22 @@ using System.Text.Json;
 using Lagrange.Core.Common.Interface;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using Lagrange.XocMat.Net;
+using Lagrange.XocMat.Event;
+using Lagrange.XocMat.Plugin;
+using Lagrange.XocMat.Commands;
 
 namespace Lagrange.XocMat;
 
-public sealed class XocMatHostAppBuilder
+public sealed class XocMatHostAppBuilder(string[] args)
 {
     private IServiceCollection Services => _hostAppBuilder.Services;
 
     private ConfigurationManager Configuration => _hostAppBuilder.Configuration;
 
-    private readonly HostApplicationBuilder _hostAppBuilder;
+    private readonly HostApplicationBuilder _hostAppBuilder = new HostApplicationBuilder(args);
 
     public static XocMatApp? App { get; set; }
-
-    public XocMatHostAppBuilder(string[] args)
-    {
-        _hostAppBuilder = new HostApplicationBuilder(args);
-    }
 
     public XocMatHostAppBuilder ConfigureConfiguration(string path, bool optional = false, bool reloadOnChange = false)
     {
@@ -92,6 +91,12 @@ public sealed class XocMatHostAppBuilder
        
         Services.AddSingleton<SignProvider, OneBotSigner>();
         Services.AddHostedService<XocMatAPI>();
+        Services.AddSingleton<WebSocketServer>();
+        Services.AddSingleton<TShockReceive>();
+        Services.AddSingleton<TerrariaMsgReceiveHandler>();
+        Services.AddSingleton<CommandManager>();
+        Services.AddSingleton<PluginLoader>();
+        
         Services.AddSingleton<MusicSigner>();
         return this;
     }

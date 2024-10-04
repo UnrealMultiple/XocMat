@@ -11,6 +11,10 @@ using Lagrange.Core.Utility.Extension;
 using System.Text;
 using LogLevel = Lagrange.Core.Event.EventArg.LogLevel;
 using System.Text.Json;
+using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Plugin;
+using Lagrange.XocMat.Net;
+using Lagrange.XocMat.Event;
 
 namespace Lagrange.XocMat;
 
@@ -34,6 +38,11 @@ public class XocMatApp : IHost
         Logger = Services.GetRequiredService<ILogger<XocMatApp>>();
 
         Services.GetRequiredService<MusicSigner>();
+        Services.GetRequiredService<CommandManager>().Start();
+        Services.GetRequiredService<PluginLoader>().Load();
+        Services.GetRequiredService<WebSocketServer>();
+        Services.GetRequiredService<TShockReceive>().Start();
+        Services.GetRequiredService<TerrariaMsgReceiveHandler>().Start();
 
         _isFirstLogin = true;
     }
@@ -81,7 +90,7 @@ public class XocMatApp : IHost
             {
                 QrCodeHelper.Output(qrCode.Url ?? "", Configuration.GetValue<bool>("QrCode:ConsoleCompatibilityMode"));
                 Logger.LogInformation($"Please scan the QR code above, Url: {qrCode.Url}");
-                await File.WriteAllBytesAsync($"qr-{Instance.BotUin}.png", qrCode.QrCode ?? Array.Empty<byte>(), cancellationToken);
+                await File.WriteAllBytesAsync($"qr-{Instance.BotUin}.png", qrCode.QrCode ?? [], cancellationToken);
 
                 _ = Task.Run(Instance.LoginByQrCode, cancellationToken);
             }
