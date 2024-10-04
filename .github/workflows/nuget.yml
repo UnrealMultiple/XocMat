@@ -34,4 +34,4 @@ jobs:
         run: dotnet pack --configuration Release --output ./nupkg ./Lagrange.XocMat/Lagrange.XocMat.csproj  # 确保路径正确
 
       - name: Push to NuGet
-        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGETAPIKEY }}
