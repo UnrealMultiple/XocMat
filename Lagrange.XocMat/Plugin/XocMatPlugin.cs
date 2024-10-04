@@ -1,9 +1,10 @@
 ﻿using Lagrange.Core;
 using Lagrange.XocMat.Commands;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Plugin;
 
-public abstract class XocMatPlugin(CommandManager cmdManager, BotContext bot) : IDisposable
+public abstract class XocMatPlugin(ILogger<PluginLoader> logger, CommandManager cmdManager, BotContext bot) : IDisposable
 {
     public virtual string Name
     {

@@ -1,10 +1,11 @@
 ﻿using Lagrange.Core;
 using Lagrange.XocMat.Commands;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace Lagrange.XocMat.Plugin;
 
-public class PluginLoader(CommandManager cmdManager, BotContext botContext)
+public class PluginLoader(CommandManager cmdManager, BotContext botContext, ILogger<PluginLoader> logger)
 {
     public PluginContext PluginContext { get; private set; } = new(Guid.NewGuid().ToString());
 
@@ -18,7 +19,7 @@ public class PluginLoader(CommandManager cmdManager, BotContext botContext)
         DirectoryInfo directoryInfo = new(PATH);
         if (!directoryInfo.Exists)
             directoryInfo.Create();
-        PluginContext.LoadPlugins(directoryInfo, cmdManager, botContext);
+        PluginContext.LoadPlugins(directoryInfo,logger, cmdManager, botContext);
         cmdManager.MappingCommands(Assembly.GetExecutingAssembly());
         PluginContext.LoadAssemblys.ForEach(cmdManager.MappingCommands);    }
 

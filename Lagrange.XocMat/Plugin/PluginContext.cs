@@ -1,6 +1,7 @@
 ﻿using Lagrange.Core;
 using Lagrange.XocMat.Commands;
 using Lagrange.XocMat.Extensions;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -22,7 +23,7 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
         return Default.LoadFromAssemblyName(assemblyName);
     }
 
-    public void LoadPlugins(DirectoryInfo dir, CommandManager cmdManager, BotContext bot)
+    public void LoadPlugins(DirectoryInfo dir, ILogger<PluginLoader> logger, CommandManager cmdManager, BotContext bot)
     {
         foreach (FileInfo file in dir.GetFiles("*.dll", SearchOption.AllDirectories))
         {
@@ -37,7 +38,7 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
             {
                 if (type.IsSubclassOf(typeof(XocMatPlugin)) && !type.IsAbstract)
                 {
-                    if (Activator.CreateInstance(type, cmdManager, bot) is XocMatPlugin instance)
+                    if (Activator.CreateInstance(type, logger, cmdManager, bot) is XocMatPlugin instance)
                         Plugins.Add(instance);
                 }
             }
