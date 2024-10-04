@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Lagrange.Core.Message.Entity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
@@ -26,7 +27,7 @@ public class MusicSigner
     }
 
 
-    public static string? Sign(Internal.MusicSigSegment musicSigSegment)
+    public static JsonEntity? Sign(Internal.MusicSigSegment musicSigSegment)
     {
         if (string.IsNullOrEmpty(_signServer)) return null;
 
@@ -44,7 +45,7 @@ public class MusicSigner
         try
         {
             var message = _client.PostAsJsonAsync(_signServer, payload).Result;
-            return message.Content.ReadAsStringAsync().Result;
+            return new JsonEntity(message.Content.ReadAsStringAsync().Result);
         }
         catch
         {
