@@ -27,13 +27,13 @@ jobs:
           
       - name: 构建插件
         run: |
-          dotnet publish XocMat/Lagrange.XocMat.csproj --no-self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none -p:RuntimeIdentifier=${{ matrix.runtimeIdentifier }} --framework net8.0
+          dotnet publish Lagrange.XocMat/Lagrange.XocMat.csproj --no-self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none -p:RuntimeIdentifier=${{ matrix.runtimeIdentifier }} --framework net8.0
           
       - name: 安装 zip
         run: sudo apt-get install zip
 
       - name: 生成压缩包
-        run: zip -r -j Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_8.0.zip XocMat/bin/Release/net8.0/${{ matrix.runtimeIdentifier }}/publish/
+        run: zip -r -j Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_8.0.zip Lagrange.XocMat/bin/Release/net8.0/${{ matrix.runtimeIdentifier }}/publish/
       
       - name: 上传临时文件
         uses: actions/upload-artifact@v3
