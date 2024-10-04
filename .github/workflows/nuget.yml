@@ -21,15 +21,17 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Pack
-        run: |
-            dotnet restore
-            dotnet build -c Release Lagrange.XocMat
-            dotnet pack -c Release Lagrange.XocMat
-            dotnet pack -c Release -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg Lagrange.XocMat
-            
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build projects
+        run: dotnet build --configuration Release --no-restore
+
       - name: Add private GitHub registry to NuGet MorMor
         run: dotnet nuget add source --username Controllerdestiny --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Lagrange.XocMat/index.json"
+        
+      - name: Pack A project
+        run: dotnet pack --configuration Release --output ./nupkg ./Lagrange.XocMat/Lagrange.XocMat.csproj  # 确保路径正确
 
-      - name: Push generated package to NuGet MorMor
-        run: dotnet nuget push ./Lagrange.XocMat/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGETAPIKEY }}
+      - name: Push to NuGet
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
