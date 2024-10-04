@@ -172,7 +172,7 @@ public class OneBotCommand
             sb.AppendLine($"|{id}|{item.Name}|{item.num}|{item.Price}|");
             id++;
         }
-        await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).Markdown(sb.ToString()));
+        await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).MarkdownImage(sb.ToString()));
     }
     #endregion
 
@@ -318,7 +318,7 @@ public class OneBotCommand
             sb.AppendLine($"|{id}|{item.Name}|{item.Max}|{item.Min}|{item.Probability}％|");
             id++;
         }
-        await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).Markdown(sb.ToString()));
+        await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).MarkdownImage(sb.ToString()));
     }
     #endregion
 
@@ -1215,7 +1215,7 @@ public class OneBotCommand
             sb.AppendLine();
             sb.AppendLine("</div>");
         }
-        await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).Markdown(sb.ToString()));
+        await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).MarkdownImage(sb.ToString()));
     }
     #endregion
 

@@ -6,7 +6,7 @@ namespace Lagrange.XocMat.Extensions;
 
 public static class MessageBuilderExt
 {
-    public static MessageBuilder Markdown(this MessageBuilder builder, string content)
+    public static MessageBuilder MarkdownImage(this MessageBuilder builder, string content)
     {
         try
         {

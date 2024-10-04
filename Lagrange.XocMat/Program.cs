@@ -10,6 +10,7 @@ internal abstract class Program
 {
     public static void Main(string[] args)
     {
+        Console.Title = "Lagrange.XocMat";
         string version = Assembly.GetAssembly(typeof(Program))?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
             .InformationalVersion ?? "Unknown Lagrange.OneBot Version";
