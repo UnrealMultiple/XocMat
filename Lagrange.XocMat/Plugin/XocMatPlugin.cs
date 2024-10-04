@@ -1,6 +1,9 @@
-﻿namespace Lagrange.XocMat.Plugin;
+﻿using Lagrange.Core;
+using Lagrange.XocMat.Commands;
 
-public abstract class XocMatPlugin :IDisposable
+namespace Lagrange.XocMat.Plugin;
+
+public abstract class XocMatPlugin(CommandManager cmdManager, BotContext bot) : IDisposable
 {
     public virtual string Name
     {
@@ -37,7 +40,7 @@ public abstract class XocMatPlugin :IDisposable
         }
     }
 
-    public int Order { get; set; }
+    public int Order { get; set; } = 1;
 
     public abstract void Initialize();
 
@@ -48,10 +51,6 @@ public abstract class XocMatPlugin :IDisposable
         Dispose(true);
     }
 
-    public XocMatPlugin()
-    {
-        Order = 1;
-    }
     public void Dispose()
     {
         Dispose(true);
