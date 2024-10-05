@@ -96,7 +96,7 @@ public sealed class XocMatHostAppBuilder(string[] args)
         Services.AddSingleton<TerrariaMsgReceiveHandler>();
         Services.AddSingleton<CommandManager>();
         Services.AddSingleton<PluginLoader>();
-        
+       
         Services.AddSingleton<MusicSigner>();
         return this;
     }

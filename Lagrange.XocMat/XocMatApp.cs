@@ -15,6 +15,7 @@ using Lagrange.XocMat.Commands;
 using Lagrange.XocMat.Plugin;
 using Lagrange.XocMat.Net;
 using Lagrange.XocMat.Event;
+using Lagrange.XocMat.Internal;
 
 namespace Lagrange.XocMat;
 
@@ -38,11 +39,11 @@ public class XocMatApp : IHost
         Logger = Services.GetRequiredService<ILogger<XocMatApp>>();
 
         Services.GetRequiredService<MusicSigner>();
-        Services.GetRequiredService<CommandManager>().Start();
-        Services.GetRequiredService<PluginLoader>().Load();
+        Services.GetRequiredService<CommandManager>();
+        Services.GetRequiredService<PluginLoader>();
         Services.GetRequiredService<WebSocketServer>();
-        Services.GetRequiredService<TShockReceive>().Start();
-        Services.GetRequiredService<TerrariaMsgReceiveHandler>().Start();
+        Services.GetRequiredService<TShockReceive>();
+        Services.GetRequiredService<TerrariaMsgReceiveHandler>();
 
         _isFirstLogin = true;
     }

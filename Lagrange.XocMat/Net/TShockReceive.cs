@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Lagrange.XocMat.Net;
 
-public class TShockReceive(WebSocketServer Server)
+public class TShockReceive
 {
     public delegate ValueTask SocketCallBack<in T>(T args) where T : BaseSocketArgs;
 
@@ -16,6 +16,14 @@ public class TShockReceive(WebSocketServer Server)
     public event SocketCallBack<SocketReceiveMessageArgs>? SocketMessage;
 
     private readonly CancellationToken CancellationToken = new CancellationToken();
+
+    public WebSocketServer Server { get; }
+
+    public TShockReceive(WebSocketServer server)
+    {
+        Server = server;
+        Start();
+    }
 
     public WebSocketServer.ConnectionContext? GetConnectionContext(string id) => Server.GetConnect(id);
 

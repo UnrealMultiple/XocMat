@@ -5,8 +5,22 @@ using System.Reflection;
 
 namespace Lagrange.XocMat.Plugin;
 
-public class PluginLoader(CommandManager cmdManager, BotContext botContext, ILogger<PluginLoader> logger)
+public class PluginLoader
 {
+    public CommandManager CommandManager { get; }
+
+    public BotContext BotContext { get; }
+
+    public ILogger<PluginLoader> Logger { get; }
+
+    public PluginLoader(CommandManager cmdManager, BotContext botContext, ILogger<PluginLoader> logger)
+    {
+        CommandManager = cmdManager;
+        BotContext = botContext;
+        Logger = logger;
+        Load();
+    }
+
     public PluginContext PluginContext { get; private set; } = new(Guid.NewGuid().ToString());
 
     public readonly string PATH = Path.Combine(XocMatAPI.PATH, "Plugins");
@@ -19,9 +33,9 @@ public class PluginLoader(CommandManager cmdManager, BotContext botContext, ILog
         DirectoryInfo directoryInfo = new(PATH);
         if (!directoryInfo.Exists)
             directoryInfo.Create();
-        PluginContext.LoadPlugins(directoryInfo,logger, cmdManager, botContext);
-        cmdManager.MappingCommands(Assembly.GetExecutingAssembly());
-        PluginContext.LoadAssemblys.ForEach(cmdManager.MappingCommands);    }
+        PluginContext.LoadPlugins(directoryInfo, Logger, CommandManager, BotContext);
+        CommandManager.MappingCommands(Assembly.GetExecutingAssembly());
+        PluginContext.LoadAssemblys.ForEach(CommandManager.MappingCommands);    }
 
     public void UnLoad()
     {

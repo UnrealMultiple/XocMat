@@ -24,7 +24,7 @@ using ProtoBuf;
 
 namespace Lagrange.XocMat.Event;
 
-public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager, TShockReceive receive, ILogger<TerrariaMsgReceiveHandler> logger)
+public class TerrariaMsgReceiveHandler
 {
     public delegate TResult EventCallBack<in TEventArgs, out TResult>(TEventArgs args);
 
@@ -44,7 +44,36 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
 
     private readonly ReplaySubject<(BaseAction, byte[])> ApiSubject = new(2);
 
-    private Dictionary<PostMessageType, EventCallBack<ServerMsgArgs, ValueTask>> _action = [];
+    private Dictionary<PostMessageType, EventCallBack<ServerMsgArgs, ValueTask>> _action;
+
+    public BotContext Bot { get;  }
+
+    public CommandManager CommandManager { get; }
+
+    public TShockReceive Receive { get; }
+
+    public ILogger<TerrariaMsgReceiveHandler> Logger { get; }
+
+    public TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager, TShockReceive receive, ILogger<TerrariaMsgReceiveHandler> logger)
+    {
+        Bot = bot;
+        CommandManager = cmdManager;
+        Receive = receive;
+        Logger = logger;
+        _action = new()
+        {
+            { PostMessageType.Action, ActionHandler },
+            { PostMessageType.PlayerJoin, PlayerJoinHandler },
+            { PostMessageType.PlayerLeave, PlayerLeaveHandler },
+            { PostMessageType.PlayerCommand, PlayerCommandHandler },
+            { PostMessageType.PlayerMessage, PlayerMessageHandler },
+            { PostMessageType.GamePostInit, GamePostInitHandler },
+            { PostMessageType.Connect, ConnectHandler },
+            { PostMessageType.HeartBeat, HeartBeatHandler },
+        };
+        Receive.SocketMessage += Adapter;
+        Bot.Invoker.OnGroupMessageReceived += GroupMessageForwardAdapter;
+    }
 
     private async ValueTask PlayerMessageHandler(ServerMsgArgs args)
     {
@@ -57,7 +86,7 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
                 return;
             foreach (var group in data.TerrariaServer.ForwardGroups)
             {
-                await bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}: {data.Text}").Build());
+                await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}: {data.Text}").Build());
             }
         }
     }
@@ -76,7 +105,7 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
         var data = Serializer.Deserialize<BaseMessage>(args.Stream);
         WebSocketConnectManager.Add(data.ServerName, args.id);
         if (OnConnect != null) await OnConnect(data);
-        logger.LogInformation($"Terraria Server {data.ServerName} {args.id} 已连接...", ConsoleColor.Green);
+        Logger.LogInformation($"Terraria Server {data.ServerName} {args.id} 已连接...", ConsoleColor.Green);
         await data.TerrariaServer!.ReplyConnectStatus();
     }
 
@@ -88,7 +117,7 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
         {
             foreach (var group in data.TerrariaServer.ForwardGroups)
             {
-                await bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}]服务器初始化已完成..").Build());
+                await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}]服务器初始化已完成..").Build());
             }
         }
     }
@@ -99,7 +128,7 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
         if (OnPlayerCommand != null) await OnPlayerCommand(data);
         if (!data.Handler)
         {
-            await cmdManager.CommandAdapter(data);
+            await CommandManager.CommandAdapter(data);
         }
     }
 
@@ -111,7 +140,7 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
         {
             foreach (var group in data.TerrariaServer.ForwardGroups)
             {
-                await bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}离开服务器..").Build());
+                await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}离开服务器..").Build());
             }
         }
     }
@@ -124,7 +153,7 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
         {
             foreach (var group in data.TerrariaServer.ForwardGroups)
             {
-                await bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}进入服务器..").Build());
+                await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}进入服务器..").Build());
             }
         }
     }
@@ -192,29 +221,29 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
                 };
                 if (baseMsg.TerrariaServer == null)
                 {
-                    logger.LogError($"接受到{baseMsg.ServerName} 的连接请求但，在配置文件中没有找到{baseMsg.ServerName}服务器!");
+                    Logger.LogError($"接受到{baseMsg.ServerName} 的连接请求但，在配置文件中没有找到{baseMsg.ServerName}服务器!");
                     response.Status = SocketConnentType.ServerNull;
 
                 }
                 else if (baseMsg.Token != baseMsg.TerrariaServer?.Token)
                 {
                     response.Status = SocketConnentType.VerifyError;
-                    logger.LogError($"{baseMsg.ServerName} 的Token 与配置文件不匹配!");
+                    Logger.LogError($"{baseMsg.ServerName} 的Token 与配置文件不匹配!");
                 }
                 else
                 {
-                    logger.LogError($"{baseMsg.ServerName} 未知连接错误!");
+                    Logger.LogError($"{baseMsg.ServerName} 未知连接错误!");
                     response.Status = SocketConnentType.Error;
                 }
                 Serializer.Serialize(ms, response);
-                await receive.Send(ms.ToArray(), args.ConnectId);
-                await receive.Close(args.ConnectId, System.Net.WebSockets.WebSocketCloseStatus.NormalClosure);
+                await Receive.Send(ms.ToArray(), args.ConnectId);
+                await Receive.Close(args.ConnectId, System.Net.WebSockets.WebSocketCloseStatus.NormalClosure);
                 ms.Dispose();
             }
         }
         catch (Exception ex)
         {
-            logger.LogError($"解析信息是出现错误:{ex.Message}");
+            Logger.LogError($"解析信息是出现错误:{ex.Message}");
         }
 
     }
@@ -274,22 +303,4 @@ public class TerrariaMsgReceiveHandler(BotContext bot, CommandManager cmdManager
     //        await args.OneBotAPI.SendGroupMessage(args.GroupId, "[GetFile] Error" + e.Message);
     //    }
     //}
-
-    [MemberNotNull(nameof(_action))]
-    public void Start()
-    {
-        _action = new()
-        {
-            { PostMessageType.Action, ActionHandler },
-            { PostMessageType.PlayerJoin, PlayerJoinHandler },
-            { PostMessageType.PlayerLeave, PlayerLeaveHandler },
-            { PostMessageType.PlayerCommand, PlayerCommandHandler },
-            { PostMessageType.PlayerMessage, PlayerMessageHandler },
-            { PostMessageType.GamePostInit, GamePostInitHandler },
-            { PostMessageType.Connect, ConnectHandler },
-            { PostMessageType.HeartBeat, HeartBeatHandler },
-        };
-        receive.SocketMessage += Adapter;
-        bot.Invoker.OnGroupMessageReceived += GroupMessageForwardAdapter;
-    }
 }

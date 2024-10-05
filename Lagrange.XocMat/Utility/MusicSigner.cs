@@ -27,7 +27,7 @@ public class MusicSigner
     }
 
 
-    public static JsonEntity? Sign(Internal.MusicSigSegment musicSigSegment)
+    public static string? Sign(Internal.MusicSigSegment musicSigSegment)
     {
         if (string.IsNullOrEmpty(_signServer)) return null;
 
@@ -45,7 +45,7 @@ public class MusicSigner
         try
         {
             var message = _client.PostAsJsonAsync(_signServer, payload).Result;
-            return new JsonEntity(message.Content.ReadAsStringAsync().Result);
+            return message.Content.ReadAsStringAsync().Result;
         }
         catch
         {

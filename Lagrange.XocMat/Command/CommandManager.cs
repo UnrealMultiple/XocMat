@@ -13,21 +13,23 @@ using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Commands;
 
-public class CommandManager(BotContext bot, ILogger<CommandManager> logger)
+public class CommandManager
 {
-    public ILogger<CommandManager> Logger { get; set; } = logger;
+    public ILogger<CommandManager> Logger { get; }
 
-    public BotContext Bot { get; set; } = bot;
+    public BotContext Bot { get; }
 
     public readonly List<Command<CommandArgs>> GroupCommandDelegate = [];
 
     public readonly List<Command<ServerCommandArgs>> ServerCommandDelegate = [];
 
-    public void Start()
+    public CommandManager(BotContext bot, ILogger<CommandManager> logger)
     {
-       
+        Bot = bot;
+        Logger = logger;
         Bot.Invoker.OnGroupMessageReceived += async (BotContext bot, GroupMessageEvent e) => await CommandAdapter(bot, e);
     }
+
 
     public void AddGroupCommand(Command<CommandArgs> command)
     {
@@ -184,7 +186,7 @@ public class CommandManager(BotContext bot, ILogger<CommandManager> logger)
                 {
                     try
                     {
-                        await RunCommandCallback(new ServerCommandArgs(bot,args.ServerName, args.Name, cmdName,args.CommandPrefix,cmdParam, ParseCommandLine(cmdParam)), command);
+                        await RunCommandCallback(new ServerCommandArgs(Bot,args.ServerName, args.Name, cmdName,args.CommandPrefix,cmdParam, ParseCommandLine(cmdParam)), command);
                     }
                     catch (Exception ex)
                     {

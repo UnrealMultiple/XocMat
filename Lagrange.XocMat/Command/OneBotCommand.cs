@@ -17,6 +17,8 @@ using Lagrange.XocMat.Internal.Terraria;
 using Lagrange.XocMat.Utility;
 using Lagrange.Core.Internal.Packets.Message.Element.Implementation;
 using Lagrange.Core.Message.Entity;
+using Lagrange.Core.Common.Entity;
+using System.Text.Json.Nodes;
 
 
 namespace Lagrange.XocMat.Commands;
@@ -322,47 +324,6 @@ public class OneBotCommand
     }
     #endregion
 
-    //#region 表情回应
-    //[CommandMatch("表情回应", OneBotPermissions.EmojiLike)]
-    //public static async ValueTask EmojiLike(CommandArgs args)
-    //{
-    //    string[] emojis =
-    //    [
-    //        "4",
-    //        "5",
-    //        "8",
-    //        "9",
-    //        "10",
-    //        "12",
-    //        "14",
-    //        "16",
-    //        "21",
-    //        "23",
-    //        "24",
-    //        "25",
-    //        "26",
-    //        "27",
-    //        "28",
-    //        "29",
-    //        "30",
-    //        "32",
-    //        "33",
-    //        "34",
-    //        "38"
-    //    ];
-    //    var messageid = args.EventArgs.MessageContext.MessageID;
-    //    if (args.EventArgs.MessageContext.Reply != -1)
-    //        messageid = args.EventArgs.MessageContext.Reply;
-    //    var tasks = new List<Task>();
-    //    foreach (var id in emojis)
-    //    {
-    //        tasks.Add(args.EventArgs.OneBotAPI.EmojiLike(messageid, id).AsTask());
-    //    }
-    //    await Task.WhenAll(tasks);
-
-    //}
-    //#endregion
-
     #region 清理内存
     [CommandMatch("清理内存", OneBotPermissions.ClearMemory)]
     public static async ValueTask Memory(CommandArgs args)
@@ -374,25 +335,29 @@ public class OneBotCommand
     }
     #endregion
 
-    //#region 删除文件
-    //[CommandMatch("删除文件", OneBotPermissions.ChangeServer)]
-    //public static async ValueTask ClearFile(CommandArgs args)
-    //{
-    //    var (status, list) = await args.EventArgs.OneBotAPI.GetGroupFileList(args.EventArgs.Chain.GroupUin!.Value);
-    //    var count = 0;
-    //    var tasks = new List<Task>();
-    //    foreach (var file in list)
-    //    {
-    //        if (file.FileInfo != null && file.FileInfo.Value.UploaderUin == args.EventArgs.OneBotAPI.BotId.ToString())
-    //        {
-    //            tasks.Add(args.EventArgs.OneBotAPI.DelGroupFile(args.EventArgs.Chain.GroupUin!.Value, file.FileInfo.Value.FileId).AsTask());
-    //            count++;
-    //        }
-    //    }
-    //    await Task.WhenAll(tasks);
-    //    await args.EventArgs.Reply($"删除了{count}个文件");
-    //}
-    //#endregion
+    #region 删除文件
+    [CommandMatch("删除文件", OneBotPermissions.ChangeServer)]
+    public static async ValueTask ClearFile(CommandArgs args)
+    {
+        var fsList = await args.Bot.FetchGroupFSList(args.EventArgs.Chain.GroupUin!.Value);
+        var count = 0;
+        var tasks = new List<Task>();
+        foreach (var file in fsList)
+        {
+            if (file is BotFileEntry f)
+            {
+                if (f.UploaderUin == args.Bot.BotUin)
+                {
+                    tasks.Add(args.Bot.GroupFSDelete(args.EventArgs.Chain.GroupUin!.Value, f.FileId));
+                    count++;
+                }
+            }
+           
+        }
+        await Task.WhenAll(tasks);
+        await args.EventArgs.Reply($"删除了{count}个文件");
+    }
+    #endregion
 
     #region 搜索物品
     [CommandMatch("sitem", OneBotPermissions.SearchItem)]
@@ -406,19 +371,6 @@ public class OneBotCommand
 
     }
     #endregion
-
-    //#region 版本信息
-    //[CommandMatch("version", OneBotPermissions.Version)]
-    //public static async ValueTask VersionInfo(CommandArgs args)
-    //{
-    //    var info = "名称: MorMor" +
-    //        "\n版本: V2.0.3.2" +
-    //        $"\n运行时长: {DateTime.Now - System.Diagnostics.Process.GetCurrentProcess().StartTime:dd\\.hh\\:mm\\:ss}" +
-    //        "\nMorMor是基于LLOneBot开发的 .NET平台机器人，主要功能为群管理以及TShock服务器管理" +
-    //        "\n开源地址: https://github.com/Controllerdestiny/MorMor";
-    //    await args.EventArgs.Reply(info);
-    //}
-    //#endregion
 
     #region 帮助
     [CommandMatch("help", OneBotPermissions.Help)]
@@ -481,7 +433,7 @@ public class OneBotCommand
             var result = XocMatAPI.SignManager.SingIn(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
             var currency = XocMatAPI.CurrencyManager.Add(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
             var build = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value)
-                .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={args.EventArgs.Chain.GroupUin!.Value}&spec=640&img_type=png"))
+                .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={args.EventArgs.Chain.GroupMemberInfo!.Uin}&spec=640&img_type=png"))
                 .Text($"签到成功！\n")
                 .Text($"[签到时长]：{result.Date}\n")
                 .Text($"[获得星币]：{num}\n")
@@ -972,33 +924,33 @@ public class OneBotCommand
     }
     #endregion
 
-    //#region 缩写查询
-    //[CommandMatch("缩写", OneBotPermissions.Nbnhhsh)]
-    //public static async ValueTask Nbnhhsh(CommandArgs args)
-    //{
-    //    if (args.Parameters.Count == 1)
-    //    {
-    //        var url = $"https://oiapi.net/API/Nbnhhsh?text={args.Parameters[0]}";
-    //        HttpClient client = new();
-    //        var result = await client.GetStringAsync(url);
-    //        var data = JObject.Parse(result);
-    //        var trans = data["data"]?[0]?["trans"];
-    //        if (trans != null && trans.Any())
-    //        {
+    #region 缩写查询
+    [CommandMatch("缩写", OneBotPermissions.Nbnhhsh)]
+    public static async ValueTask Nbnhhsh(CommandArgs args)
+    {
+        if (args.Parameters.Count == 1)
+        {
+            var url = $"https://oiapi.net/API/Nbnhhsh?text={args.Parameters[0]}";
+            HttpClient client = new();
+            var result = await client.GetStringAsync(url);
+            var data = JsonNode.Parse(result);
+            var trans = data?["data"]?[0]?["trans"]?.AsArray();
+            if (trans != null && trans.Any())
+            {
 
-    //            await args.EventArgs.Reply($"缩写:`{args.Parameters[0]}`可能为:\n{string.Join(",", trans)}");
-    //        }
-    //        else
-    //        {
-    //            await args.EventArgs.Reply("也许该缩写没有被收录!");
-    //        }
-    //    }
-    //    else
-    //    {
-    //        await args.EventArgs.Reply($"语法错误，正确语法:{args.CommamdPrefix}缩写 [文本]");
-    //    }
-    //}
-    //#endregion
+                await args.EventArgs.Reply($"缩写:`{args.Parameters[0]}`可能为:\n{string.Join(",", trans)}");
+            }
+            else
+            {
+                await args.EventArgs.Reply("也许该缩写没有被收录!");
+            }
+        }
+        else
+        {
+            await args.EventArgs.Reply($"语法错误，正确语法:{args.CommamdPrefix}缩写 [文本]");
+        }
+    }
+    #endregion
 
     #region 禁言
     [CommandMatch("禁", OneBotPermissions.Mute)]
