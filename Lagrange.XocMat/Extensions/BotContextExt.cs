@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Extensions;
 
 public static class BotContextExt
 {
-    public static async Task Reply(this BotContext bot, MessageBuilder builder)
+    public static async Task<MessageResult> Reply(this BotContext bot, MessageBuilder builder)
     {
-        await bot.SendMessage(builder.Build());
+        return await bot.SendMessage(builder.Build());
     }
 }

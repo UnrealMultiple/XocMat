@@ -11,6 +11,7 @@ using Lagrange.XocMat.Commands;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.EventArgs;
 using Lagrange.XocMat.EventArgs.Sockets;
+using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal.Socket;
 using Lagrange.XocMat.Internal.Socket.Action;
 using Lagrange.XocMat.Internal.Socket.Action.Receive;
