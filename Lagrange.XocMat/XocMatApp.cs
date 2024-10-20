@@ -93,7 +93,7 @@ public class XocMatApp : IHost
                 Logger.LogInformation($"Please scan the QR code above, Url: {qrCode.Url}");
                 await File.WriteAllBytesAsync($"qr-{Instance.BotUin}.png", qrCode.QrCode ?? [], cancellationToken);
 
-                _ = Task.Run(Instance.LoginByQrCode, cancellationToken);
+                await Instance.LoginByQrCode(cancellationToken);
             }
         }
         else
@@ -112,7 +112,7 @@ public class XocMatApp : IHost
                 }, cancellationToken);
             };
 
-            _ = Task.Run(Instance.LoginByPassword, cancellationToken);
+            await Instance.LoginByPassword(cancellationToken);
         }
     }
 
