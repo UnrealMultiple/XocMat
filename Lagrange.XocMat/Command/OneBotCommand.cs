@@ -35,6 +35,7 @@ public class OneBotCommand
         {
             var builder = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value)
                 .MultiMsg(MessageBuilder.Friend(args.Bot.BotUin).MultiMsg(MessageBuilder.Friend(args.Bot.BotUin).Markdown(new MarkdownData() { Content = args.Parameters[0] })));
+
             await args.EventArgs.Reply(builder);
         }
 

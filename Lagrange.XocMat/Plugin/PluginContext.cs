@@ -1,6 +1,7 @@
 ﻿using Lagrange.Core;
 using Lagrange.XocMat.Commands;
 using Lagrange.XocMat.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -23,7 +24,7 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
         return Default.LoadFromAssemblyName(assemblyName);
     }
 
-    public void LoadPlugins(DirectoryInfo dir, ILogger<PluginLoader> logger, CommandManager cmdManager, BotContext bot)
+    public void LoadPlugins(DirectoryInfo dir, ILogger<PluginLoader> pluginLogger, CommandManager cmdManager, BotContext bot)
     {
         foreach (FileInfo file in dir.GetFiles("*.dll", SearchOption.AllDirectories))
         {
@@ -38,12 +39,18 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
             {
                 if (type.IsSubclassOf(typeof(XocMatPlugin)) && !type.IsAbstract)
                 {
+                    var logger = XocMatHostAppBuilder.App.Services.GetRequiredService(typeof(ILogger<>).MakeGenericType(type)) as ILogger<PluginLoader>;
                     if (Activator.CreateInstance(type, logger, cmdManager, bot) is XocMatPlugin instance)
                         Plugins.Add(instance);
                 }
             }
         }
-        Plugins.OrderBy(p => p.Order).ForEach(p => p.Initialize());
+        Plugins.OrderBy(p => p.Order)
+            .ForEach(p =>
+            {
+                pluginLogger.LogInformation($"Plugin {p.Name} V{p.Version} by({p.Author}) Initiate.");
+                p.Initialize();
+            });
     }
 
     public void UnloadPlugin()

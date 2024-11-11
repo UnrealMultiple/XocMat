@@ -277,31 +277,4 @@ public class TerrariaMsgReceiveHandler
         }
 
     }
-
-    //internal async ValueTask GroupFile(GroupUpLoadFileEventArgs args)
-    //{
-    //    try
-    //    {
-    //        if (args.UpLoad.Size > 1024 * 1024 * 30)
-    //            return;
-    //        var (status, fileinfo) = await args.OneBotAPI.GetFile(args.UpLoad.ID);
-    //        if (status.RetCode != MomoAPI.Enumeration.ApiType.ApiStatusType.Ok || string.IsNullOrEmpty(fileinfo.Base64))
-    //            return;
-    //        var buffer = Convert.FromBase64String(fileinfo.Base64);
-    //        foreach (var server in MorMorAPI.Setting.Servers)
-    //        {
-    //            if (server != null && server.WaitFile != null)
-    //            {
-    //                if (server.Groups.Contains(args.GroupId))
-    //                {
-    //                    server.WaitFile.TrySetResult(buffer);
-    //                }
-    //            }
-    //        }
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        await args.OneBotAPI.SendGroupMessage(args.GroupId, "[GetFile] Error" + e.Message);
-    //    }
-    //}
 }

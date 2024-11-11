@@ -23,7 +23,7 @@ public sealed class XocMatHostAppBuilder(string[] args)
 
     private readonly HostApplicationBuilder _hostAppBuilder = new HostApplicationBuilder(args);
 
-    public static XocMatApp? App { get; set; }
+    public static XocMatApp App { get; set; } = null!;
 
     public XocMatHostAppBuilder ConfigureConfiguration(string path, bool optional = false, bool reloadOnChange = false)
     {

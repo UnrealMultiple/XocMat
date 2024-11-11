@@ -8,7 +8,6 @@ using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Internal.Socket.PlayerMessage;
 using Lagrange.XocMat.EventArgs;
 using Lagrange.XocMat.Attributes;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Commands;

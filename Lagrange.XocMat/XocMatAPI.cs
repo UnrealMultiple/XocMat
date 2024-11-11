@@ -4,7 +4,6 @@ using Lagrange.XocMat.Configured;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Utility;
-using Markdig;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,7 +34,7 @@ public class XocMatAPI : BackgroundService
 
     public static string SAVE_PATH => Path.Combine(PATH, "Config");
 
-    internal static string ConfigPath => Path.Combine(SAVE_PATH, "MorMor.Json");
+    internal static string ConfigPath => Path.Combine(SAVE_PATH, "XocMat.Json");
 
     internal static string UserLocationPath => Path.Combine(SAVE_PATH, "UserLocation.Json");
 

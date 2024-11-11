@@ -4,8 +4,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Plugin;
 
-public abstract class XocMatPlugin(ILogger<PluginLoader> logger, CommandManager cmdManager, BotContext bot) : IDisposable
+public abstract class XocMatPlugin(ILogger logger, CommandManager commandManager, BotContext bot) : IDisposable
 {
+    public ILogger Logger { get; } = logger;
+
+    public CommandManager CommandManager { get; } = commandManager;
+
+    public BotContext Bot { get; } = bot;
+
     public virtual string Name
     {
         get
