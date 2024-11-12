@@ -15,7 +15,6 @@ using Lagrange.XocMat.Commands;
 using Lagrange.XocMat.Plugin;
 using Lagrange.XocMat.Net;
 using Lagrange.XocMat.Event;
-using Lagrange.XocMat.Internal;
 
 namespace Lagrange.XocMat;
 

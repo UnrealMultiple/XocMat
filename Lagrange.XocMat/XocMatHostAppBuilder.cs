@@ -21,7 +21,7 @@ public sealed class XocMatHostAppBuilder(string[] args)
 
     private ConfigurationManager Configuration => _hostAppBuilder.Configuration;
 
-    private readonly HostApplicationBuilder _hostAppBuilder = new HostApplicationBuilder(args);
+    private readonly HostApplicationBuilder _hostAppBuilder = new(args);
 
     public static XocMatApp App { get; set; } = null!;
 

@@ -353,13 +353,12 @@ public class TerrariaServer
             using MemoryStream stream = new();
             Serializer.Serialize(stream, ApiParam);
             WebSocketConnectManager.Send(stream.ToArray(), Client.ID);
-            if (XocMatAPI.TerrariaMsgReceive != null)
-                return await XocMatAPI.TerrariaMsgReceive.GetResponse<TResult>(ApiParam.Echo, timeout) ?? new()
-                {
-                    Status = false,
-                    ServerName = Name,
-                    Message = "服务器未连接!"
-                };
+            return await XocMatAPI.TerrariaMsgReceive.GetResponse<TResult>(ApiParam.Echo, timeout) ?? new()
+            {
+                Status = false,
+                ServerName = Name,
+                Message = "服务器未连接!"
+            };
         }
         return new TResult()
         {
