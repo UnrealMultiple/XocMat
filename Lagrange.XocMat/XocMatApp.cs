@@ -36,19 +36,17 @@ public class XocMatApp : IHost
     {
         _hostApp = host;
         Logger = Services.GetRequiredService<ILogger<XocMatApp>>();
+        _isFirstLogin = true;
+    }
 
+    public async Task StartAsync(CancellationToken cancellationToken = new())
+    {
         Services.GetRequiredService<MusicSigner>();
         Services.GetRequiredService<CommandManager>();
         Services.GetRequiredService<PluginLoader>();
         Services.GetRequiredService<WebSocketServer>();
         Services.GetRequiredService<TShockReceive>();
         Services.GetRequiredService<TerrariaMsgReceiveHandler>();
-
-        _isFirstLogin = true;
-    }
-
-    public async Task StartAsync(CancellationToken cancellationToken = new())
-    {
         await _hostApp.StartAsync(cancellationToken);
         Logger.LogInformation("Lagrange.OneBot Implementation has started");
         Logger.LogInformation($"Protocol: {Configuration["Protocol"]} | {Instance.ContextCollection.AppInfo.CurrentVersion}");

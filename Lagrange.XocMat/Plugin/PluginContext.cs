@@ -39,8 +39,8 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
             {
                 if (type.IsSubclassOf(typeof(XocMatPlugin)) && !type.IsAbstract)
                 {
-                    //var logger = XocMatHostAppBuilder.App.Services.GetKeyedServices(typeof(ILogger<>).MakeGenericType(type)) as ILogger<PluginLoader>;
-                    if (Activator.CreateInstance(type, logger, cmdManager, bot) is XocMatPlugin instance)
+                    var loggerFactory = XocMatHostAppBuilder.instance.App.Services.GetRequiredService<LoggerFactory>();
+                    if (Activator.CreateInstance(type, loggerFactory.CreateLogger(type), cmdManager, bot) is XocMatPlugin instance)
                         Plugins.Add(instance);
                 }
             }

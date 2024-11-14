@@ -50,9 +50,9 @@ public class XocMatAPI : BackgroundService
 
     public static TerrariaPrize TerrariaPrize { get; internal set; } = new();
 
-    public static TerrariaMsgReceiveHandler TerrariaMsgReceive => XocMatHostAppBuilder.App.Services.GetRequiredService<TerrariaMsgReceiveHandler>();
+    public static TerrariaMsgReceiveHandler TerrariaMsgReceive => XocMatHostAppBuilder.instance.App.Services.GetRequiredService<TerrariaMsgReceiveHandler>();
 
-    public static CommandManager Command => XocMatHostAppBuilder.App.Services.GetRequiredService<CommandManager>();
+    public static CommandManager Command => XocMatHostAppBuilder.instance.App.Services.GetRequiredService<CommandManager>();
 
     public XocMatAPI(BotContext botContext, ILogger<XocMatAPI> logger)
     {

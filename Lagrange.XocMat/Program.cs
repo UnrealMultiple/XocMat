@@ -37,11 +37,11 @@ internal abstract class Program
             Console.ReadLine();
         }
 
-        var hostBuilder = new XocMatHostAppBuilder(args)
-            .ConfigureConfiguration("appsettings.json", false, true)
-            .ConfigureBots()
-            .ConfigureOneBot();
-
-        hostBuilder.Build().Run();
+        XocMatHostAppBuilder.instance
+        .ConfigureConfiguration("appsettings.json", false, true)
+        .ConfigureBots()
+        .ConfigureOneBot()
+        .Build()
+        .Run();
     }
 }

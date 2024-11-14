@@ -7,23 +7,25 @@ using Lagrange.XocMat.Utility;
 using System.Text.Json;
 using Lagrange.Core.Common.Interface;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
 using Lagrange.XocMat.Net;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Plugin;
 using Lagrange.XocMat.Commands;
+using Serilog;
 
 namespace Lagrange.XocMat;
 
-public sealed class XocMatHostAppBuilder(string[] args)
+public sealed class XocMatHostAppBuilder
 {
-    private IServiceCollection Services => _hostAppBuilder.Services;
+    public IServiceCollection Services => _hostAppBuilder.Services;
 
-    private ConfigurationManager Configuration => _hostAppBuilder.Configuration;
+    public ConfigurationManager Configuration => _hostAppBuilder.Configuration;
 
-    private readonly HostApplicationBuilder _hostAppBuilder = new(args);
+    private readonly HostApplicationBuilder _hostAppBuilder = new();
 
-    public static XocMatApp App { get; set; } = null!;
+    public XocMatApp App { get; set; } = null!;
+
+    public readonly static XocMatHostAppBuilder instance = new();
 
     public XocMatHostAppBuilder ConfigureConfiguration(string path, bool optional = false, bool reloadOnChange = false)
     {
@@ -96,7 +98,7 @@ public sealed class XocMatHostAppBuilder(string[] args)
         Services.AddSingleton<TerrariaMsgReceiveHandler>();
         Services.AddSingleton<CommandManager>();
         Services.AddSingleton<PluginLoader>();
-       
+        Services.AddSingleton<LoggerFactory>();
         Services.AddSingleton<MusicSigner>();
         return this;
     }
@@ -107,9 +109,13 @@ public sealed class XocMatHostAppBuilder(string[] args)
         return this;
     }
 
-    [MemberNotNull(nameof(App))]
     public XocMatApp Build()
-    { 
+    {
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(_hostAppBuilder.Configuration)
+            .Enrich.FromLogContext()
+            .CreateLogger();
+        _hostAppBuilder.Logging.AddSerilog(Log.Logger);
         App = new XocMatApp(_hostAppBuilder.Build());
         return App;
     } 
