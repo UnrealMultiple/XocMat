@@ -1,5 +1,4 @@
-﻿using Lagrange.Core.Internal.Packets.Message;
-using Lagrange.Core.Message;
+﻿using Lagrange.Core.Message;
 using Lagrange.Core.Message.Entity;
 using Lagrange.XocMat.Utility;
 

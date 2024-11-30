@@ -1,17 +1,17 @@
 ﻿using Lagrange.Core.Common;
+using Lagrange.Core.Common.Interface;
 using Lagrange.Core.Utility.Sign;
+using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Event;
+using Lagrange.XocMat.Net;
+using Lagrange.XocMat.Plugin;
+using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Lagrange.XocMat.Utility;
-using System.Text.Json;
-using Lagrange.Core.Common.Interface;
 using Microsoft.Extensions.Logging;
-using Lagrange.XocMat.Net;
-using Lagrange.XocMat.Event;
-using Lagrange.XocMat.Plugin;
-using Lagrange.XocMat.Commands;
 using Serilog;
+using System.Text.Json;
 
 namespace Lagrange.XocMat;
 
@@ -90,7 +90,7 @@ public sealed class XocMatHostAppBuilder
 
     public XocMatHostAppBuilder ConfigureOneBot()
     {
-       
+
         Services.AddSingleton<SignProvider, OneBotSigner>();
         Services.AddHostedService<XocMatAPI>();
         Services.AddSingleton<WebSocketServer>();
@@ -118,5 +118,5 @@ public sealed class XocMatHostAppBuilder
         _hostAppBuilder.Logging.AddSerilog(Log.Logger);
         App = new XocMatApp(_hostAppBuilder.Build());
         return App;
-    } 
+    }
 }

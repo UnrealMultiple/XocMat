@@ -1,7 +1,7 @@
-﻿using System.Drawing;
-using System.Text;
-using Lagrange.XocMat.Attributes;
+﻿using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Permission;
+using System.Drawing;
+using System.Text;
 
 namespace Lagrange.XocMat.Commands;
 
@@ -43,6 +43,11 @@ public class ServerCommands
         if (count > 50)
             count = 50;
         var prizes = XocMatAPI.TerrariaPrize.Nexts(count);
+        if (prizes.Count == 0)
+        {
+            await args.Server.PrivateMsg(args.UserName, "奖池中空空如也哦!", Color.GreenYellow);
+            return;
+        } 
         var curr = XocMatAPI.CurrencyManager.Query(args.User.GroupID, args.User.Id);
         if (curr == null || curr.num < count * XocMatAPI.TerrariaPrize.Fess)
         {
@@ -51,12 +56,10 @@ public class ServerCommands
         }
         XocMatAPI.CurrencyManager.Del(args.User.GroupID, args.User.Id, count * XocMatAPI.TerrariaPrize.Fess);
         Random random = new();
-        //var tasks = new List<ValueTask>();
         foreach (var prize in prizes)
         {
             await args.Server.Command($"/g {prize.ID} {args.UserName} {random.Next(prize.Min, prize.Max)}");
         }
-        //await ValueTask.WhenAll(tasks);
     }
 
 

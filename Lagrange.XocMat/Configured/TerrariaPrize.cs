@@ -13,7 +13,7 @@ public class TerrariaPrize
     [JsonPropertyName("奖池内容")]
     public List<Prize> Pool = [];
 
-    public Prize Next()
+    public Prize? Next()
     {
         Random random = new Random();
         int totalWeight = Pool.Sum(x => x.Probability);
@@ -27,7 +27,7 @@ public class TerrariaPrize
                 return prize;
             }
         }
-        return Pool[random.Next(0, Pool.Count - 1)];
+        return Pool.Any() ? Pool[random.Next(0, Pool.Count - 1)] : null;
     }
 
     public Prize? GetPrize(int id)
@@ -42,7 +42,9 @@ public class TerrariaPrize
         var res = new List<Prize>();
         for (int i = 0; i < count; i++)
         {
-            res.Add(Next());
+            var item = Next();
+            if (item != null)
+                res.Add(item);
         }
         return res;
     }

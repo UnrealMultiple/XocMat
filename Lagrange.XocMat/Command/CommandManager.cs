@@ -1,14 +1,13 @@
-﻿using System.Drawing;
+﻿using Lagrange.Core;
+using Lagrange.Core.Event.EventArg;
+using Lagrange.XocMat.Attributes;
+using Lagrange.XocMat.Event;
+using Lagrange.XocMat.Extensions;
+using Lagrange.XocMat.Internal.Socket.PlayerMessage;
+using Microsoft.Extensions.Logging;
+using System.Drawing;
 using System.Reflection;
 using System.Text;
-using Lagrange.Core;
-using Lagrange.Core.Event.EventArg;
-using Lagrange.Core.Message.Entity;
-using Lagrange.XocMat.Event;
-using Lagrange.XocMat.Internal.Socket.PlayerMessage;
-using Lagrange.XocMat.EventArgs;
-using Lagrange.XocMat.Attributes;
-using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Commands;
 
@@ -116,8 +115,7 @@ public class CommandManager
 
     public async ValueTask CommandAdapter(BotContext bot, GroupMessageEvent args)
     {
-        var text = string.Join("",args.Chain.Where(c=>c is TextEntity)
-            .Select(t=>((TextEntity)t).Text));
+        var text = args.Chain.GetText();
         string prefix = string.Empty;
         XocMatAPI.Setting.CommamdPrefix.ForEach(x =>
         {
@@ -140,12 +138,12 @@ public class CommandManager
                     {
                         try
                         {
-                            await RunCommandCallback(new CommandArgs(bot,cmdName, args, prefix, cmdParam, ParseCommandLine(cmdParam), account), command);
+                            await RunCommandCallback(new CommandArgs(bot, cmdName, args, prefix, cmdParam, ParseCommandLine(cmdParam), account), command);
                         }
                         catch (Exception ex)
                         {
                             Logger.LogError(ex.ToString());
-                            //await args.Reply(ex.Message, true);
+                            await args.Reply("使用此命令时发生错误，错误详情请查看日志!", true);
                         }
                     }
                 }
@@ -168,7 +166,7 @@ public class CommandManager
             }
         }
         Logger.LogInformation($"group: {args.EventArgs.Chain.GroupUin} {args.EventArgs.Chain.GroupMemberInfo!.MemberName}({args.EventArgs.Chain.GroupMemberInfo.Uin}) 试图使用命令: {args.CommamdPrefix}{args.Name}", ConsoleColor.Yellow);
-        //await args.EventArgs.Reply("你无权使用此命令！");
+        await args.EventArgs.Reply("你无权使用此命令！");
     }
 
     public async ValueTask CommandAdapter(PlayerCommandMessage args)
@@ -185,7 +183,7 @@ public class CommandManager
                 {
                     try
                     {
-                        await RunCommandCallback(new ServerCommandArgs(Bot,args.ServerName, args.Name, cmdName,args.CommandPrefix,cmdParam, ParseCommandLine(cmdParam)), command);
+                        await RunCommandCallback(new ServerCommandArgs(Bot, args.ServerName, args.Name, cmdName, args.CommandPrefix, cmdParam, ParseCommandLine(cmdParam)), command);
                     }
                     catch (Exception ex)
                     {
@@ -234,7 +232,7 @@ public class CommandManager
                 var attr = method.GetCustomAttribute<CommandMatch>()!;
                 if (method.IsStatic)
                 {
-                    if(method.CommandParamPares(typeof(CommandArgs)))
+                    if (method.CommandParamPares(typeof(CommandArgs)))
                         AddGroupCommand(new(attr.Name, method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(), attr.Permission));
                     else
                         AddServerCommand(new(attr.Name, method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(), attr.Permission));
@@ -242,7 +240,7 @@ public class CommandManager
                 }
                 var _method = instance.GetType().GetMethod(method.Name, flag)!;
                 if (method.CommandParamPares(typeof(CommandArgs)))
-                    AddGroupCommand(new (attr.Name, _method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(instance), attr.Permission));
+                    AddGroupCommand(new(attr.Name, _method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(instance), attr.Permission));
                 else
                     AddServerCommand(new(attr.Name, _method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(instance), attr.Permission));
 

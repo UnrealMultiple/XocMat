@@ -60,7 +60,7 @@ internal static class CommandUtils
         var userid = uin;
         var serverName = XocMatAPI.UserLocation.TryGetServer(userid, groupid, out var server) ? server?.Name ?? "NULL" : "NULL";
         var bindUser = XocMatAPI.TerrariaUserManager.GetUserById(userid, serverName);
-        var bindName = bindUser.Count == 0 ? "NULL" : string.Join(",", bindUser.Select(x => x.Name));;
+        var bindName = bindUser.Count == 0 ? "NULL" : string.Join(",", bindUser.Select(x => x.Name)); ;
         var signInfo = XocMatAPI.SignManager.Query(groupid, userid);
         var sign = signInfo != null ? signInfo.Date : 0;
         var currencyInfo = XocMatAPI.CurrencyManager.Query(groupid, userid);

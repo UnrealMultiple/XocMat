@@ -33,7 +33,7 @@ public static class HttpUtils
     public static async Task<string> HttpPostContent(string url, Dictionary<string, string> args)
     {
         StringContent payload = new(JsonSerializer.Serialize(args));
-        var content = await HttpClient.PostAsync(url,payload);
+        var content = await HttpClient.PostAsync(url, payload);
         return await content.Content.ReadAsStringAsync();
     }
 }

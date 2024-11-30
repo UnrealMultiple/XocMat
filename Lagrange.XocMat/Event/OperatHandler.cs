@@ -1,7 +1,7 @@
-﻿using Lagrange.XocMat.DB.Manager;
+﻿using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.EventArgs;
-using Lagrange.XocMat.Commands;
 
 namespace Lagrange.XocMat.Event;
 

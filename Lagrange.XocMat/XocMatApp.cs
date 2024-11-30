@@ -1,20 +1,20 @@
-﻿using Lagrange.Core.Utility.Sign;
-using Lagrange.Core;
+﻿using Lagrange.Core;
+using Lagrange.Core.Common.Interface.Api;
+using Lagrange.Core.Event.EventArg;
+using Lagrange.Core.Utility.Extension;
+using Lagrange.Core.Utility.Sign;
+using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Event;
+using Lagrange.XocMat.Net;
+using Lagrange.XocMat.Plugin;
 using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Lagrange.Core.Common.Interface.Api;
-using Lagrange.Core.Event.EventArg;
-using Lagrange.Core.Utility.Extension;
 using System.Text;
-using LogLevel = Lagrange.Core.Event.EventArg.LogLevel;
 using System.Text.Json;
-using Lagrange.XocMat.Commands;
-using Lagrange.XocMat.Plugin;
-using Lagrange.XocMat.Net;
-using Lagrange.XocMat.Event;
+using LogLevel = Lagrange.Core.Event.EventArg.LogLevel;
 
 namespace Lagrange.XocMat;
 
@@ -72,7 +72,7 @@ public class XocMatApp : IHost
             Logger.LogInformation($"Bot Online: {keystore.Uin}");
             string json = JsonSerializer.Serialize(keystore, new JsonSerializerOptions { WriteIndented = true });
 
-           
+
 
             await File.WriteAllTextAsync(Configuration["ConfigPath:Keystore"] ?? "keystore.json", json, cancellationToken);
 

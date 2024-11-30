@@ -1,6 +1,6 @@
-﻿using System.Data;
-using Lagrange.XocMat.Extensions;
+﻿using Lagrange.XocMat.Extensions;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace Lagrange.XocMat.DB.Manager;
 

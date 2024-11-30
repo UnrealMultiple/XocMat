@@ -4,7 +4,7 @@ using Lagrange.Core;
 
 namespace Lagrange.XocMat.Commands;
 
-public class BaseCommandArgs(BotContext bot, string name, string prefix, List<string> param, Dictionary<string,string> cmdLine) : System.EventArgs
+public class BaseCommandArgs(BotContext bot, string name, string prefix, List<string> param, Dictionary<string, string> cmdLine) : System.EventArgs
 {
     public BotContext Bot { get; set; } = bot;
     public string Name { get; } = name;

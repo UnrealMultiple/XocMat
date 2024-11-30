@@ -1,24 +1,23 @@
-﻿using System.IO.Compression;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
+﻿using Lagrange.Core.Common.Entity;
+using Lagrange.Core.Common.Interface.Api;
+using Lagrange.Core.Message;
+using Lagrange.Core.Message.Entity;
+using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Configured;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.Event;
+using Lagrange.XocMat.EventArgs;
 using Lagrange.XocMat.Exceptions;
 using Lagrange.XocMat.Extensions;
-using Lagrange.XocMat.Terraria.Picture;
-using Lagrange.XocMat.Attributes;
-using Lagrange.XocMat.EventArgs;
-using Lagrange.XocMat.Permission;
-using Lagrange.Core.Message;
-using Lagrange.Core.Common.Interface.Api;
 using Lagrange.XocMat.Internal.Terraria;
+using Lagrange.XocMat.Permission;
+using Lagrange.XocMat.Terraria.Picture;
 using Lagrange.XocMat.Utility;
-using Lagrange.Core.Internal.Packets.Message.Element.Implementation;
-using Lagrange.Core.Message.Entity;
-using Lagrange.Core.Common.Entity;
+using System.IO.Compression;
+using System.Text;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
+using System.Web;
 
 
 namespace Lagrange.XocMat.Commands;
@@ -84,7 +83,7 @@ public class OneBotCommand
 
                     }
                 }
-               
+
                 if (sb.Length > 0)
                     await args.EventArgs.Reply(sb.ToString().Trim());
                 await args.Bot.GroupFSUpload(args.EventArgs.Chain.GroupUin!.Value, new(ms.GetBuffer(), zipName));
@@ -374,7 +373,7 @@ public class OneBotCommand
                     count++;
                 }
             }
-           
+
         }
         await Task.WhenAll(tasks);
         await args.EventArgs.Reply($"删除了{count}个文件");
@@ -460,7 +459,7 @@ public class OneBotCommand
                 .Text($"[签到时长]：{result.Date}\n")
                 .Text($"[获得星币]：{num}\n")
                 .Text($"[星币总数]：{currency.num}");
-            
+
             await args.EventArgs.Reply(build);
         }
         catch (Exception e)
@@ -934,7 +933,7 @@ public class OneBotCommand
             {
                 var build = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value);
                 build.Text(banName + "指令的权限可能为:\n");
-              
+
                 comm.ForEach(x => build.Text(x));
                 await args.EventArgs.Reply(build);
             }
@@ -1449,7 +1448,7 @@ public class OneBotCommand
             {
                 sb.AppendLine($"注册名称: {user.Name}");
                 sb.AppendLine($"注册账号: {user.Id}");
-                var result = (await args.Bot.FetchMembers(args.EventArgs.Chain.GroupUin!.Value)).FirstOrDefault(x=>x.Uin == user.Id);
+                var result = (await args.Bot.FetchMembers(args.EventArgs.Chain.GroupUin!.Value)).FirstOrDefault(x => x.Uin == user.Id);
                 if (result != null)
                 {
                     sb.AppendLine($"群昵称: {result.MemberCard}");

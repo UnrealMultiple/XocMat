@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
-using Lagrange.Core;
+﻿using Lagrange.Core;
 using Lagrange.Core.Common.Interface.Api;
 using Lagrange.Core.Event.EventArg;
 using Lagrange.Core.Message;
@@ -19,9 +15,11 @@ using Lagrange.XocMat.Internal.Socket.Action.Response;
 using Lagrange.XocMat.Internal.Socket.PlayerMessage;
 using Lagrange.XocMat.Internal.Socket.ServerMessage;
 using Lagrange.XocMat.Net;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProtoBuf;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Reactive.Threading.Tasks;
 
 namespace Lagrange.XocMat.Event;
 
@@ -47,7 +45,7 @@ public class TerrariaMsgReceiveHandler
 
     private Dictionary<PostMessageType, EventCallBack<ServerMsgArgs, ValueTask>> _action;
 
-    public BotContext Bot { get;  }
+    public BotContext Bot { get; }
 
     public CommandManager CommandManager { get; }
 
@@ -249,20 +247,22 @@ public class TerrariaMsgReceiveHandler
 
     }
 
-    internal void GroupMessageForwardAdapter(BotContext bot, GroupMessageEvent args)
+    internal async void GroupMessageForwardAdapter(BotContext bot, GroupMessageEvent args)
     {
-        var text = string.Join("", args.Chain.Where(c => c is TextEntity)
-            .Select(t => ((TextEntity)t).Text));
+        if (args.Chain.GroupMemberInfo!.Uin == bot.BotUin)
+        {
+            return;
+        }
+        var text = args.Chain.GetText();
         if (string.IsNullOrEmpty(text))
             return;
-
         var eventArgs = new GroupMessageForwardArgs()
         {
             Handler = false,
             GroupMessageEventArgs = args,
             Context = text,
         };
-        if (OperatHandler.MessageForward(eventArgs).GetAwaiter().GetResult())
+        if (!await OperatHandler.MessageForward(eventArgs))
         {
             foreach (var server in XocMatAPI.Setting.Servers)
             {
@@ -270,7 +270,7 @@ public class TerrariaMsgReceiveHandler
                 {
                     if (server.ForwardGroups.Contains(Convert.ToUInt32(args.Chain.GroupUin)))
                     {
-                        server.Broadcast($"[群消息][{args.Chain.GroupMemberInfo?.Uin}]: {text}", System.Drawing.Color.GreenYellow).GetAwaiter().GetResult();
+                        await server.Broadcast($"[群消息][{args.Chain.GroupMemberInfo?.Uin}]: {text}", System.Drawing.Color.GreenYellow);                    
                     }
                 }
             }

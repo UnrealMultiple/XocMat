@@ -13,7 +13,7 @@ public static class JsonExtension
     };
 
     public static T? ToObject<T>(this JsonNode node)
-    { 
+    {
         return JsonSerializer.Deserialize<T>(node, JsonSerializerOptions);
     }
 
@@ -28,12 +28,12 @@ public static class JsonExtension
     }
 
     public static JsonObject? ToJsonObject<T>(this T obj)
-    { 
+    {
         return obj.ToJson().ToObject<JsonObject>();
     }
 
     public static string ToJson<T>(this T obj)
-    { 
+    {
         return JsonSerializer.Serialize(obj, JsonSerializerOptions);
     }
 }

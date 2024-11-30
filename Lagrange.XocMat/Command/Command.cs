@@ -1,6 +1,6 @@
 ﻿namespace Lagrange.XocMat.Commands;
 
-public class Command<T> where T: BaseCommandArgs
+public class Command<T> where T : BaseCommandArgs
 {
     public delegate ValueTask CommandCallBack(T args);
 

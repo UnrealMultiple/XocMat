@@ -1,5 +1,4 @@
 ﻿using Lagrange.XocMat.Enumerates;
-using Lagrange.XocMat.Internal.Socket;
 using Lagrange.XocMat.Internal.Socket.Action.Receive;
 using Lagrange.XocMat.Internal.Socket.Action.Response;
 using ProtoBuf;

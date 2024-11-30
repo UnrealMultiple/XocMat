@@ -142,7 +142,7 @@ public class SystemHelper
         {
             if (item != null && item["ID"]!.GetValue<int>() == id)
             {
-                return new ()
+                return new()
                 {
                     Name = item["中文名称"]!.GetValue<string>(),
                     netID = id
@@ -165,7 +165,7 @@ public class SystemHelper
         {
             if (item != null && item["中文名称"]!.GetValue<string>().Contains(name))
             {
-                list.Add(new ()
+                list.Add(new()
                 {
                     Name = item["中文名称"]!.GetValue<string>(),
                     netID = item["ID"]!.GetValue<int>()

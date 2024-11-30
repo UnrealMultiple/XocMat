@@ -4,7 +4,7 @@ using Lagrange.XocMat.Terraria;
 
 namespace Lagrange.XocMat.Commands;
 
-public class ServerCommandArgs(BotContext bot, string serverName, string userName, string cmdName, string commamdPrefix, List<string> parameters, Dictionary<string, string> commamdLine) 
+public class ServerCommandArgs(BotContext bot, string serverName, string userName, string cmdName, string commamdPrefix, List<string> parameters, Dictionary<string, string> commamdLine)
     : BaseCommandArgs(bot, cmdName, commamdPrefix, parameters, commamdLine)
 {
     public string ServerName { get; } = serverName;

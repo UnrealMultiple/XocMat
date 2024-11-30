@@ -35,7 +35,8 @@ public class PluginLoader
             directoryInfo.Create();
         PluginContext.LoadPlugins(directoryInfo, Logger, CommandManager, BotContext);
         CommandManager.MappingCommands(Assembly.GetExecutingAssembly());
-        PluginContext.LoadAssemblys.ForEach(CommandManager.MappingCommands);    }
+        PluginContext.LoadAssemblys.ForEach(CommandManager.MappingCommands);
+    }
 
     public void UnLoad()
     {
@@ -71,5 +72,5 @@ public class PluginLoader
         return null; ;
     }
 
-  
+
 }

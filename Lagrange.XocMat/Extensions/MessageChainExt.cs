@@ -1,10 +1,5 @@
 ﻿using Lagrange.Core.Message;
 using Lagrange.Core.Message.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lagrange.XocMat.Extensions;
 
@@ -22,7 +17,7 @@ public static class MessageChainExt
 
     public static string GetText(this MessageChain chain)
     {
-        return string.Join("", chain.Where(c => c is TextEntity).Select(c => ((TextEntity)c)));
+        return string.Join("", chain.Where(c => c is TextEntity).Select(c => ((TextEntity)c).Text));
     }
 
     public static FileEntity? GetFile(this MessageChain chain)
