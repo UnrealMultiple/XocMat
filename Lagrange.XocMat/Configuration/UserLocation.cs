@@ -1,8 +1,10 @@
-﻿using Lagrange.XocMat.Terraria;
+﻿using Lagrange.XocMat.Attributes;
+using Lagrange.XocMat.Terraria;
 using System.Text.Json.Serialization;
 
 namespace Lagrange.XocMat.Configuration;
 
+[ConfigSeries]
 public class UserLocation : JsonConfigBase<UserLocation>
 {
     [JsonPropertyName("服务器位置")]

@@ -14,6 +14,7 @@ using Lagrange.XocMat.Internal.Terraria;
 using Lagrange.XocMat.Permission;
 using Lagrange.XocMat.Terraria.Picture;
 using Lagrange.XocMat.Utility;
+using System.Diagnostics;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -474,9 +475,13 @@ public class OneBotCommand
     [CommandMatch("reload", OneBotPermissions.Reload)]
     public static async ValueTask Reload(CommandArgs args)
     {
+        var sw = new Stopwatch();
+        sw.Start();
         var reloadArgs = new ReloadEventArgs(args.EventArgs.Chain.GroupUin!.Value);
-        reloadArgs.Message.Add(new TextEntity("沫沫配置文件重读成功!"));
+        reloadArgs.Message.Text("The files was successfully reloaded.\n");
         await OperatHandler.Reload(reloadArgs);
+        sw.Stop();
+        reloadArgs.Message.Text($"All configuration files were successfully reloaded, taking {sw.Elapsed.TotalSeconds:F5} seconds.");
         await args.EventArgs.Reply(reloadArgs.Message);
     }
     #endregion

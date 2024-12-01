@@ -9,6 +9,8 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
 
     protected virtual string Filename => typeof(T).Namespace ?? typeof(T).Name;
 
+    protected virtual string? ReloadMsg => null;
+
     protected virtual void SetDefault()
     {
     }
@@ -54,9 +56,11 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
     // .cctor is lazy load
     public static string Load()
     {
-        OperatHandler.OnReload += _ =>
+        OperatHandler.OnReload += args =>
         {
             _instance = GetConfig();
+            if(!string.IsNullOrEmpty(_instance.ReloadMsg))
+                args.Message.Text(_instance.ReloadMsg);
             return ValueTask.CompletedTask;
         };
         return Instance.Filename;

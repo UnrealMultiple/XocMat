@@ -1,16 +1,22 @@
 ﻿using Lagrange.Core;
+using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Commands;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Plugin;
 
-public abstract class XocMatPlugin(ILogger logger, CommandManager commandManager, BotContext bot) : IDisposable
+public abstract class XocMatPlugin : IDisposable
 {
-    public ILogger Logger { get; } = logger;
+    protected XocMatPlugin(ILogger logger, CommandManager commandManager, BotContext bot)
+    {
+        Logger = logger;
+        CommandManager = commandManager;
+        AutoLoad();
+    }
+    public ILogger Logger { get; }
 
-    public CommandManager CommandManager { get; } = commandManager;
+    public CommandManager CommandManager { get; }
 
-    public BotContext Bot { get; } = bot;
 
     public virtual string Name
     {
@@ -52,6 +58,24 @@ public abstract class XocMatPlugin(ILogger logger, CommandManager commandManager
     public abstract void Initialize();
 
     protected abstract void Dispose(bool dispose);
+
+    internal void AutoLoad()
+    {
+        foreach (var type in this.GetType().Assembly.GetTypes())
+        {
+            if (type.IsDefined(typeof(ConfigSeries), false))
+            {
+                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class '{this.Name}'");
+                var name = method.Invoke(null, []);
+                Logger.LogInformation($"[{this.Name}] config registered: {name}");
+            }
+            else if (type.IsDefined(typeof(CommandSeries), false))
+            {
+                CommandManager.RegisterCommand(type);
+            }
+            
+        }
+    }
 
     ~XocMatPlugin()
     {

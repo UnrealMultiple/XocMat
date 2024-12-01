@@ -214,39 +214,41 @@ public class CommandManager
         }
     }
 
-
-    public void MappingCommands(Assembly assembly)
+    public void RegisterCommand(Type type)
     {
         var flag = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public;
-        Dictionary<Type, MethodInfo[]> mapping = assembly.GetExportedTypes()
-            .Where(x => x.IsDefined(typeof(CommandSeries)))
-            .Select(type => (type, type.GetMethods(flag)
+        var methods = type.GetMethods(flag)
             .Where(m => m.IsDefined(typeof(CommandMatch)) && (m.CommandParamPares(typeof(CommandArgs)) || m.CommandParamPares(typeof(ServerCommandArgs))))
-            .ToArray()))
-            .ToDictionary(method => method.type, method => method.Item2);
-        foreach (var (cls, methods) in mapping)
+            .ToArray();
+        var instance = Activator.CreateInstance(type);
+        if (instance == null)
+            return;
+        foreach (var method in methods)
         {
-            var instance = Activator.CreateInstance(cls);
-            if (instance == null)
-                continue;
-            foreach (var method in methods)
+            var attr = method.GetCustomAttribute<CommandMatch>()!;
+            if (method.IsStatic)
             {
-                var attr = method.GetCustomAttribute<CommandMatch>()!;
-                if (method.IsStatic)
-                {
-                    if (method.CommandParamPares(typeof(CommandArgs)))
-                        AddGroupCommand(new(attr.Name, method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(), attr.Permission));
-                    else
-                        AddServerCommand(new(attr.Name, method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(), attr.Permission));
-                    continue;
-                }
-                var _method = instance.GetType().GetMethod(method.Name, flag)!;
                 if (method.CommandParamPares(typeof(CommandArgs)))
-                    AddGroupCommand(new(attr.Name, _method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(instance), attr.Permission));
+                    AddGroupCommand(new(attr.Name, method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(), attr.Permission));
                 else
-                    AddServerCommand(new(attr.Name, _method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(instance), attr.Permission));
-
+                    AddServerCommand(new(attr.Name, method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(), attr.Permission));
+                continue;
             }
+            var _method = instance.GetType().GetMethod(method.Name, flag)!;
+            if (method.CommandParamPares(typeof(CommandArgs)))
+                AddGroupCommand(new(attr.Name, _method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(instance), attr.Permission));
+            else
+                AddServerCommand(new(attr.Name, _method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(instance), attr.Permission));
+        }
+    }
+
+    public void RegisterCommand(Assembly assembly)
+    {
+        var mapping = assembly.GetExportedTypes()
+            .Where(x => x.IsDefined(typeof(CommandSeries)));
+        foreach (var type in mapping)
+        {
+            RegisterCommand(type);
         }
     }
 }

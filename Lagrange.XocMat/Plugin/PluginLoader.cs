@@ -1,4 +1,5 @@
 ﻿using Lagrange.Core;
+using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Commands;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -34,8 +35,16 @@ public class PluginLoader
         if (!directoryInfo.Exists)
             directoryInfo.Create();
         PluginContext.LoadPlugins(directoryInfo, Logger, CommandManager, BotContext);
-        CommandManager.MappingCommands(Assembly.GetExecutingAssembly());
-        PluginContext.LoadAssemblys.ForEach(CommandManager.MappingCommands);
+        CommandManager.RegisterCommand(Assembly.GetExecutingAssembly());
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        {
+            if (type.IsDefined(typeof(ConfigSeries), false))
+            {
+                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class");
+                var name = method.Invoke(null, []);
+                Logger.LogInformation($"config registered: {name}");
+            }
+        }
     }
 
     public void UnLoad()
