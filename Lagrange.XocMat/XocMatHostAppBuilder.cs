@@ -92,7 +92,7 @@ public sealed class XocMatHostAppBuilder
     {
 
         Services.AddSingleton<SignProvider, OneBotSigner>();
-        Services.AddHostedService<XocMatAPI>();
+        Services.AddSingleton<XocMatAPI>();
         Services.AddSingleton<WebSocketServer>();
         Services.AddSingleton<TShockReceive>();
         Services.AddSingleton<TerrariaMsgReceiveHandler>();

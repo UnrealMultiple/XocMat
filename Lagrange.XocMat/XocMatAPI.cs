@@ -14,7 +14,7 @@ using System.Data;
 
 namespace Lagrange.XocMat;
 
-public class XocMatAPI : BackgroundService
+public class XocMatAPI
 {
     public static BotContext BotContext { get; private set; } = null!;
 
@@ -57,10 +57,6 @@ public class XocMatAPI : BackgroundService
     public XocMatAPI(BotContext botContext, ILogger<XocMatAPI> logger)
     {
         BotContext = botContext;
-    }
-
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
         if (!Directory.Exists(SAVE_PATH))
             Directory.CreateDirectory(SAVE_PATH);
         SystemHelper.KillChrome();
@@ -68,9 +64,7 @@ public class XocMatAPI : BackgroundService
         LoadConfig();
         //初始化数据库
         InitDb();
-        return Task.CompletedTask;
     }
-
 
     internal static void LoadConfig()
     {

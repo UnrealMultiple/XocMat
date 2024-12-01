@@ -22,11 +22,12 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
     {
         _listener.Prefixes.Add($"http://*:{XocMatAPI.Setting.SocketProt}/");
         _listener.Start();
+        logger.LogInformation($"Websocket Start prot:{XocMatAPI.Setting.SocketProt}");
         try
         {
             while (true)
             {
-                _ = HandleHttpListenerContext(await _listener.GetContextAsync().WaitAsync(token), token);
+                await HandleHttpListenerContext(await _listener.GetContextAsync().WaitAsync(token), token);
                 token.ThrowIfCancellationRequested();
             }
         }
@@ -42,7 +43,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         return connection;
     }
 
-    private async ValueTask HandleHttpListenerContext(HttpListenerContext context1, CancellationToken token)
+    private async Task HandleHttpListenerContext(HttpListenerContext context1, CancellationToken token)
     {
         string identifier = Guid.NewGuid().ToString();
         var response = context1.Response;
