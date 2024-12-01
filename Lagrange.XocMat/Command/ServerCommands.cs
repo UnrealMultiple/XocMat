@@ -1,4 +1,6 @@
 ﻿using Lagrange.XocMat.Attributes;
+using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Permission;
 using System.Drawing;
 using System.Text;
@@ -13,7 +15,7 @@ public class ServerCommands
     {
         if (args.Server == null) return;
         var sb = new StringBuilder();
-        var shop = XocMatAPI.TerrariaShop.TrShop;
+        var shop = TerrariaShop.Instance.TrShop;
         var index = 1;
         foreach (var item in shop)
         {
@@ -42,19 +44,19 @@ public class ServerCommands
             _ = int.TryParse(args.Parameters[0], out count);
         if (count > 50)
             count = 50;
-        var prizes = XocMatAPI.TerrariaPrize.Nexts(count);
+        var prizes = TerrariaPrize.Instance.Nexts(count);
         if (prizes.Count == 0)
         {
             await args.Server.PrivateMsg(args.UserName, "奖池中空空如也哦!", Color.GreenYellow);
             return;
-        } 
-        var curr = XocMatAPI.CurrencyManager.Query(args.User.GroupID, args.User.Id);
-        if (curr == null || curr.num < count * XocMatAPI.TerrariaPrize.Fess)
+        }
+        var curr = Currency.Query(args.User.GroupID, args.User.Id);
+        if (curr == null || curr.Num < count * TerrariaPrize.Instance.Fess)
         {
             await args.Server.PrivateMsg(args.UserName, $"你的星币不足抽取{count}次", Color.Red);
             return;
         }
-        XocMatAPI.CurrencyManager.Del(args.User.GroupID, args.User.Id, count * XocMatAPI.TerrariaPrize.Fess);
+        Currency.Del(args.User.GroupID, args.User.Id, count * TerrariaPrize.Instance.Fess);
         Random random = new();
         foreach (var prize in prizes)
         {
@@ -81,15 +83,15 @@ public class ServerCommands
         {
             if (int.TryParse(args.Parameters[0], out var id))
             {
-                if (XocMatAPI.TerrariaShop.TryGetShop(id, out var shop) && shop != null)
+                if (TerrariaShop.Instance.TryGetShop(id, out var shop) && shop != null)
                 {
-                    var curr = XocMatAPI.CurrencyManager.Query(args.User.GroupID, args.User.Id);
-                    if (curr != null && curr.num >= shop.Price)
+                    var curr = Currency.Query(args.User.GroupID, args.User.Id);
+                    if (curr != null && curr.Num >= shop.Price)
                     {
                         var res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.num}");
                         if (res.Status)
                         {
-                            XocMatAPI.CurrencyManager.Del(args.User.GroupID, args.User.Id, shop.Price);
+                            Currency.Del(args.User.GroupID, args.User.Id, shop.Price);
                             await args.Server.PrivateMsg(args.UserName, "购买成功!", Color.GreenYellow);
                         }
                         else
@@ -109,15 +111,15 @@ public class ServerCommands
             }
             else
             {
-                if (XocMatAPI.TerrariaShop.TryGetShop(args.Parameters[0], out var shop) && shop != null)
+                if (TerrariaShop.Instance.TryGetShop(args.Parameters[0], out var shop) && shop != null)
                 {
-                    var curr = XocMatAPI.CurrencyManager.Query(args.User.GroupID, args.User.Id);
-                    if (curr != null && curr.num >= shop.Price)
+                    var curr = Currency.Query(args.User.GroupID, args.User.Id);
+                    if (curr != null && curr.Num >= shop.Price)
                     {
                         var res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.num}");
                         if (res.Status)
                         {
-                            XocMatAPI.CurrencyManager.Del(args.User.GroupID, args.User.Id, shop.Price);
+                            Currency.Del(args.User.GroupID, args.User.Id, shop.Price);
                             await args.Server.PrivateMsg(args.UserName, "购买成功!", Color.GreenYellow);
                         }
                         else

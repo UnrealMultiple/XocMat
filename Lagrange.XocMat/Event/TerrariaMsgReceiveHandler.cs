@@ -2,8 +2,8 @@
 using Lagrange.Core.Common.Interface.Api;
 using Lagrange.Core.Event.EventArg;
 using Lagrange.Core.Message;
-using Lagrange.Core.Message.Entity;
 using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.EventArgs;
 using Lagrange.XocMat.EventArgs.Sockets;
@@ -264,13 +264,13 @@ public class TerrariaMsgReceiveHandler
         };
         if (!await OperatHandler.MessageForward(eventArgs))
         {
-            foreach (var server in XocMatAPI.Setting.Servers)
+            foreach (var server in XocMatSetting.Instance.Servers)
             {
                 if (server != null && text.Length <= server.MsgMaxLength)
                 {
                     if (server.ForwardGroups.Contains(Convert.ToUInt32(args.Chain.GroupUin)))
                     {
-                        await server.Broadcast($"[群消息][{args.Chain.GroupMemberInfo?.Uin}]: {text}", System.Drawing.Color.GreenYellow);                    
+                        await server.Broadcast($"[群消息][{args.Chain.GroupMemberInfo?.Uin}]: {text}", System.Drawing.Color.GreenYellow);
                     }
                 }
             }

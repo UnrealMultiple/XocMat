@@ -98,7 +98,7 @@ public static class PaginationTools
         {
             if (settings.NothingToDisplayString != null)
             {
-                args.Reply(settings.NothingToDisplayString);
+                _ = args.Reply(settings.NothingToDisplayString);
             }
             return;
         }
@@ -111,7 +111,7 @@ public static class PaginationTools
         var builder = MessageBuilder.Group(Convert.ToUInt32(args.Chain.GroupUin));
         if (settings.IncludeHeader)
         {
-            builder.Text(string.Format(settings.HeaderFormat, pageNumber, pageCount));
+            _ = builder.Text(string.Format(settings.HeaderFormat, pageNumber, pageCount));
         }
 
         int listOffset = (pageNumber - 1) * settings.MaxLinesPerPage;
@@ -154,7 +154,7 @@ public static class PaginationTools
 
             if (lineMessage != null)
             {
-                builder.Text("\n" + lineMessage);
+                _ = builder.Text("\n" + lineMessage);
             }
         }
 
@@ -162,15 +162,15 @@ public static class PaginationTools
         {
             if (settings.NothingToDisplayString != null)
             {
-                args.Reply(settings.NothingToDisplayString);
+                _ = args.Reply(settings.NothingToDisplayString);
             }
         }
         else if (settings.IncludeFooter && pageNumber + 1 <= pageCount)
         {
-            builder.Text("\n" + string.Format(settings.FooterFormat, pageNumber + 1, pageNumber, pageCount));
+            _ = builder.Text("\n" + string.Format(settings.FooterFormat, pageNumber + 1, pageNumber, pageCount));
 
         }
-        args.Reply(builder);
+        _ = args.Reply(builder);
     }
 
     public static void SendPage(GroupMessageEvent args, int pageNumber, IList dataToPaginate, Settings? settings = null)
@@ -208,12 +208,12 @@ public static class PaginationTools
 
             if (lineBuilder.Length + termString.Length + separator.Length < maxCharsPerLine)
             {
-                lineBuilder.Append(termString).Append(separator);
+                _ = lineBuilder.Append(termString).Append(separator);
             }
             else
             {
                 lines.Add(lineBuilder.ToString());
-                lineBuilder.Clear().Append(termString).Append(separator);
+                _ = lineBuilder.Clear().Append(termString).Append(separator);
             }
         }
 
@@ -234,7 +234,7 @@ public static class PaginationTools
         if (!int.TryParse(pageNumberRaw, out pageNumber) || pageNumber < 1)
         {
             if (errorMessageReceiver != null)
-                errorMessageReceiver.Reply(string.Format("“{0}”不是有效的页码。", pageNumberRaw));
+                _ = errorMessageReceiver.Reply(string.Format("“{0}”不是有效的页码。", pageNumberRaw));
 
             pageNumber = 1;
             return false;

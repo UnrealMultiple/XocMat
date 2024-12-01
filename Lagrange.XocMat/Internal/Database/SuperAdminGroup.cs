@@ -1,11 +1,12 @@
-﻿namespace Lagrange.XocMat.Internal.Database;
+﻿using Lagrange.XocMat.DB.Manager;
+
+namespace Lagrange.XocMat.Internal.Database;
 
 public class SuperAdminGroup : Group
 {
     public override List<string> TotalPermissions => new() { "*" };
 
-    public SuperAdminGroup()
-        : base("superadmin")
+    public SuperAdminGroup() : base("superadmin")
     {
 
     }

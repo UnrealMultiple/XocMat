@@ -1,4 +1,5 @@
 ﻿using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.EventArgs;
@@ -19,9 +20,9 @@ public static class OperatHandler
 
     public static event EventCallBack<ServerCommandArgs, ValueTask>? OnServerCommand;
 
-    public static UserPermissionType UserPermission(AccountManager.Account account, string prem)
+    public static UserPermissionType UserPermission(Account account, string prem)
     {
-        if (account.UserId == XocMatAPI.Setting.OwnerId)
+        if (account.UserId == XocMatSetting.Instance.OwnerId)
             return UserPermissionType.Granted;
         if (OnUserPermission == null)
             return UserPermissionType.Denied;

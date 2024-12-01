@@ -1,18 +1,22 @@
-锘縰sing Lagrange.XocMat.Extensions;
+using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.Exceptions;
+using Lagrange.XocMat.Extensions;
+using Lagrange.XocMat.Internal.Database;
+using LinqToDB;
+using LinqToDB.Mapping;
+using System.Data;
 
-namespace Lagrange.XocMat.Internal.Database;
+namespace Lagrange.XocMat.DB.Manager;
 
-public class Group
+[Table("GroupList")]
+public class Group : RecordBase<Group>
 {
-    public string Name { get; set; }
+    [Column]
+    [PrimaryKey]
+    public string Name { get; set; } = string.Empty;
 
-    private List<string> negatedpermissions { get; set; } = [];
-
-    public List<string> permissions { get; set; } = [];
-
-    public Group Parent { get; set; }
-
-    public string Permssion
+    [Column]
+    public string Permission
     {
         get
         {
@@ -28,12 +32,37 @@ public class Group
         }
     }
 
-    public Group(string groupname, Group parentgroup = null, string permissions = "")
+    [Column]
+    public string parent { get; set; } = string.Empty;
+
+
+    private static Context context => Db.Context<Group>("GroupList");
+
+    private List<string> negatedpermissions { get; set; } = [];
+
+    [NotColumn]
+    public List<string> permissions { get; set; } = [];
+
+    public Group Parent
     {
-        Name = groupname;
-        Parent = parentgroup;
-        Permssion = permissions;
+        get => GetGroup(parent) ?? DefaultGroup.Instance;
+        set
+        {
+            parent = value.Name;
+        }
     }
+
+    public Group()
+    {
+
+    }
+
+    public Group(string name)
+    {
+        Name = name;
+
+    }
+
 
     public virtual void AddPermission(string permission)
     {
@@ -155,5 +184,95 @@ public class Group
             cur = cur.Parent;
         }
         return false;
+    }
+
+
+    public static void AddGroup(string groupName, string perms = "")
+    {
+        if (context.Records.Any(i => i.Name == groupName))
+            if (HasGroup(groupName))
+            {
+                throw new GroupException("此组已经存在了，无法重复添加!");
+            }
+        var exec = context.Insert(new Group()
+        {
+            Name = groupName,
+            Permission = perms,
+            parent = XocMatSetting.Instance.DefaultPermGroup
+        });
+        if (exec != 1)
+            throw new GroupException("添加至数据库失败!");
+    }
+
+    public static void AddPerm(string groupName, string perm)
+    {
+        var group = GetGroup(groupName) ?? throw new GroupException($"组 {groupName} 不存在!");
+        if (!group.permissions.Contains(perm))
+        {
+            group.AddPermission(perm);
+            context.Update(group);
+        }
+        else
+        {
+            throw new GroupException("权限已存在请不要重复添加!!");
+        }
+    }
+
+    public static void ReParentGroup(string groupName, string Parent)
+    {
+        var group = GetGroup(groupName) ?? throw new GroupException($"组 {groupName} 不存在!");
+        group.Parent = GetGroupNullDefault(Parent);
+        context.Update(group);
+    }
+
+
+    public static bool HasGroup(string? Name)
+    {
+        return context.Records.Any(i => i.Name == Name);
+    }
+
+    public static void RemovePerm(string groupName, string perm)
+    {
+        var group = GetGroup(groupName) ?? throw new GroupException("删除权限指向的目标组不存在!");
+        if (group.permissions.Contains(perm))
+        {
+            group.RemovePermission(perm);
+            context.Update(group);
+        }
+        else
+        {
+            throw new GroupException("此组没有该权限无需删除!");
+        }
+    }
+
+    public static void RemoveGroup(string groupName)
+    {
+        if (!HasGroup(groupName))
+            throw new GroupException($"组 {groupName} 不存在!");
+        if (context.Records.Delete(x => x.Name == groupName) != 1)
+        {
+            throw new GroupException("更新至数据库失败!");
+        }
+    }
+
+    public static List<string> GetGroupPerms(string groupName)
+    {
+        return context.Records.FirstOrDefault(i => i.Name == groupName)?.permissions ?? new List<string>();
+    }
+
+    public static bool HasPermssions(string groupName, string perm)
+    {
+        return context.Records.Where(x => x.Name == groupName).Any(x => x.permissions.Contains(perm));
+    }
+
+    public static Group? GetGroup(string groupName)
+    {
+        return context.Records.FirstOrDefault(i => i.Name == groupName);
+    }
+
+    public static Group GetGroupNullDefault(string groupName)
+    {
+        return GetGroup(groupName)
+            ?? DefaultGroup.Instance;
     }
 }

@@ -22,7 +22,7 @@ public static class GroupMessageEventExt
                 ClientSequence = 1
             };
             builder.Add(forwardEntity);
-            
+
         }
         return await e.Reply(builder);
     }

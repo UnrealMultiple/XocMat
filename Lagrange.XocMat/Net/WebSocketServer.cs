@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Lagrange.XocMat.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.WebSockets;
@@ -20,14 +21,14 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
 
     public async ValueTask Start(CancellationToken token)
     {
-        _listener.Prefixes.Add($"http://*:{XocMatAPI.Setting.SocketProt}/");
+        _listener.Prefixes.Add($"http://*:{XocMatSetting.Instance.SocketProt}/");
         _listener.Start();
-        logger.LogInformation($"Websocket Start prot:{XocMatAPI.Setting.SocketProt}");
+        logger.LogInformation($"Websocket Start prot:{XocMatSetting.Instance.SocketProt}");
         try
         {
             while (true)
             {
-                await HandleHttpListenerContext(await _listener.GetContextAsync().WaitAsync(token), token);
+                _ = HandleHttpListenerContext(await _listener.GetContextAsync().WaitAsync(token), token);
                 token.ThrowIfCancellationRequested();
             }
         }

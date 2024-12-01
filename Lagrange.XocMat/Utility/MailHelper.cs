@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Lagrange.XocMat.Configuration;
+using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
@@ -9,7 +10,7 @@ public class MailHelper
 {
     public static void SendMail(string targerAddress, string subject, string body, string[]? filePath = null)
     {
-        SendMail(XocMatAPI.Setting.MailHost, XocMatAPI.Setting.SenderMail, XocMatAPI.Setting.SenderPwd, targerAddress, subject, body, filePath);
+        SendMail(XocMatSetting.Instance.MailHost, XocMatSetting.Instance.SenderMail, XocMatSetting.Instance.SenderPwd, targerAddress, subject, body, filePath);
     }
     /// <summary>
     /// 发送邮件

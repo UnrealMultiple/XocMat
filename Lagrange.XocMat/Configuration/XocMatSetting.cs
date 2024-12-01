@@ -1,9 +1,9 @@
 ﻿using Lagrange.XocMat.Terraria;
 using System.Text.Json.Serialization;
 
-namespace Lagrange.XocMat.Configured;
+namespace Lagrange.XocMat.Configuration;
 
-public class XocMatSetting
+public class XocMatSetting : JsonConfigBase<XocMatSetting>
 {
     [JsonPropertyName("指令前缀")]
     public List<string> CommamdPrefix { get; init; } = [];
@@ -55,6 +55,8 @@ public class XocMatSetting
 
     [JsonPropertyName("服务器列表")]
     public List<TerrariaServer> Servers { get; init; } = new();
+
+    protected override string Filename => "XocMat";
 
     public TerrariaServer? GetServer(string name)
     {

@@ -1,4 +1,5 @@
 ﻿using Lagrange.Core;
+using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Terraria;
 
@@ -11,10 +12,10 @@ public class ServerCommandArgs(BotContext bot, string serverName, string userNam
 
     public string UserName { get; } = userName;
 
-    public TerrariaServer? Server => XocMatAPI.Setting.GetServer(ServerName);
+    public TerrariaServer? Server => XocMatSetting.Instance.GetServer(ServerName);
 
-    public TerrariaUserManager.User? User => XocMatAPI.TerrariaUserManager.GetUsersByName(UserName, ServerName);
+    public TerrariaUser? User => TerrariaUser.GetUsersByName(UserName, ServerName);
 
-    public AccountManager.Account Account => XocMatAPI.AccountManager.GetAccountNullDefault(User == null ? 0 : User.Id);
+    public DB.Manager.Account Account => DB.Manager.Account.GetAccountNullDefault(User == null ? 0 : User.Id);
 
 }

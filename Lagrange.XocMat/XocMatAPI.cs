@@ -1,7 +1,6 @@
 ﻿using Lagrange.Core;
 using Lagrange.XocMat.Commands;
-using Lagrange.XocMat.Configured;
-using Lagrange.XocMat.DB.Manager;
+using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Utility;
 using Microsoft.Data.Sqlite;
@@ -14,41 +13,15 @@ using System.Data;
 
 namespace Lagrange.XocMat;
 
-public class XocMatAPI
+public class XocMatAPI : BackgroundService
 {
     public static BotContext BotContext { get; private set; } = null!;
 
     public static IDbConnection DB { get; internal set; } = null!;
 
-    public static SignManager SignManager { get; internal set; } = null!;
-
-    public static GroupMananger GroupManager { get; internal set; } = null!;
-
-    public static AccountManager AccountManager { get; internal set; } = null!;
-
-    public static CurrencyManager CurrencyManager { get; internal set; } = null!;
-
-    public static TerrariaUserManager TerrariaUserManager { get; internal set; } = null!;
-
     public static string PATH => Environment.CurrentDirectory;
 
     public static string SAVE_PATH => Path.Combine(PATH, "Config");
-
-    internal static string ConfigPath => Path.Combine(SAVE_PATH, "XocMat.Json");
-
-    internal static string UserLocationPath => Path.Combine(SAVE_PATH, "UserLocation.Json");
-
-    internal static string TerrariaShopPath => Path.Combine(SAVE_PATH, "Shop.Json");
-
-    internal static string TerrariaPrizePath => Path.Combine(SAVE_PATH, "Prize.Json");
-
-    public static XocMatSetting Setting { get; internal set; } = new();
-
-    public static UserLocation UserLocation { get; internal set; } = new();
-
-    public static TerrariaShop TerrariaShop { get; internal set; } = new();
-
-    public static TerrariaPrize TerrariaPrize { get; internal set; } = new();
 
     public static TerrariaMsgReceiveHandler TerrariaMsgReceive => XocMatHostAppBuilder.instance.App.Services.GetRequiredService<TerrariaMsgReceiveHandler>();
 
@@ -57,38 +30,26 @@ public class XocMatAPI
     public XocMatAPI(BotContext botContext, ILogger<XocMatAPI> logger)
     {
         BotContext = botContext;
+
+    }
+
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
         if (!Directory.Exists(SAVE_PATH))
             Directory.CreateDirectory(SAVE_PATH);
         SystemHelper.KillChrome();
-        //读取Config
-        LoadConfig();
         //初始化数据库
         InitDb();
-    }
-
-    internal static void LoadConfig()
-    {
-        Setting = ConfigHelpr.LoadConfig(ConfigPath, Setting);
-        UserLocation = ConfigHelpr.LoadConfig(UserLocationPath, UserLocation);
-        TerrariaShop = ConfigHelpr.LoadConfig(TerrariaShopPath, TerrariaShop);
-        TerrariaPrize = ConfigHelpr.LoadConfig(TerrariaPrizePath, TerrariaPrize);
-    }
-
-    internal static void ConfigSave()
-    {
-        ConfigHelpr.Write(ConfigPath, Setting);
-        ConfigHelpr.Write(UserLocationPath, UserLocation);
-        ConfigHelpr.Write(TerrariaShopPath, TerrariaShop);
-        ConfigHelpr.Write(TerrariaPrizePath, TerrariaPrize);
+        return Task.CompletedTask;
     }
 
     private void InitDb()
     {
-        switch (Setting.DbType.ToLower())
+        switch (XocMatSetting.Instance.DbType.ToLower())
         {
             case "sqlite":
                 {
-                    string sql = Path.Combine(PATH, Setting.DbPath);
+                    string sql = Path.Combine(PATH, XocMatSetting.Instance.DbPath);
                     if (Path.GetDirectoryName(sql) is string path)
                     {
                         Directory.CreateDirectory(path);
@@ -102,18 +63,13 @@ public class XocMatAPI
                     DB = new MySqlConnection()
                     {
                         ConnectionString = string.Format("Server={0};Port={1};Database={2};Uid={3};Pwd={4}",
-                        Setting.DbHost, Setting.DbPort, Setting.DbName, Setting.DbUserName, Setting.DbPassword)
+                        XocMatSetting.Instance.DbHost, XocMatSetting.Instance.DbPort, XocMatSetting.Instance.DbName, XocMatSetting.Instance.DbUserName, XocMatSetting.Instance.DbPassword)
                     };
                     break;
                 }
             default:
-                throw new TypeLoadException("无法使用类型:" + Setting.DbType);
+                throw new TypeLoadException("无法使用类型:" + XocMatSetting.Instance.DbType);
 
         }
-        GroupManager = new();
-        AccountManager = new();
-        CurrencyManager = new();
-        SignManager = new();
-        TerrariaUserManager = new();
     }
 }

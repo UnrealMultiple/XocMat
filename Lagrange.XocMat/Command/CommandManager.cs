@@ -1,6 +1,8 @@
 ﻿using Lagrange.Core;
 using Lagrange.Core.Event.EventArg;
 using Lagrange.XocMat.Attributes;
+using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal.Socket.PlayerMessage;
@@ -117,7 +119,7 @@ public class CommandManager
     {
         var text = args.Chain.GetText();
         string prefix = string.Empty;
-        XocMatAPI.Setting.CommamdPrefix.ForEach(x =>
+        XocMatSetting.Instance.CommamdPrefix.ForEach(x =>
         {
             if (text.StartsWith(x))
             {
@@ -131,7 +133,7 @@ public class CommandManager
             {
                 var cmdName = cmdParam[0];
                 cmdParam.RemoveAt(0);
-                var account = XocMatAPI.AccountManager.GetAccountNullDefault(args.Chain.GroupMemberInfo!.Uin);
+                var account = Account.GetAccountNullDefault(args.Chain.GroupMemberInfo!.Uin);
                 foreach (var command in GroupCommandDelegate)
                 {
                     if (command.Name.Contains(cmdName))

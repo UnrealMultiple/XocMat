@@ -12,5 +12,5 @@ public class Item
 
     [ProtoMember(3)] public int stack { get; set; }
 
-    [ProtoMember(4)] public string Name { get; set; }
+    [ProtoMember(4)] public string Name { get; set; } = string.Empty;
 }

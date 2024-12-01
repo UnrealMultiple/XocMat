@@ -3,15 +3,17 @@
 using Lagrange.XocMat.Internal.Terraria;
 using System.Text.Json.Serialization;
 
-namespace Lagrange.XocMat.Configured;
+namespace Lagrange.XocMat.Configuration;
 
-public class TerrariaPrize
+public class TerrariaPrize : JsonConfigBase<TerrariaPrize>
 {
     [JsonPropertyName("抽奖费用")]
     public long Fess = 10;
 
     [JsonPropertyName("奖池内容")]
     public List<Prize> Pool = [];
+
+    protected override string Filename => "Prize";
 
     public Prize? Next()
     {
@@ -27,7 +29,7 @@ public class TerrariaPrize
                 return prize;
             }
         }
-        return Pool.Any() ? Pool[random.Next(0, Pool.Count - 1)] : null;
+        return Pool.Count != 0 ? Pool[random.Next(0, Pool.Count - 1)] : null;
     }
 
     public Prize? GetPrize(int id)

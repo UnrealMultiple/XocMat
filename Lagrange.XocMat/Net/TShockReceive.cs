@@ -21,7 +21,7 @@ public class TShockReceive
     public TShockReceive(WebSocketServer server)
     {
         Server = server;
-        Start();
+        _ = Start();
     }
 
     public WebSocketServer.ConnectionContext? GetConnectionContext(string id) => Server.GetConnect(id);

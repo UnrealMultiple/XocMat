@@ -1,12 +1,14 @@
 ﻿using Lagrange.XocMat.Terraria;
 using System.Text.Json.Serialization;
 
-namespace Lagrange.XocMat.Configured;
+namespace Lagrange.XocMat.Configuration;
 
-public class UserLocation
+public class UserLocation : JsonConfigBase<UserLocation>
 {
     [JsonPropertyName("服务器位置")]
     public Dictionary<uint, string> Location { get; set; } = [];
+
+    protected override string Filename => "UserLocation";
 
     public void Change(uint id, TerrariaServer server)
     {
@@ -23,7 +25,7 @@ public class UserLocation
     {
         if (Location.TryGetValue(id, out var name) && !string.IsNullOrEmpty(name))
         {
-            var server = XocMatAPI.Setting.GetServer(name, groupid);
+            var server = XocMatSetting.Instance.GetServer(name, groupid);
             if (server != null)
             {
                 terrariaServer = server;
@@ -32,10 +34,5 @@ public class UserLocation
         }
         terrariaServer = null;
         return false;
-    }
-
-    private void Save()
-    {
-        ConfigHelpr.Write(XocMatAPI.UserLocationPath, XocMatAPI.UserLocation);
     }
 }

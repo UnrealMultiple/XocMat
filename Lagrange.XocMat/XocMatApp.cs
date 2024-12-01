@@ -41,18 +41,15 @@ public class XocMatApp : IHost
 
     public async Task StartAsync(CancellationToken cancellationToken = new())
     {
-        Services.GetRequiredService<XocMatAPI>();
+        await _hostApp.StartAsync(cancellationToken);
+        Logger.LogInformation("Lagrange.OneBot Implementation has started");
+        Logger.LogInformation($"Protocol: {Configuration["Protocol"]} | {Instance.ContextCollection.AppInfo.CurrentVersion}");
         Services.GetRequiredService<MusicSigner>();
         Services.GetRequiredService<CommandManager>();
         Services.GetRequiredService<PluginLoader>();
         Services.GetRequiredService<WebSocketServer>();
         Services.GetRequiredService<TShockReceive>();
         Services.GetRequiredService<TerrariaMsgReceiveHandler>();
-        
-        await _hostApp.StartAsync(cancellationToken);
-        Logger.LogInformation("Lagrange.OneBot Implementation has started");
-        Logger.LogInformation($"Protocol: {Configuration["Protocol"]} | {Instance.ContextCollection.AppInfo.CurrentVersion}");
-
         Instance.ContextCollection.Packet.SignProvider = Services.GetRequiredService<SignProvider>();
         if (!string.IsNullOrEmpty(Configuration["Account:Password"]))
             Instance.ContextCollection.Keystore.PasswordMd5 = await Encoding.UTF8.GetBytes(Configuration["Account:Password"] ?? "").Md5Async();

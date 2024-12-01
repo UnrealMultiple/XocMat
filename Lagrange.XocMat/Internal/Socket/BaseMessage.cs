@@ -1,4 +1,5 @@
-﻿using Lagrange.XocMat.Enumerates;
+﻿using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.Internal.Socket.Action;
 using Lagrange.XocMat.Internal.Socket.PlayerMessage;
 using Lagrange.XocMat.Internal.Socket.ServerMessage;
@@ -16,7 +17,7 @@ public class BaseMessage
 {
     [ProtoMember(1)] public PostMessageType MessageType { get; set; } = PostMessageType.Action;
 
-    [ProtoMember(2)] public string ServerName { get; set; }
+    [ProtoMember(2)] public string ServerName { get; set; } = string.Empty;
 
     [ProtoMember(3)] public string Token { get; set; } = string.Empty;
 
@@ -24,5 +25,5 @@ public class BaseMessage
     public bool Handler { get; set; }
 
     [JsonIgnore]
-    public TerrariaServer? TerrariaServer => XocMatAPI.Setting.GetServer(ServerName);
+    public TerrariaServer? TerrariaServer => XocMatSetting.Instance.GetServer(ServerName);
 }

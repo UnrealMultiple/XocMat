@@ -3,7 +3,8 @@ using Lagrange.Core.Common.Interface.Api;
 using Lagrange.Core.Message;
 using Lagrange.Core.Message.Entity;
 using Lagrange.XocMat.Attributes;
-using Lagrange.XocMat.Configured;
+using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.EventArgs;
@@ -50,7 +51,7 @@ public class OneBotCommand
     [CommandMatch("导出存档", OneBotPermissions.ExportFile)]
     public static async ValueTask ExportPlayer(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             if (args.Parameters.Count == 1)
             {
@@ -147,7 +148,7 @@ public class OneBotCommand
             await args.EventArgs.Reply($"语法错误,正确语法；{args.CommamdPrefix}{args.Name} [选项] [值]");
             return;
         }
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             var status = CommandUtils.ParseBool(args.Parameters[1]);
             switch (args.Parameters[0].ToLower())
@@ -164,7 +165,7 @@ public class OneBotCommand
                     await args.EventArgs.Reply($"[{args.Parameters[1]}]不可被设置!");
                     break;
             }
-            XocMatAPI.ConfigSave();
+            XocMatSetting.Save();
         }
         else
         {
@@ -190,7 +191,7 @@ public class OneBotCommand
         sb.AppendLine("|商品ID|商品名称|数量|价格|");
         sb.AppendLine("|:--:|:--:|:--:|:--:|");
         var id = 1;
-        foreach (var item in XocMatAPI.TerrariaShop.TrShop)
+        foreach (var item in TerrariaShop.Instance.TrShop)
         {
             sb.AppendLine($"|{id}|{item.Name}|{item.num}|{item.Price}|");
             id++;
@@ -231,9 +232,9 @@ public class OneBotCommand
                 await args.EventArgs.Reply("没有找到此物品", true);
                 return;
             }
-            XocMatAPI.TerrariaPrize.Add(item.Name, id, rate, max, min);
+            TerrariaPrize.Instance.Add(item.Name, id, rate, max, min);
             await args.EventArgs.Reply("添加成功", true);
-            XocMatAPI.ConfigSave();
+            TerrariaPrize.Save();
         }
         else if (args.Parameters.Count == 2 && args.Parameters[0].ToLower() == "del")
         {
@@ -242,15 +243,15 @@ public class OneBotCommand
                 await args.EventArgs.Reply("请输入一个正确序号", true);
                 return;
             }
-            var prize = XocMatAPI.TerrariaPrize.GetPrize(index);
+            var prize = TerrariaPrize.Instance.GetPrize(index);
             if (prize == null)
             {
                 await args.EventArgs.Reply("该奖品不存在!", true);
                 return;
             }
-            XocMatAPI.TerrariaPrize.Remove(prize);
+            TerrariaPrize.Instance.Remove(prize);
             await args.EventArgs.Reply("删除成功", true);
-            XocMatAPI.ConfigSave();
+            TerrariaPrize.Save();
         }
         else
         {
@@ -285,9 +286,9 @@ public class OneBotCommand
             var item = SystemHelper.GetItemById(id);
             if (item != null)
             {
-                XocMatAPI.TerrariaShop.TrShop.Add(new Shop(item.Name, id, cost, num));
+                TerrariaShop.Instance.TrShop.Add(new Shop(item.Name, id, cost, num));
                 await args.EventArgs.Reply("添加成功", true);
-                XocMatAPI.ConfigSave();
+                TerrariaShop.Save();
             }
             else
             {
@@ -301,15 +302,15 @@ public class OneBotCommand
                 await args.EventArgs.Reply("请输入一个正确序号", true);
                 return;
             }
-            var shop = XocMatAPI.TerrariaShop.GetShop(index);
+            var shop = TerrariaShop.Instance.GetShop(index);
             if (shop == null)
             {
                 await args.EventArgs.Reply("该商品不存在!", true);
                 return;
             }
-            XocMatAPI.TerrariaShop.TrShop.Remove(shop);
+            TerrariaShop.Instance.TrShop.Remove(shop);
             await args.EventArgs.Reply("删除成功", true);
-            XocMatAPI.ConfigSave();
+            TerrariaShop.Save();
         }
         else
         {
@@ -336,7 +337,7 @@ public class OneBotCommand
         sb.AppendLine("|奖品ID|奖品名称|最大数量|最小数量|中奖概率|");
         sb.AppendLine("|:--:|:--:|:--:|:--:|:--:|");
         var id = 1;
-        foreach (var item in XocMatAPI.TerrariaPrize.Pool)
+        foreach (var item in TerrariaPrize.Instance.Pool)
         {
             sb.AppendLine($"|{id}|{item.Name}|{item.Max}|{item.Min}|{item.Probability}％|");
             id++;
@@ -422,7 +423,7 @@ public class OneBotCommand
     {
         try
         {
-            var signs = XocMatAPI.SignManager.Signs.Where(x => x.GroupID == args.EventArgs.Chain.GroupUin!.Value).OrderByDescending(x => x.Date).Take(10);
+            var signs = Lagrange.XocMat.DB.Manager.Sign.GetSigns().Where(x => x.GroupID == args.EventArgs.Chain.GroupUin!.Value).OrderByDescending(x => x.Date).Take(10);
             var sb = new StringBuilder("签到排行\n\n");
             int i = 1;
             foreach (var sign in signs)
@@ -450,15 +451,15 @@ public class OneBotCommand
         try
         {
             var rand = new Random();
-            long num = rand.NextInt64(XocMatAPI.Setting.SignMinCurrency, XocMatAPI.Setting.SignMaxCurrency);
-            var result = XocMatAPI.SignManager.SingIn(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
-            var currency = XocMatAPI.CurrencyManager.Add(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
+            long num = rand.NextInt64(XocMatSetting.Instance.SignMinCurrency, XocMatSetting.Instance.SignMaxCurrency);
+            var result = DB.Manager.Sign.SingIn(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
+            var currency = DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
             var build = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value)
                 .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={args.EventArgs.Chain.GroupMemberInfo!.Uin}&spec=640&img_type=png"))
                 .Text($"签到成功！\n")
                 .Text($"[签到时长]：{result.Date}\n")
                 .Text($"[获得星币]：{num}\n")
-                .Text($"[星币总数]：{currency.num}");
+                .Text($"[星币总数]：{currency.Num}");
 
             await args.EventArgs.Reply(build);
         }
@@ -474,7 +475,6 @@ public class OneBotCommand
     public static async ValueTask Reload(CommandArgs args)
     {
         var reloadArgs = new ReloadEventArgs(args.EventArgs.Chain.GroupUin!.Value);
-        XocMatAPI.LoadConfig();
         reloadArgs.Message.Add(new TextEntity("沫沫配置文件重读成功!"));
         await OperatHandler.Reload(reloadArgs);
         await args.EventArgs.Reply(reloadArgs.Message);
@@ -485,7 +485,7 @@ public class OneBotCommand
     [CommandMatch("ui", OneBotPermissions.QueryUserList)]
     public static async ValueTask UserInfo(CommandArgs args)
     {
-        if (!XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) || server == null)
+        if (!UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) || server == null)
         {
             await args.EventArgs.Reply("服务器不存在或，未切换至一个服务器！", true);
             return;
@@ -538,7 +538,7 @@ public class OneBotCommand
         {
             try
             {
-                XocMatAPI.AccountManager.AddAccount(atList.First().Uin, args.Parameters[1]);
+                DB.Manager.Account.AddAccount(atList.First().Uin, args.Parameters[1]);
                 await args.EventArgs.Reply($"{atList.First().Uin} 已添加到组 {args.Parameters[1]}");
             }
             catch (Exception ex)
@@ -552,7 +552,7 @@ public class OneBotCommand
             {
                 try
                 {
-                    XocMatAPI.AccountManager.AddAccount(id, args.Parameters[2]);
+                    DB.Manager.Account.AddAccount(id, args.Parameters[2]);
                     await args.EventArgs.Reply($"{id} 已添加到组 {args.Parameters[2]}");
                 }
                 catch (Exception ex)
@@ -569,7 +569,7 @@ public class OneBotCommand
         {
             try
             {
-                XocMatAPI.AccountManager.RemoveAccount(atList.First().Uin);
+                DB.Manager.Account.RemoveAccount(atList.First().Uin);
                 await args.EventArgs.Reply($"删除成功!");
             }
             catch (Exception ex)
@@ -583,7 +583,7 @@ public class OneBotCommand
             {
                 try
                 {
-                    XocMatAPI.AccountManager.RemoveAccount(id);
+                    DB.Manager.Account.RemoveAccount(id);
                     await args.EventArgs.Reply($"删除成功!");
                 }
                 catch (Exception ex)
@@ -600,7 +600,7 @@ public class OneBotCommand
         {
             try
             {
-                XocMatAPI.AccountManager.ReAccountGroup(atList.First().Uin, args.Parameters[1]);
+                DB.Manager.Account.ReAccountGroup(atList.First().Uin, args.Parameters[1]);
                 await args.EventArgs.Reply($"账户 {atList.First().Uin} 的组 成功更改为 {args.Parameters[1]}");
             }
             catch (Exception ex)
@@ -614,7 +614,7 @@ public class OneBotCommand
             {
                 try
                 {
-                    XocMatAPI.AccountManager.ReAccountGroup(id, args.Parameters[1]);
+                    DB.Manager.Account.ReAccountGroup(id, args.Parameters[1]);
                     await args.EventArgs.Reply($"账户 {id} 的组 成功更改为 {args.Parameters[1]}");
                 }
                 catch (Exception ex)
@@ -631,7 +631,7 @@ public class OneBotCommand
         {
             try
             {
-                var accounts = XocMatAPI.AccountManager.Accounts;
+                var accounts = DB.Manager.Account.Accounts;
                 var lines = accounts.Select(x => $"\n账户:{x.UserId}\n权限:{x.Group.Name}");
                 Show(lines.ToList());
             }
@@ -664,7 +664,7 @@ public class OneBotCommand
         {
             try
             {
-                XocMatAPI.GroupManager.AddGroup(args.Parameters[1]);
+                DB.Manager.Group.AddGroup(args.Parameters[1]);
                 await args.EventArgs.Reply($"组 {args.Parameters[1]} 添加成功!");
             }
             catch (GroupException ex)
@@ -677,7 +677,7 @@ public class OneBotCommand
         {
             try
             {
-                XocMatAPI.GroupManager.RemoveGroup(args.Parameters[1]);
+                DB.Manager.Group.RemoveGroup(args.Parameters[1]);
                 await args.EventArgs.Reply($"组 {args.Parameters[1]} 删除成功!");
             }
             catch (GroupException ex)
@@ -690,7 +690,7 @@ public class OneBotCommand
         {
             try
             {
-                XocMatAPI.GroupManager.ReParentGroup(args.Parameters[1], args.Parameters[2]);
+                DB.Manager.Group.ReParentGroup(args.Parameters[1], args.Parameters[2]);
                 await args.EventArgs.Reply($"组 {args.Parameters[1]} 的组已更改为 {args.Parameters[2]}!");
             }
             catch (Exception ex)
@@ -703,7 +703,7 @@ public class OneBotCommand
         {
             try
             {
-                XocMatAPI.GroupManager.AddPerm(args.Parameters[1], args.Parameters[2]);
+                DB.Manager.Group.AddPerm(args.Parameters[1], args.Parameters[2]);
                 await args.EventArgs.Reply($"权限添加成功!");
             }
             catch (GroupException ex)
@@ -716,7 +716,7 @@ public class OneBotCommand
         {
             try
             {
-                XocMatAPI.GroupManager.RemovePerm(args.Parameters[1], args.Parameters[2]);
+                DB.Manager.Group.RemovePerm(args.Parameters[1], args.Parameters[2]);
                 await args.EventArgs.Reply($"权限删除成功!");
             }
             catch (GroupException ex)
@@ -764,7 +764,7 @@ public class OneBotCommand
             }
             try
             {
-                var result = XocMatAPI.CurrencyManager.Add(args.EventArgs.Chain.GroupUin!.Value, qq, num);
+                var result = DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, qq, num);
                 await args.EventArgs.Reply($"成功为 {qq} 添加{num}个星币!");
             }
             catch (Exception ex)
@@ -787,7 +787,7 @@ public class OneBotCommand
             }
             try
             {
-                var result = XocMatAPI.CurrencyManager.Add(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
+                var result = DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
                 await args.EventArgs.Reply($"成功为 {at.First()} 添加{num}个星币!");
             }
             catch (Exception ex)
@@ -815,7 +815,7 @@ public class OneBotCommand
             }
             try
             {
-                var result = XocMatAPI.CurrencyManager.Del(args.EventArgs.Chain.GroupUin!.Value, qq, num);
+                var result = DB.Manager.Currency.Del(args.EventArgs.Chain.GroupUin!.Value, qq, num);
                 await args.EventArgs.Reply($"成功删除 {qq} 的 {num}个星币!");
             }
             catch (Exception ex)
@@ -838,7 +838,7 @@ public class OneBotCommand
             }
             try
             {
-                var result = XocMatAPI.CurrencyManager.Del(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
+                var result = DB.Manager.Currency.Del(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
                 await args.EventArgs.Reply($"成功扣除 {at.First()} 的 {num}个星币!");
             }
             catch (Exception ex)
@@ -859,8 +859,8 @@ public class OneBotCommand
                 await args.EventArgs.Reply("错误得数量，无法转换为数值!");
                 return;
             }
-            var usercurr = XocMatAPI.CurrencyManager.Query(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
-            if (usercurr == null || usercurr.num < num)
+            var usercurr = DB.Manager.Currency.Query(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
+            if (usercurr == null || usercurr.Num < num)
             {
                 await args.EventArgs.Reply("你没有足够的星币付给他人!");
             }
@@ -868,8 +868,8 @@ public class OneBotCommand
             {
                 try
                 {
-                    XocMatAPI.CurrencyManager.Del(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
-                    XocMatAPI.CurrencyManager.Add(args.EventArgs.Chain.GroupUin!.Value, qq, num);
+                    DB.Manager.Currency.Del(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
+                    DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, qq, num);
                     await args.EventArgs.Reply($"成功付给 {qq}  {num}个星币!");
                 }
                 catch (Exception ex)
@@ -885,8 +885,8 @@ public class OneBotCommand
                 await args.EventArgs.Reply("错误得数量，无法转换为数值!");
                 return;
             }
-            var usercurr = XocMatAPI.CurrencyManager.Query(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
-            if (usercurr == null || usercurr.num < num)
+            var usercurr = DB.Manager.Currency.Query(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
+            if (usercurr == null || usercurr.Num < num)
             {
                 await args.EventArgs.Reply("你没有足够的星币付给他人!");
             }
@@ -894,8 +894,8 @@ public class OneBotCommand
             {
                 try
                 {
-                    XocMatAPI.CurrencyManager.Del(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
-                    XocMatAPI.CurrencyManager.Add(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
+                    DB.Manager.Currency.Del(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
+                    DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
                     await args.EventArgs.Reply($"成功付给 {at.First()}  {num}个星币!");
                 }
                 catch (Exception ex)
@@ -1151,14 +1151,14 @@ public class OneBotCommand
     [CommandMatch("服务器列表", OneBotPermissions.ServerList)]
     public static async ValueTask ServerList(CommandArgs args)
     {
-        if (XocMatAPI.Setting.Servers.Count == 0)
+        if (XocMatSetting.Instance.Servers.Count == 0)
         {
             await args.EventArgs.Reply("服务器列表空空如也!");
             return;
         }
         var sb = new StringBuilder();
 
-        foreach (var x in XocMatAPI.Setting.Servers)
+        foreach (var x in XocMatSetting.Instance.Servers)
         {
             var status = await x.ServerStatus();
             sb.AppendLine($$"""<div align="center">""");
@@ -1196,7 +1196,7 @@ public class OneBotCommand
     [CommandMatch("重启服务器", OneBotPermissions.ResetTShock)]
     public static async ValueTask ReStartServer(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             var api = await server.ReStartServer(args.CommamdLine);
             var build = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value);
@@ -1223,13 +1223,13 @@ public class OneBotCommand
     {
         if (args.Parameters.Count == 1)
         {
-            var server = XocMatAPI.Setting.GetServer(args.Parameters[0], Convert.ToUInt32(args.EventArgs.Chain.GroupUin));
+            var server = XocMatSetting.Instance.GetServer(args.Parameters[0], Convert.ToUInt32(args.EventArgs.Chain.GroupUin));
             if (server == null)
             {
                 await args.EventArgs.Reply("你切换的服务器不存在! 请检查服务器名称是否正确，此群是否配置服务器!");
                 return;
             }
-            XocMatAPI.UserLocation.Change(args.EventArgs.Chain.GroupMemberInfo!.Uin, server);
+            UserLocation.Instance.Change(args.EventArgs.Chain.GroupMemberInfo!.Uin, server);
             await args.EventArgs.Reply($"已切换至`{server.Name}`服务器", true);
         }
         else
@@ -1243,13 +1243,13 @@ public class OneBotCommand
     [CommandMatch("在线", OneBotPermissions.QueryOnlienPlayer)]
     public static async ValueTask OnlinePlayers(CommandArgs args)
     {
-        if (XocMatAPI.Setting.Servers.Count == 0)
+        if (XocMatSetting.Instance.Servers.Count == 0)
         {
             await args.EventArgs.Reply("还没有配置任何一个服务器!", true);
             return;
         }
         var sb = new StringBuilder();
-        foreach (var server in XocMatAPI.Setting.Servers)
+        foreach (var server in XocMatSetting.Instance.Servers)
         {
             var api = await server.ServerOnline();
             sb.AppendLine($"[{server.Name}]在线玩家数量({(api.Status ? api.Players.Count : 0)}/{api.MaxCount})");
@@ -1266,7 +1266,7 @@ public class OneBotCommand
         var type = ImageType.Jpg;
         if (args.Parameters.Count > 0 && args.Parameters[0] == "-p")
             type = ImageType.Png;
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             var api = await server.MapImage(type);
             if (api.Status)
@@ -1301,7 +1301,7 @@ public class OneBotCommand
     {
         if (args.Parameters.Count == 1)
         {
-            if (!XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) || server == null)
+            if (!UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) || server == null)
             {
                 await args.EventArgs.Reply("未切换服务器或服务器无效!", true);
                 return;
@@ -1316,7 +1316,7 @@ public class OneBotCommand
                 await args.EventArgs.Reply("注册的人物名称不能包含中文以及字母以外的字符", true);
                 return;
             }
-            if (XocMatAPI.TerrariaUserManager.GetUserById(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name).Count >= server.RegisterMaxCount)
+            if (TerrariaUser.GetUserById(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name).Count >= server.RegisterMaxCount)
             {
                 await args.EventArgs.Reply($"同一个服务器上注册账户不能超过{server.RegisterMaxCount}个", true);
                 return;
@@ -1324,7 +1324,7 @@ public class OneBotCommand
             var pass = Guid.NewGuid().ToString()[..8];
             try
             {
-                XocMatAPI.TerrariaUserManager.Add(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, server.Name, args.Parameters[0], pass);
+                TerrariaUser.Add(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, server.Name, args.Parameters[0], pass);
                 var api = await server.Register(args.Parameters[0], pass);
                 var build = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value);
                 if (api.Status)
@@ -1342,7 +1342,7 @@ public class OneBotCommand
                 }
                 else
                 {
-                    XocMatAPI.TerrariaUserManager.Remove(server.Name, args.Parameters[0]);
+                    TerrariaUser.Remove(server.Name, args.Parameters[0]);
                     build.Text(string.IsNullOrEmpty(api.Message) ? "无法连接服务器！" : api.Message);
                 }
                 await args.EventArgs.Reply(build);
@@ -1365,9 +1365,9 @@ public class OneBotCommand
     [CommandMatch("我的密码", OneBotPermissions.SelfPassword)]
     public static async ValueTask SelfPassword(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
-            var user = XocMatAPI.TerrariaUserManager.GetUserById(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name);
+            var user = TerrariaUser.GetUserById(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name);
             if (user.Count > 0)
             {
                 var sb = new StringBuilder();
@@ -1391,11 +1391,11 @@ public class OneBotCommand
     [CommandMatch("重置密码", OneBotPermissions.SelfPassword)]
     public static async ValueTask ResetPassword(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             try
             {
-                var user = XocMatAPI.TerrariaUserManager.GetUserById(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name);
+                var user = TerrariaUser.GetUserById(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name);
 
                 if (user.Count > 0)
                 {
@@ -1410,7 +1410,7 @@ public class OneBotCommand
                             await args.EventArgs.Reply("无法连接到服务器更改密码!");
                             return;
                         }
-                        XocMatAPI.TerrariaUserManager.ResetPassword(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name, u.Name, pwd);
+                        TerrariaUser.ResetPassword(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name, u.Name, pwd);
                     }
                     sb.Append("请注意保存不要暴露给他人");
                     MailHelper.SendMail($"{args.EventArgs.Chain.GroupMemberInfo!.Uin}@qq.com",
@@ -1437,7 +1437,7 @@ public class OneBotCommand
     {
         async ValueTask GetRegister(long id)
         {
-            var users = XocMatAPI.TerrariaUserManager.GetUsers(id);
+            var users = TerrariaUser.GetUsers(id);
             if (users.Count == 0)
             {
                 await args.EventArgs.Reply("未查询到该用户的注册信息!");
@@ -1476,7 +1476,7 @@ public class OneBotCommand
             }
             else
             {
-                var user = XocMatAPI.TerrariaUserManager.GetUsersByName(args.Parameters[0]);
+                var user = TerrariaUser.GetUsersByName(args.Parameters[0]);
                 if (user == null)
                 {
                     await args.EventArgs.Reply("未查询到注册信息", true);
@@ -1495,9 +1495,9 @@ public class OneBotCommand
     [CommandMatch("注册列表", OneBotPermissions.QueryUserList)]
     public static async ValueTask RegisterList(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
-            var users = XocMatAPI.TerrariaUserManager.GetUsers(server.Name);
+            var users = TerrariaUser.GetUsers(server.Name);
             if (users == null || users.Count == 0)
             {
                 await args.EventArgs.Reply("注册列表空空如也!");
@@ -1521,7 +1521,7 @@ public class OneBotCommand
     [CommandMatch("user", OneBotPermissions.UserAdmin)]
     public static async ValueTask User(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             if (args.Parameters.Count == 2)
             {
@@ -1530,7 +1530,7 @@ public class OneBotCommand
                     case "del":
                         try
                         {
-                            XocMatAPI.TerrariaUserManager.Remove(server.Name, args.Parameters[1]);
+                            TerrariaUser.Remove(server.Name, args.Parameters[1]);
                             await args.EventArgs.Reply("移除成功!", true);
                         }
                         catch (TerrariaUserException ex)
@@ -1556,7 +1556,7 @@ public class OneBotCommand
     [CommandMatch("进度查询", OneBotPermissions.QueryProgress)]
     public static async ValueTask GameProgress(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             var api = await server.QueryServerProgress();
             var body = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value);
@@ -1584,7 +1584,7 @@ public class OneBotCommand
     {
         if (args.Parameters.Count == 1)
         {
-            if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+            if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
             {
                 var api = await server.PlayerInventory(args.Parameters[0]);
                 var body = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value);
@@ -1623,7 +1623,7 @@ public class OneBotCommand
             await args.EventArgs.Reply("请输入要执行的命令!", true);
             return;
         }
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             var cmd = "/" + string.Join(" ", args.Parameters);
             var api = await server.Command(cmd);
@@ -1650,7 +1650,7 @@ public class OneBotCommand
     [CommandMatch("击杀排行", OneBotPermissions.KillRank)]
     public static async ValueTask KillRank(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             var data = await server.GetStrikeBoss();
             if (data.Damages != null)
@@ -1691,7 +1691,7 @@ public class OneBotCommand
     [CommandMatch("在线排行", OneBotPermissions.OnlineRank)]
     public static async ValueTask OnlineRank(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             var api = await server.OnlineRank();
             var body = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value);
@@ -1738,7 +1738,7 @@ public class OneBotCommand
     [CommandMatch("死亡排行", OneBotPermissions.DeathRank)]
     public static async ValueTask DeathRank(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             var api = await server.DeadRank();
             var body = MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value);
@@ -1776,7 +1776,7 @@ public class OneBotCommand
     {
         if (args.Parameters.Count == 1)
         {
-            if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+            if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
             {
                 switch (args.Parameters[0])
                 {
@@ -1794,7 +1794,7 @@ public class OneBotCommand
                         await args.EventArgs.Reply("未知子命令！", true);
                         break;
                 }
-                ConfigHelpr.Write(XocMatAPI.ConfigPath, XocMatAPI.Setting);
+                XocMatSetting.Instance.SaveTo();
             }
             else
             {
@@ -1815,12 +1815,12 @@ public class OneBotCommand
         var at = args.EventArgs.Chain.GetMention();
         if (at.Any())
         {
-            var group = XocMatAPI.AccountManager.GetAccountNullDefault(at.First().Uin);
+            var group = DB.Manager.Account.GetAccountNullDefault(at.First().Uin);
             await args.EventArgs.Reply(await CommandUtils.GetAccountInfo(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, group.Group.Name));
         }
         else if (args.Parameters.Count == 1 && uint.TryParse(args.Parameters[0], out var id))
         {
-            var group = XocMatAPI.AccountManager.GetAccountNullDefault(id);
+            var group = DB.Manager.Account.GetAccountNullDefault(id);
             await args.EventArgs.Reply(await CommandUtils.GetAccountInfo(args.EventArgs.Chain.GroupUin!.Value, id, group.Group.Name));
         }
         else
@@ -1852,7 +1852,7 @@ public class OneBotCommand
     [CommandMatch("启动", OneBotPermissions.StartTShock)]
     public static async ValueTask StartTShock(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
             if (server.Start(args.CommamdLine))
             {
@@ -1872,9 +1872,9 @@ public class OneBotCommand
     [CommandMatch("泰拉服务器重置", OneBotPermissions.StartTShock)]
     public static async ValueTask ResetTShock(CommandArgs args)
     {
-        if (XocMatAPI.UserLocation.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
         {
-            XocMatAPI.TerrariaUserManager.RemoveByServer(server.Name);
+            TerrariaUser.RemoveByServer(server.Name);
             await server.Reset(args.CommamdLine, async type =>
             {
                 switch (type)

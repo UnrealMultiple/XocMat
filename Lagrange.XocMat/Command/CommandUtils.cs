@@ -1,5 +1,7 @@
 ﻿using Lagrange.Core.Message;
 using Lagrange.Core.Message.Entity;
+using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Utility;
 using System.Reflection;
@@ -58,13 +60,13 @@ internal static class CommandUtils
     public static async Task<MessageBuilder> GetAccountInfo(uint groupid, uint uin, string groupName)
     {
         var userid = uin;
-        var serverName = XocMatAPI.UserLocation.TryGetServer(userid, groupid, out var server) ? server?.Name ?? "NULL" : "NULL";
-        var bindUser = XocMatAPI.TerrariaUserManager.GetUserById(userid, serverName);
+        var serverName = UserLocation.Instance.TryGetServer(userid, groupid, out var server) ? server?.Name ?? "NULL" : "NULL";
+        var bindUser = TerrariaUser.GetUserById(userid, serverName);
         var bindName = bindUser.Count == 0 ? "NULL" : string.Join(",", bindUser.Select(x => x.Name)); ;
-        var signInfo = XocMatAPI.SignManager.Query(groupid, userid);
+        var signInfo = Sign.Query(groupid, userid);
         var sign = signInfo != null ? signInfo.Date : 0;
-        var currencyInfo = XocMatAPI.CurrencyManager.Query(groupid, userid);
-        var currency = currencyInfo != null ? currencyInfo.num : 0;
+        var currencyInfo = Currency.Query(groupid, userid);
+        var currency = currencyInfo != null ? currencyInfo.Num : 0;
         return MessageBuilder.Group(groupid)
             .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={uin}&spec=640&img_type=png"))
             .Text($"[QQ账号]:{userid}\n")
