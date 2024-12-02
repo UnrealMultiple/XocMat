@@ -43,12 +43,12 @@ public class Group : RecordBase<Group>
     [NotColumn]
     public List<string> permissions { get; set; } = [];
 
-    public Group Parent
+    public Group? Parent
     {
-        get => GetGroup(parent) ?? DefaultGroup.Instance;
+        get => GetGroup(parent);
         set
         {
-            parent = value.Name;
+            parent = value?.Name ?? string.Empty;
         }
     }
 

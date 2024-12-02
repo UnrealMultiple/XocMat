@@ -270,7 +270,7 @@ public class TerrariaMsgReceiveHandler
                 {
                     if (server.ForwardGroups.Contains(Convert.ToUInt32(args.Chain.GroupUin)))
                     {
-                        await server.Broadcast($"[群消息][{args.Chain.GroupMemberInfo?.Uin}]: {text}", System.Drawing.Color.GreenYellow);
+                        await server.Broadcast($"[群消息][{args.Chain.GroupMemberInfo?.MemberCard}]: {text}", System.Drawing.Color.GreenYellow);
                     }
                 }
             }
