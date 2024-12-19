@@ -1316,9 +1316,9 @@ public class OneBotCommand
                 await args.EventArgs.Reply($"注册的人物名称不能大于{server.RegisterNameMax}个字符!", true);
                 return;
             }
-            if (!new Regex("^[a-zA-Z\u4E00-\u9FA5]+$").IsMatch(args.Parameters[0]) && server.RegisterNameLimit)
+            if (!new Regex("^[a-zA-Z0-9\u4e00-\u9fa5\\[\\]:/ ]+$").IsMatch(args.Parameters[0]) && server.RegisterNameLimit)
             {
-                await args.EventArgs.Reply("注册的人物名称不能包含中文以及字母以外的字符", true);
+                await args.EventArgs.Reply("注册的人物名称不能包含中文,字母,数字和/:[]以外的字符", true);
                 return;
             }
             if (TerrariaUser.GetUserById(args.EventArgs.Chain.GroupMemberInfo!.Uin, server.Name).Count >= server.RegisterMaxCount)
@@ -1343,7 +1343,8 @@ public class OneBotCommand
                         $"\n注册账号: {args.EventArgs.Chain.GroupMemberInfo!.Uin}" +
                         $"\n注册人昵称: {args.EventArgs.Chain.GroupMemberInfo!.MemberName}" +
                         $"\n注册密码已发送至QQ邮箱请点击下方链接查看" +
-                        $"\nhttps://wap.mail.qq.com/home/index");
+                        $"\nhttps://wap.mail.qq.com/home/index" +
+                        $"\n进入服务器后可使用/password [当前密码] [新密码] 修改你的密码");
                 }
                 else
                 {
