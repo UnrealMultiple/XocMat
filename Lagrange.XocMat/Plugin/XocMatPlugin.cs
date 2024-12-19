@@ -11,11 +11,14 @@ public abstract class XocMatPlugin : IDisposable
     {
         Logger = logger;
         CommandManager = commandManager;
+        BotContext = bot;
         AutoLoad();
     }
     public ILogger Logger { get; }
 
     public CommandManager CommandManager { get; }
+
+    public BotContext BotContext { get; }
 
 
     public virtual string Name
