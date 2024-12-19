@@ -23,6 +23,10 @@ public class TerrariaUser : RecordBase<TerrariaUser>
     [Column("GroupID")]
     public long GroupID { get; init; }
 
+    [PrimaryKey, Identity]
+    [Column("index")]
+    public int Index { get; init; }
+
     private static Context context => Db.Context<TerrariaUser>("User");
 
     public static bool HasUser(string server, string Name)
@@ -70,17 +74,17 @@ public class TerrariaUser : RecordBase<TerrariaUser>
 
     public static List<TerrariaUser> GetUsers(string Server)
     {
-        return context.Records.Where(f => f.Server == Server).ToList();
+        return [.. context.Records.Where(f => f.Server == Server)];
     }
 
     public static List<TerrariaUser> GetUsers(long id)
     {
-        return context.Records.Where(f => f.Id == id).ToList();
+        return [.. context.Records.Where(f => f.Id == id)];
     }
 
     public static List<TerrariaUser> GetUserById(long id, string server)
     {
-        return context.Records.Where(f => f.Server == server && f.Id == id).ToList();
+        return [.. context.Records.Where(f => f.Server == server && f.Id == id)];
     }
 
     public static TerrariaUser? GetUserById(long id, string server, string name)

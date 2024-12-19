@@ -61,13 +61,13 @@ public abstract class XocMatPlugin : IDisposable
 
     internal void AutoLoad()
     {
-        foreach (var type in this.GetType().Assembly.GetTypes())
+        foreach (var type in GetType().Assembly.GetTypes())
         {
             if (type.IsDefined(typeof(ConfigSeries), false))
             {
-                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class '{this.Name}'");
+                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class '{Name}'");
                 var name = method.Invoke(null, []);
-                Logger.LogInformation($"[{this.Name}] config registered: {name}");
+                Logger.LogInformation($"[{Name}] config registered: {name}");
             }
             else if (type.IsDefined(typeof(CommandSeries), false))
             {

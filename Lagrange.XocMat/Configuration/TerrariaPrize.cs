@@ -2,6 +2,7 @@
 
 using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Internal.Terraria;
+using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
 namespace Lagrange.XocMat.Configuration;
@@ -9,10 +10,10 @@ namespace Lagrange.XocMat.Configuration;
 [ConfigSeries]
 public class TerrariaPrize : JsonConfigBase<TerrariaPrize>
 {
-    [JsonPropertyName("抽奖费用")]
+    [JsonProperty("抽奖费用")]
     public long Fess = 10;
 
-    [JsonPropertyName("奖池内容")]
+    [JsonProperty("奖池内容")]
     public List<Prize> Pool = [];
 
     protected override string Filename => "Prize";

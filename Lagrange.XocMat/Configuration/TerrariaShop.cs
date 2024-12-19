@@ -1,5 +1,6 @@
 ﻿using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Internal.Terraria;
+using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
 namespace Lagrange.XocMat.Configuration;
@@ -7,7 +8,7 @@ namespace Lagrange.XocMat.Configuration;
 [ConfigSeries]
 public class TerrariaShop : JsonConfigBase<TerrariaShop>
 {
-    [JsonPropertyName("泰拉商店")]
+    [JsonProperty("泰拉商店")]
     public List<Shop> TrShop { get; set; } = [];
 
     protected override string Filename => "Shop";

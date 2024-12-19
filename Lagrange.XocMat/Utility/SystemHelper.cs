@@ -1,4 +1,5 @@
 using Lagrange.XocMat.Extensions;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -136,15 +137,15 @@ public class SystemHelper
         var file = "Lagrange.XocMat.Resources.TerrariaID.json";
         var stream = assembly.GetManifestResourceStream(file)!;
         using var reader = new StreamReader(stream);
-        var jobj = reader.ReadToEnd().ToObject<JsonNode>()!;
-        var array = jobj["物品"]!.AsArray();
+        var jobj = reader.ReadToEnd().ToObject<JObject>()!;
+        var array = (JArray)jobj["物品"]!;
         foreach (var item in array)
         {
-            if (item != null && item["ID"]!.GetValue<int>() == id)
+            if (item != null && item["ID"]!.Value<int>() == id)
             {
                 return new()
                 {
-                    Name = item["中文名称"]!.GetValue<string>(),
+                    Name = item["中文名称"]!.Value<string>()!,
                     netID = id
                 };
             }
@@ -152,9 +153,9 @@ public class SystemHelper
         return null;
     }
 
-    public static List<Lagrange.XocMat.Internal.Socket.Internet.Item> GetItemByName(string name)
+    public static List<Internal.Socket.Internet.Item> GetItemByName(string name)
     {
-        var list = new List<Lagrange.XocMat.Internal.Socket.Internet.Item>();
+        var list = new List<Internal.Socket.Internet.Item>();
         var assembly = Assembly.GetExecutingAssembly();
         var file = "Lagrange.XocMat.Resources.TerrariaID.json";
         var stream = assembly.GetManifestResourceStream(file)!;
@@ -175,9 +176,9 @@ public class SystemHelper
         return list;
     }
 
-    public static List<Lagrange.XocMat.Internal.Socket.Internet.Item> GetItemByIdOrName(string ji)
+    public static List<Internal.Socket.Internet.Item> GetItemByIdOrName(string ji)
     {
-        var list = new List<Lagrange.XocMat.Internal.Socket.Internet.Item>();
+        var list = new List<Internal.Socket.Internet.Item>();
         if (int.TryParse(ji, out var i))
         {
             var item = GetItemById(i);
