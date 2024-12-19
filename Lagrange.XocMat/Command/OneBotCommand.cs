@@ -27,7 +27,6 @@ namespace Lagrange.XocMat.Commands;
 [CommandSeries]
 public class OneBotCommand
 {
-
     #region 导出存档
     [CommandMatch("md", OneBotPermissions.ExportFile)]
     public static async ValueTask Markdown(CommandArgs args)
@@ -112,7 +111,6 @@ public class OneBotCommand
     }
     #endregion
 
-
     #region 咬你
     [CommandMatch("咬你", OneBotPermissions.ImageEmoji)]
     public static async ValueTask ImageEmojiTwo(CommandArgs args)
@@ -194,7 +192,7 @@ public class OneBotCommand
         var id = 1;
         foreach (var item in TerrariaShop.Instance.TrShop)
         {
-            sb.AppendLine($"|{id}|{item.Name}|{item.num}|{item.Price}|");
+            sb.AppendLine($"|{id}|{item.Name}|{item.Num}|{item.Price}|");
             id++;
         }
         await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).MarkdownImage(sb.ToString()));
@@ -459,8 +457,8 @@ public class OneBotCommand
                 .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={args.EventArgs.Chain.GroupMemberInfo!.Uin}&spec=640&img_type=png"))
                 .Text($"签到成功！\n")
                 .Text($"[签到时长]：{result.Date}\n")
-                .Text($"[获得星币]：{num}\n")
-                .Text($"[星币总数]：{currency.Num}");
+                .Text($"[获得{XocMatSetting.Instance.Currency}]：{num}\n")
+                .Text($"[{XocMatSetting.Instance.Currency}总数]：{currency.Num}");
 
             await args.EventArgs.Reply(build);
         }
@@ -744,8 +742,8 @@ public class OneBotCommand
     }
     #endregion
 
-    #region 星币管理
-    [CommandMatch("星币", OneBotPermissions.CurrencyUse, OneBotPermissions.CurrencyAdmin)]
+    #region bank管理
+    [CommandMatch("bank", OneBotPermissions.CurrencyUse, OneBotPermissions.CurrencyAdmin)]
     public static async ValueTask Currency(CommandArgs args)
     {
         var at = args.EventArgs.Chain.GetMention();
@@ -770,7 +768,7 @@ public class OneBotCommand
             try
             {
                 var result = DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, qq, num);
-                await args.EventArgs.Reply($"成功为 {qq} 添加{num}个星币!");
+                await args.EventArgs.Reply($"成功为 {qq} 添加{num}个{XocMatSetting.Instance.Currency}!");
             }
             catch (Exception ex)
             {
@@ -793,7 +791,7 @@ public class OneBotCommand
             try
             {
                 var result = DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
-                await args.EventArgs.Reply($"成功为 {at.First()} 添加{num}个星币!");
+                await args.EventArgs.Reply($"成功为 {at.First().Name} 添加{num}个{XocMatSetting.Instance.Currency}!");
             }
             catch (Exception ex)
             {
@@ -821,7 +819,7 @@ public class OneBotCommand
             try
             {
                 var result = DB.Manager.Currency.Del(args.EventArgs.Chain.GroupUin!.Value, qq, num);
-                await args.EventArgs.Reply($"成功删除 {qq} 的 {num}个星币!");
+                await args.EventArgs.Reply($"成功删除 {qq} 的 {num}个{XocMatSetting.Instance.Currency}!");
             }
             catch (Exception ex)
             {
@@ -844,7 +842,7 @@ public class OneBotCommand
             try
             {
                 var result = DB.Manager.Currency.Del(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
-                await args.EventArgs.Reply($"成功扣除 {at.First()} 的 {num}个星币!");
+                await args.EventArgs.Reply($"成功扣除 {at.First().Name} 的 {num}个{XocMatSetting.Instance.Currency}!");
             }
             catch (Exception ex)
             {
@@ -867,7 +865,7 @@ public class OneBotCommand
             var usercurr = DB.Manager.Currency.Query(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
             if (usercurr == null || usercurr.Num < num)
             {
-                await args.EventArgs.Reply("你没有足够的星币付给他人!");
+                await args.EventArgs.Reply($"你没有足够的{XocMatSetting.Instance.Currency}付给他人!");
             }
             else
             {
@@ -875,7 +873,7 @@ public class OneBotCommand
                 {
                     DB.Manager.Currency.Del(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
                     DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, qq, num);
-                    await args.EventArgs.Reply($"成功付给 {qq}  {num}个星币!");
+                    await args.EventArgs.Reply($"成功付给 {qq}  {num}个{XocMatSetting.Instance.Currency}!");
                 }
                 catch (Exception ex)
                 {
@@ -893,7 +891,7 @@ public class OneBotCommand
             var usercurr = DB.Manager.Currency.Query(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin);
             if (usercurr == null || usercurr.Num < num)
             {
-                await args.EventArgs.Reply("你没有足够的星币付给他人!");
+                await args.EventArgs.Reply($"你没有足够的{XocMatSetting.Instance.Currency}付给他人!");
             }
             else
             {
@@ -901,7 +899,7 @@ public class OneBotCommand
                 {
                     DB.Manager.Currency.Del(args.EventArgs.Chain.GroupUin!.Value, args.EventArgs.Chain.GroupMemberInfo!.Uin, num);
                     DB.Manager.Currency.Add(args.EventArgs.Chain.GroupUin!.Value, at.First().Uin, num);
-                    await args.EventArgs.Reply($"成功付给 {at.First()}  {num}个星币!");
+                    await args.EventArgs.Reply($"成功付给 {at.First().Name}  {num}个{XocMatSetting.Instance.Currency}!");
                 }
                 catch (Exception ex)
                 {
@@ -912,18 +910,18 @@ public class OneBotCommand
         else
         {
             await args.EventArgs.Reply("语法错误，正确语法:\n" +
-                $"{args.CommamdPrefix}星币 add <qq> <数量>\n" +
-                $"{args.CommamdPrefix}星币 add <数量> at\n" +
-                $"{args.CommamdPrefix}星币 del <qq> <数量>\n" +
-                $"{args.CommamdPrefix}星币 del <数量> at\n" +
-                $"{args.CommamdPrefix}星币 pay <qq> 数量\n" +
-                $"{args.CommamdPrefix}星币 pay <数量> at");
+                $"{args.CommamdPrefix}bank add <qq> <数量>\n" +
+                $"{args.CommamdPrefix}bank add <数量> at\n" +
+                $"{args.CommamdPrefix}bank del <qq> <数量>\n" +
+                $"{args.CommamdPrefix}bank del <数量> at\n" +
+                $"{args.CommamdPrefix}bank pay <qq> 数量\n" +
+                $"{args.CommamdPrefix}bank pay <数量> at");
         }
     }
     #endregion
 
     #region 查询指令权限
-    [CommandMatch("scmdperm", OneBotPermissions.SearchCommandPerm)]
+    [CommandMatch("sperm", OneBotPermissions.SearchCommandPerm)]
     public static async ValueTask CmdBan(CommandArgs args)
     {
         if (args.Parameters.Count == 1)
@@ -1649,6 +1647,27 @@ public class OneBotCommand
         {
             await args.EventArgs.Reply("未切换服务器或服务器无效!", true);
         }
+    }
+    #endregion
+
+    #region 执行全部
+    [CommandMatch("执行全部", OneBotPermissions.ExecuteCommand)]
+    public static async ValueTask ExecuteCommandAll(CommandArgs args)
+    {
+        if (args.Parameters.Count < 1)
+        {
+            await args.EventArgs.Reply("请输入要执行的命令!", true);
+            return;
+        }
+        var sb = new StringBuilder();
+        foreach (var server in XocMatSetting.Instance.Servers)
+        { 
+            var cmd = "/" + string.Join(" ", args.Parameters);
+            var api = await server.Command(cmd);
+            sb.AppendLine("$\"[{server.Name}]命令执行结果:");
+            sb.AppendLine(api.Status ? string.Join("\n", api.Params) : "无法连接到服务器！");
+        }
+        await args.EventArgs.Reply(sb.ToString().Trim());
     }
     #endregion
 

@@ -1,5 +1,6 @@
 ﻿using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Terraria;
+using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
 namespace Lagrange.XocMat.Configuration;
@@ -7,7 +8,7 @@ namespace Lagrange.XocMat.Configuration;
 [ConfigSeries]
 public class UserLocation : JsonConfigBase<UserLocation>
 {
-    [JsonPropertyName("服务器位置")]
+    [JsonProperty("服务器位置")]
     public Dictionary<uint, string> Location { get; set; } = [];
 
     protected override string Filename => "UserLocation";

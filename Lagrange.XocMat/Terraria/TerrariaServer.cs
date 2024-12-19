@@ -3,70 +3,70 @@ using Lagrange.XocMat.Internal.Socket.Action;
 using Lagrange.XocMat.Internal.Socket.Action.Receive;
 using Lagrange.XocMat.Internal.Socket.Action.Response;
 using Lagrange.XocMat.Net;
+using Newtonsoft.Json;
 using ProtoBuf;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
 
 namespace Lagrange.XocMat.Terraria;
 
 public class TerrariaServer
 {
-    [JsonPropertyName("服务器名称")]
+    [JsonProperty("服务器名称")]
     public string Name { get; set; } = "服务器1";
 
-    [JsonPropertyName("服务器IP")]
+    [JsonProperty("服务器IP")]
     public string IP { get; set; } = "";
 
-    [JsonPropertyName("实际端口")]
+    [JsonProperty("实际端口")]
     public ushort Port { get; set; } = 7777;
 
-    [JsonPropertyName("显示端口")]
+    [JsonProperty("显示端口")]
     public ushort NatProt { get; set; } = 7777;
 
-    [JsonPropertyName("通信令牌")]
+    [JsonProperty("通信令牌")]
     public string Token { get; set; } = "";
 
-    [JsonPropertyName("注册默认组")]
+    [JsonProperty("注册默认组")]
     public string DefaultGroup { get; set; } = "default";
 
-    [JsonPropertyName("最大注册数量")]
+    [JsonProperty("最大注册数量")]
     public int RegisterMaxCount { get; set; } = 1;
 
-    [JsonPropertyName("注册名字大长度")]
+    [JsonProperty("注册名字大长度")]
     public int RegisterNameMax { get; set; } = 10;
 
-    [JsonPropertyName("转发消息最大长度")]
+    [JsonProperty("转发消息最大长度")]
     public int MsgMaxLength { get; set; } = 50;
 
-    [JsonPropertyName("注册名称仅中文")]
+    [JsonProperty("注册名称仅中文")]
     public bool RegisterNameLimit { get; set; } = true;
 
-    [JsonPropertyName("是否开启商店")]
+    [JsonProperty("是否开启商店")]
     public bool EnabledShop { get; set; }
 
-    [JsonPropertyName("是否开启抽奖")]
+    [JsonProperty("是否开启抽奖")]
     public bool EnabledPrize { get; set; }
 
-    [JsonPropertyName("Tshock路径")]
+    [JsonProperty("Tshock路径")]
     public string TShockPath { get; set; } = "C:/Users/Administrator/Desktop/tshock/";
 
-    [JsonPropertyName("地图名称")]
+    [JsonProperty("地图名称")]
     public string MapName { get; set; } = "玄荒.wld";
 
-    [JsonPropertyName("服务器说明")]
+    [JsonProperty("服务器说明")]
     public string Describe { get; set; } = "正常玩法服务器";
 
-    [JsonPropertyName("服务器版本")]
+    [JsonProperty("服务器版本")]
     public string Version { get; set; } = "1.4.4.9";
 
 
 
-    [JsonPropertyName("所属群")]
+    [JsonProperty("所属群")]
     public HashSet<uint> Groups { get; set; } = new();
 
-    [JsonPropertyName("消息转发群")]
+    [JsonProperty("消息转发群")]
     public HashSet<uint> ForwardGroups { get; set; } = new();
 
     [JsonIgnore]

@@ -19,7 +19,7 @@ public class ServerCommands
         var index = 1;
         foreach (var item in shop)
         {
-            sb.AppendLine($"{index}.{item.Name} x {item.num}     {item.Price}");
+            sb.AppendLine($"{index}.{item.Name} x {item.Num}     {item.Price}");
             index++;
         }
         await args.Server.PrivateMsg(args.UserName, $"泰拉商店列表:\n{sb}", Color.GreenYellow);
@@ -88,7 +88,7 @@ public class ServerCommands
                     var curr = Currency.Query(args.User.GroupID, args.User.Id);
                     if (curr != null && curr.Num >= shop.Price)
                     {
-                        var res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.num}");
+                        var res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
                         if (res.Status)
                         {
                             Currency.Del(args.User.GroupID, args.User.Id, shop.Price);
@@ -116,7 +116,7 @@ public class ServerCommands
                     var curr = Currency.Query(args.User.GroupID, args.User.Id);
                     if (curr != null && curr.Num >= shop.Price)
                     {
-                        var res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.num}");
+                        var res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
                         if (res.Status)
                         {
                             Currency.Del(args.User.GroupID, args.User.Id, shop.Price);

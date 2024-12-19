@@ -71,7 +71,7 @@ internal static class CommandUtils
             .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={uin}&spec=640&img_type=png"))
             .Text($"[QQ账号]:{userid}\n")
             .Text($"[签到时长]:{sign}\n")
-            .Text($"[星币数量]:{currency}\n")
+            .Text($"[{XocMatSetting.Instance.Currency}数量]:{currency}\n")
             .Text($"[拥有权限]:{groupName}\n")
             .Text($"[绑定角色]:{bindName}\n")
             .Text($"[所在服务器]:{serverName}");
