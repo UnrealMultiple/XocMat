@@ -31,7 +31,7 @@ public class MailHelper
         string strFrom = string.Empty;
 
         //构造一个发件人地址对象
-        MailAddress from = new(sendAdress, "这是标题", Encoding.UTF8);
+        MailAddress from = new(sendAdress, "服务器邮件", Encoding.UTF8);
         //构造一个收件人地址对象
         MailAddress to = new(toAddress, strFrom, Encoding.UTF8);
 
