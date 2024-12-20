@@ -1,12 +1,13 @@
-name: 发布
-
-on:
+name: 构建程序
+on: 
   push:
-    branches: [ "master"]
-    
+    branches:
+      - '**'
+  pull_request:
+  
 jobs:
   Build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
@@ -42,8 +43,9 @@ jobs:
           path: Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_8.0.zip
           
   LatestRelease:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: 发布
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: Build
     permissions:
          contents: write
@@ -75,8 +77,8 @@ jobs:
          
   ClearTempArtifacts:
     name: 清理临时文件
-    if: always()
-    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && always()
+    runs-on: ubuntu-24.04
     needs:
       - LatestRelease
     permissions:
