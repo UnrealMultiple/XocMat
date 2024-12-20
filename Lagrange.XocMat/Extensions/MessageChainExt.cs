@@ -22,6 +22,6 @@ public static class MessageChainExt
 
     public static FileEntity? GetFile(this MessageChain chain)
     {
-        return (FileEntity)chain.Where(c => c is FileEntity).First();
+        return (FileEntity?)chain.Where(c => c is FileEntity).FirstOrDefault();
     }
 }

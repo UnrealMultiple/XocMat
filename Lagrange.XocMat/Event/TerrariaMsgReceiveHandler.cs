@@ -15,6 +15,7 @@ using Lagrange.XocMat.Internal.Socket.Action.Response;
 using Lagrange.XocMat.Internal.Socket.PlayerMessage;
 using Lagrange.XocMat.Internal.Socket.ServerMessage;
 using Lagrange.XocMat.Net;
+using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Logging;
 using ProtoBuf;
 using System.Reactive.Linq;
@@ -252,6 +253,17 @@ public class TerrariaMsgReceiveHandler
         if (args.Chain.GroupMemberInfo!.Uin == bot.BotUin)
         {
             return;
+        }
+        var file = args.Chain.GetFile();
+        if (file != null && file.FileSize < 1024 * 1024 * 30)
+        { 
+            foreach(var setting in XocMatSetting.Instance.Servers)
+            {
+                if (file.FileUrl != null && setting != null && setting.Groups.Contains(Convert.ToUInt32(args.Chain.GroupUin)) && setting.WaitFile != null)
+                {
+                    setting.WaitFile.SetResult(await HttpUtils.HttpGetByte(file.FileUrl));
+                }
+            }
         }
         var text = args.Chain.GetText();
         if (string.IsNullOrEmpty(text))
