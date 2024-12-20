@@ -30,7 +30,7 @@ public class Account : RecordBase<Account>
         }
     }
 
-    private static Context context => Db.Context<Account>("GroupList");
+    private static Context context => Db.Context<Account>("Account");
 
     public static List<Account> Accounts => context.Records.ToList();
 
