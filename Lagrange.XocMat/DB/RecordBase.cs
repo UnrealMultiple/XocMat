@@ -22,7 +22,7 @@ public abstract class RecordBase<T> where T : RecordBase<T>
         }
         public Context(string tableName) : base(GetProvider(), RecordBase<T>.ConnectionString)
         {
-            this.MappingSchema.AddScalarType(typeof(string), new LinqToDB.SqlQuery.SqlDataType(DataType.NVarChar, 255));
+            MappingSchema.AddScalarType(typeof(string), new LinqToDB.SqlQuery.SqlDataType(DataType.NVarChar, 255));
             this.CreateTable<T>(tableName, tableOptions: TableOptions.CreateIfNotExists);
         }
     }

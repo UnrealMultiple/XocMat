@@ -58,7 +58,7 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
         OperatHandler.OnReload += args =>
         {
             _instance = GetConfig();
-            if(!string.IsNullOrEmpty(_instance.ReloadMsg))
+            if (!string.IsNullOrEmpty(_instance.ReloadMsg))
                 args.Message.Text(_instance.ReloadMsg);
             return ValueTask.CompletedTask;
         };

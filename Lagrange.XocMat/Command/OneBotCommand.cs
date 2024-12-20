@@ -1660,7 +1660,7 @@ public class OneBotCommand
         }
         var sb = new StringBuilder();
         foreach (var server in XocMatSetting.Instance.Servers)
-        { 
+        {
             var cmd = "/" + string.Join(" ", args.Parameters);
             var api = await server.Command(cmd);
             sb.AppendLine($"[{server.Name}]命令执行结果:");

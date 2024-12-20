@@ -76,7 +76,7 @@ public abstract class XocMatPlugin : IDisposable
             {
                 CommandManager.RegisterCommand(type);
             }
-            
+
         }
     }
 
