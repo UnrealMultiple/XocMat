@@ -1,9 +1,10 @@
-name: 发布
-
-on:
+name: 构建程序
+on: 
   push:
-    branches: [ "master"]
-    
+    branches:
+      - '**'
+  pull_request:
+  
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -42,6 +43,7 @@ jobs:
           path: Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_8.0.zip
           
   LatestRelease:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: 发布
     runs-on: ubuntu-latest
     needs: Build
