@@ -476,7 +476,6 @@ public class OneBotCommand
         var sw = new Stopwatch();
         sw.Start();
         var reloadArgs = new ReloadEventArgs(args.EventArgs.Chain.GroupUin!.Value);
-        reloadArgs.Message.Text("文件已成功重新加载。\n");
         await OperatHandler.Reload(reloadArgs);
         sw.Stop();
         reloadArgs.Message.Text($"所有配置文件已成功重新加载，耗时 {sw.Elapsed.TotalSeconds:F5} 秒。");
