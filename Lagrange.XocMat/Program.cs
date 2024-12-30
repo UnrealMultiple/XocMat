@@ -1,5 +1,4 @@
 ﻿using Lagrange.XocMat;
-using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using System.Runtime;
 using System.Text;
@@ -37,11 +36,8 @@ internal abstract class Program
             Console.ReadLine();
         }
 
-        XocMatHostAppBuilder.instance
-        .ConfigureConfiguration("appsettings.json", false, true)
-        .ConfigureBots()
-        .ConfigureOneBot()
-        .Build()
-        .Run();
+        XocMatApp.Instance
+            .Builder()
+            .Start();
     }
 }

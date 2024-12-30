@@ -23,9 +23,9 @@ public class XocMatAPI : BackgroundService
 
     public static string SAVE_PATH => Path.Combine(PATH, "Config");
 
-    public static TerrariaMsgReceiveHandler TerrariaMsgReceive => XocMatHostAppBuilder.instance.App.Services.GetRequiredService<TerrariaMsgReceiveHandler>();
+    public static TerrariaMsgReceiveHandler TerrariaMsgReceive => XocMatApp.Instance.Services.GetRequiredService<TerrariaMsgReceiveHandler>();
 
-    public static CommandManager Command => XocMatHostAppBuilder.instance.App.Services.GetRequiredService<CommandManager>();
+    public static CommandManager Command => XocMatApp.Instance.Services.GetRequiredService<CommandManager>();
 
     public XocMatAPI(BotContext botContext, ILogger<XocMatAPI> logger)
     {

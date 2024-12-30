@@ -256,8 +256,8 @@ public class TerrariaMsgReceiveHandler
         }
         var file = args.Chain.GetFile();
         if (file != null && file.FileSize < 1024 * 1024 * 30)
-        { 
-            foreach(var setting in XocMatSetting.Instance.Servers)
+        {
+            foreach (var setting in XocMatSetting.Instance.Servers)
             {
                 if (file.FileUrl != null && setting != null && setting.Groups.Contains(Convert.ToUInt32(args.Chain.GroupUin)) && setting.WaitFile != null)
                 {

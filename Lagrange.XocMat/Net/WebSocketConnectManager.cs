@@ -26,12 +26,12 @@ internal class WebSocketConnectManager
     public static WebSocketServer.ConnectionContext? GetConnent(string name)
     {
         if (Connect.TryGetValue(name, out var id))
-            return XocMatHostAppBuilder.instance.App?.Services.GetRequiredService<TShockReceive>().GetConnectionContext(id);
+            return XocMatApp.Instance.Services.GetRequiredService<TShockReceive>().GetConnectionContext(id);
         return null;
     }
 
     public static void Send(byte[] buffer, string id)
     {
-        XocMatHostAppBuilder.instance.App.Services.GetRequiredService<TShockReceive>().Send(buffer, id);
+        XocMatApp.Instance.Services.GetRequiredService<TShockReceive>().Send(buffer, id);
     }
 }
