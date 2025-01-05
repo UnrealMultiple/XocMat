@@ -12,7 +12,7 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
 {
     public readonly List<Assembly> LoadAssemblys = [];
 
-    public readonly List<XocMatPlugin> Plugins = [];
+    public readonly List<PluginContainer> Plugins = [];
 
     protected override Assembly? Load(AssemblyName assemblyName)
     {
@@ -41,21 +41,21 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
                 {
                     var loggerFactory = XocMatApp.Instance.Services.GetRequiredService<LoggerFactory>();
                     if (Activator.CreateInstance(type, loggerFactory.CreateLogger(type), cmdManager, bot) is XocMatPlugin instance)
-                        Plugins.Add(instance);
+                        Plugins.Add(new(instance));
                 }
             }
         }
-        Plugins.OrderBy(p => p.Order)
+        Plugins.OrderBy(p => p.Plugin.Order)
             .ForEach(p =>
             {
-                logger.LogInformation($"Plugin {p.Name} V{p.Version} by({p.Author}) Initiate.");
+                logger.LogInformation($"Plugin {p.Plugin.Name} V{p.Plugin.Version} by({p.Plugin.Author}) Initiate.");
                 p.Initialize();
             });
     }
 
     public void UnloadPlugin()
     {
-        Plugins.ForEach(x => x.Dispose());
+        Plugins.ForEach(x => x.DeInitialize());
         Plugins.Clear();
         LoadAssemblys.Clear();
         Unload();

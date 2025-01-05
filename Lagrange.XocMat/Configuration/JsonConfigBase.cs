@@ -1,4 +1,5 @@
 ﻿using Lagrange.XocMat.Event;
+using Lagrange.XocMat.EventArgs;
 using Lagrange.XocMat.Extensions;
 
 namespace Lagrange.XocMat.Configuration;
@@ -9,10 +10,13 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
 
     protected virtual string Filename => typeof(T).Namespace ?? typeof(T).Name;
 
-    protected virtual string? ReloadMsg => null;
-
     protected virtual void SetDefault()
     {
+    }
+
+    protected virtual void Reload(ReloadEventArgs args)
+    {
+        args.Message.Text($"[{Filename}] config reload successfully!\n");
     }
 
     private string FullFilename => Path.Combine(XocMatAPI.SAVE_PATH, $"{Filename}.json");
@@ -58,8 +62,7 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
         OperatHandler.OnReload += args =>
         {
             _instance = GetConfig();
-            if (!string.IsNullOrEmpty(_instance.ReloadMsg))
-                args.Message.Text(_instance.ReloadMsg);
+            _instance.Reload(args);
             return ValueTask.CompletedTask;
         };
         return Instance.Filename;

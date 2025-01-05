@@ -25,4 +25,9 @@ public static class MessageBuilderExt
         builder.Add(m);
         return builder;
     }
+
+    public static async Task<MessageResult> Reply(this MessageBuilder message)
+    { 
+        return await XocMatAPI.BotContext.Reply(message);
+    }
 }
