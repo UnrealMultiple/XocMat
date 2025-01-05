@@ -134,8 +134,8 @@ public class CommandManager
                 var cmdName = cmdParam[0];
                 cmdParam.RemoveAt(0);
                 var account = Account.GetAccountNullDefault(args.Chain.GroupMemberInfo!.Uin);
-                foreach (var command in GroupCommandDelegate)
-                {
+                foreach(var command in GroupCommandDelegate.ToArray())
+                { 
                     if (command.Name.Contains(cmdName))
                     {
                         try

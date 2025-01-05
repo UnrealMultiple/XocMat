@@ -9,13 +9,13 @@ public class PluginContainer(XocMatPlugin plugin)
 
     public void DeInitialize()
     {
-        Plugin.Dispose();
         Initialized = false;
+        Plugin.Dispose();
     }
 
     public void Initialize()
-    { 
-        Plugin.Initialize();
+    {
         Initialized = true;
+        Plugin.Initialize();
     }
 }
