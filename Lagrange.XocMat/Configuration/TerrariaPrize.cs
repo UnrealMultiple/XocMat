@@ -17,8 +17,6 @@ public class TerrariaPrize : JsonConfigBase<TerrariaPrize>
 
     protected override string Filename => "Prize";
 
-    protected override string? ReloadMsg => "[TerrariaPirze]: config reload successfully!\n";
-
     public Prize? Next()
     {
         Random random = new Random();

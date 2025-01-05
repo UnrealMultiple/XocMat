@@ -12,8 +12,6 @@ public class TerrariaShop : JsonConfigBase<TerrariaShop>
 
     protected override string Filename => "Shop";
 
-    protected override string? ReloadMsg => "[TerrariaShop]: config reload successfully!\n";
-
     public Shop? GetShop(string Name)
     {
         return TrShop.Find(x => x.Name == Name);

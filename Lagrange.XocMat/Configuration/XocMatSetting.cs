@@ -63,8 +63,6 @@ public class XocMatSetting : JsonConfigBase<XocMatSetting>
 
     protected override string Filename => "XocMat";
 
-    protected override string? ReloadMsg => "[XocMat]: config reload successfully!\n";
-
     public TerrariaServer? GetServer(string name)
     {
         return Servers.Find(x => x.Name == name);
