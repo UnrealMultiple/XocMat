@@ -37,9 +37,9 @@ jobs:
         run: zip -r -j Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_9.0.zip Lagrange.XocMat/bin/Release/net9.0/${{ matrix.runtimeIdentifier }}/publish/
       
       - name: 上传临时文件
-        uses: actions/upload-artifact@v4
+        uses: actions/-artifuploadact@v4
         with:
-          name: Artifacts
+          name: Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_9.0
           path: Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_9.0.zip
           
   LatestRelease:
@@ -59,10 +59,12 @@ jobs:
           git tag -f V1.0.0.0
           git push -f origin V1.0.0.0
       - name: 下载临时插文件
-        uses: actions/download-artifact@v3
-        with:
-          name: Artifacts
-          path: ./bin
+        uses: actions/download-artifact@v4
+          with:
+            path: bin
+            merge-multiple: true
+      - name: 拆分压缩包
+        run: ls -R bin
       - name: 发布Release
         uses: ncipollo/release-action@v1
         with:
