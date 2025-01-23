@@ -79,6 +79,8 @@ public class OneBotPermissions
 
     public const string SelfInfo = "onebot.tshock.userinfo";
 
+    public const string OtherInfo = "onebot.tshock.otheruserinfo";
+
     public const string TerrariaWiki = "onebot.terraria.wiki";
 
     public const string StartTShock = "onebot.tshock.start";
