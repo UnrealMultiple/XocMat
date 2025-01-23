@@ -1,4 +1,5 @@
-﻿using Lagrange.XocMat.Exceptions;
+﻿using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.Exceptions;
 using LinqToDB;
 using LinqToDB.Mapping;
 
@@ -50,7 +51,7 @@ public class Sign : RecordBase<Sign>
         {
             if (signinfo.LastDate == Now)
             {
-                throw new SignException("你已经签到过了你个傻逼!");
+                throw new SignException($"{XocMatSetting.Instance.RepeatCheckinNotice}");
             }
             else
             {

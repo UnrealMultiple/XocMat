@@ -58,6 +58,9 @@ public class XocMatSetting : JsonConfigBase<XocMatSetting>
     [JsonProperty("货币名称")]
     public string Currency { get; init; } = "星币";
 
+    [JsonProperty("重复签到提示")]
+    public string RepeatCheckinNotice { get; init; } = "你已经签到过了你个傻逼!";
+
     [JsonProperty("服务器列表")]
     public List<TerrariaServer> Servers { get; init; } = [];
 
