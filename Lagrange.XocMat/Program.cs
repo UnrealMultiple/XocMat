@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime;
 using System.Text;
 
-namespace Lagrange.OneBot;
+namespace Lagrange.XocMat;
 
 internal abstract class Program
 {
@@ -12,8 +12,8 @@ internal abstract class Program
         Console.Title = "Lagrange.XocMat";
         string version = Assembly.GetAssembly(typeof(Program))?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-            .InformationalVersion ?? "Unknown Lagrange.OneBot Version";
-        Console.WriteLine($"Lagrange.OneBot Version: {version}\n");
+            .InformationalVersion ?? "Unknown Lagrange.XocMat Version";
+        Console.WriteLine($"Lagrange.XocMat Version: {version}\n");
 
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;

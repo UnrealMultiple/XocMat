@@ -44,18 +44,4 @@ public class XocMatApp
         Services.GetRequiredService<TerrariaMsgReceiveHandler>();
         _host.Run();
     }
-
-    //public async Task StopAsync(CancellationToken cancellationToken = new())
-    //{
-    //    Logger.LogInformation("Lagrange.OneBot Implementation has stopped");
-
-    //    Instance.Dispose();
-    //    await _hostApp.StopAsync(cancellationToken);
-    //}
-
-    //public void Dispose()
-    //{
-    //    _hostApp.Dispose();
-    //    GC.SuppressFinalize(this);
-    //}
 }
