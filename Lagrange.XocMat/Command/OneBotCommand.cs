@@ -1832,7 +1832,7 @@ public class OneBotCommand
     #endregion
 
     #region 查询他人信息
-    [CommandMatch("查", OneBotPermissions.SelfInfo)]
+    [CommandMatch("查", OneBotPermissions.OtherInfo)]
     public static async ValueTask AcountInfo(CommandArgs args)
     {
         var at = args.EventArgs.Chain.GetMention();
