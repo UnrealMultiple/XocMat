@@ -9,7 +9,7 @@ namespace Lagrange.XocMat.Utility;
 
 internal class ImageUtils
 {
-    private FontFamily FontFamily { get; set; }
+    public FontFamily FontFamily { get; }
 
     public static readonly ImageUtils Instance = new();
     private ImageUtils()

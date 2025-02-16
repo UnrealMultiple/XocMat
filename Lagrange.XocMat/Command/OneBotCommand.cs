@@ -178,17 +178,19 @@ public class OneBotCommand
     [CommandMatch("泰拉商店", OneBotPermissions.TerrariaShop)]
     public static async ValueTask Shop(CommandArgs args)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($$"""<div align="center">""");
-        sb.AppendLine();
-        sb.AppendLine();
-        sb.AppendLine("# 泰拉商店");
-        sb.AppendLine();
-        sb.AppendLine();
-        sb.AppendLine("</div>");
-        sb.AppendLine();
-        sb.AppendLine("|商品ID|商品名称|数量|价格|");
-        sb.AppendLine("|:--:|:--:|:--:|:--:|");
+        //var sb = new StringBuilder();
+        //sb.AppendLine($$"""<div align="center">""");
+        //sb.AppendLine();
+        //sb.AppendLine();
+        //sb.AppendLine("# 泰拉商店");
+        //sb.AppendLine();
+        //sb.AppendLine();
+        //sb.AppendLine("</div>");
+        //sb.AppendLine();
+        //sb.AppendLine("|商品ID|商品名称|数量|价格|");
+        //sb.AppendLine("|:--:|:--:|:--:|:--:|");
+        var table = new string[TerrariaShop.Instance.TrShop.Count, 4];
+
         var id = 1;
         foreach (var item in TerrariaShop.Instance.TrShop)
         {
