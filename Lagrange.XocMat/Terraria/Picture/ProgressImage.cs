@@ -1,4 +1,4 @@
-﻿using Lagrange.XocMat.Utility;
+﻿using Lagrange.XocMat.Utility.Images;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;

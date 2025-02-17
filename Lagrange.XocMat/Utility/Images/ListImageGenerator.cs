@@ -5,7 +5,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Drawing;
 
-namespace Lagrange.XocMat.Utility;
+namespace Lagrange.XocMat.Utility.Images;
 
 public class ListImageGenerator
 {

@@ -4,12 +4,18 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.Fonts;
 
-namespace Lagrange.XocMat.Utility;
+namespace Lagrange.XocMat.Utility.Images;
 
 public class TableGenerator
 {
-    public async Task<byte[]> GenerateTable(string backgroundImagePath, string title, string[,] tableData, Font font, bool titleBottom = true)
+    public async Task<byte[]> GenerateTable(TableBuilder tableBuilder)
     {
+        string backgroundImagePath = tableBuilder.GetBackgroundImagePath();
+        string title = tableBuilder.GetTitle();
+        string[,] tableData = tableBuilder.GetTableData();
+        Font font = tableBuilder.GetFont();
+        bool titleBottom = tableBuilder.IsTitleBottom();
+
         // 计算每列的最大宽度
         int cellPadding = 10;
         int[] columnWidths = new int[tableData.GetLength(1)];

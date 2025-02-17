@@ -5,7 +5,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace Lagrange.XocMat.Utility;
+namespace Lagrange.XocMat.Utility.Images;
 
 internal class ImageUtils
 {
@@ -78,7 +78,7 @@ internal class ImageUtils
                 DrawImage(image, textSlot, sourceX, sourceY + slot.Height + intervalX);
                 using var itemPng = Image.Load(buffer);
                 ResetSize(itemPng, slotSize - 40);
-                DrawImage(image, itemPng, ((slot.Width - itemPng.Width) / 2) + sourceX, ((slot.Height - itemPng.Height) / 2) + sourceY);
+                DrawImage(image, itemPng, (slot.Width - itemPng.Width) / 2 + sourceX, (slot.Height - itemPng.Height) / 2 + sourceY);
                 var text = status ? "已击杀" : "未击杀";
                 var color = status ? Color.GreenYellow : Color.White;
                 DrawText(image, text, sourceX + 30, sourceY + slot.Height + intervalX + textSlot.Height / 3, 110, color);
@@ -134,8 +134,8 @@ internal class ImageUtils
             {
                 using var itemPng = Image.Load((byte[])Properties.Resources.ResourceManager.GetObject(items[i].netID.ToString())!);
                 ResetSize(itemPng, slotSize - 40);
-                DrawImage(image, itemPng, ((slot.Width - itemPng.Width) / 2) + sourceX, ((slot.Height - itemPng.Height) / 2) + sourceY);
-                DrawText(image, items[i].stack.ToString(), sourceX, (sourceY + slot.Height) - 30, 30, Color.White);
+                DrawImage(image, itemPng, (slot.Width - itemPng.Width) / 2 + sourceX, (slot.Height - itemPng.Height) / 2 + sourceY);
+                DrawText(image, items[i].stack.ToString(), sourceX, sourceY + slot.Height - 30, 30, Color.White);
             }
             if ((i + 1) % maxLineCount == 0)
             {

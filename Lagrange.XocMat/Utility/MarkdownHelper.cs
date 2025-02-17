@@ -7,10 +7,6 @@ internal class MarkdownHelper
 {
     private static IBrowser? browser = null;
 
-    private static IPage? Page = null;
-
-    private static IElementHandle? App;
-
     private static Dictionary<string, string> ReplaceDic = new()
     {
         { "\n", "\\n" },
@@ -26,15 +22,13 @@ internal class MarkdownHelper
             await new BrowserFetcher().DownloadAsync();
             browser = await Puppeteer.LaunchAsync(new LaunchOptions()
             {
-                Headless = true,
+                Headless = false,
             });
         }
-        if (Page == null || Page.IsClosed || Page.Browser.Process.HasExited)
-        {
-            Page = await browser.NewPageAsync();
-            await Page.GoToAsync($"http://docs.oiapi.net/view.php?theme=light", 5000).ConfigureAwait(false);
-            App = await Page.QuerySelectorAsync("body").ConfigureAwait(false);
-        }
+
+        using var Page = await browser.NewPageAsync();
+        await Page.GoToAsync($"http://docs.oiapi.net/view.php?theme=light", 5000).ConfigureAwait(false);
+        var App = await Page.QuerySelectorAsync("body").ConfigureAwait(false);
         await Page.WaitForNetworkIdleAsync(new()
         {
             Timeout = 5000
@@ -75,8 +69,10 @@ internal class MarkdownHelper
             postData = postData.Replace(oldChar, newChar);
         }
 
+        await Page.EvaluateExpressionAsync("document.body.style.backgroundColor = 'white'");
         await Page.EvaluateExpressionAsync($"document.querySelector('#app').innerHTML = '{postData.Trim()}'");
         await App!.EvaluateFunctionAsync("element => element.style.width = 'fit-content'");
+
         var clip = await App!.BoundingBoxAsync().ConfigureAwait(false);
         var ret = await Page.ScreenshotDataAsync(new()
         {

@@ -1,6 +1,6 @@
 
 using Lagrange.XocMat.Internal.Socket.Internet;
-using Lagrange.XocMat.Utility;
+using Lagrange.XocMat.Utility.Images;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 

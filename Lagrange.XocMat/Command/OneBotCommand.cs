@@ -14,6 +14,7 @@ using Lagrange.XocMat.Internal.Terraria;
 using Lagrange.XocMat.Permission;
 using Lagrange.XocMat.Terraria.Picture;
 using Lagrange.XocMat.Utility;
+using Lagrange.XocMat.Utility.Images;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Text;
@@ -178,26 +179,16 @@ public class OneBotCommand
     [CommandMatch("泰拉商店", OneBotPermissions.TerrariaShop)]
     public static async ValueTask Shop(CommandArgs args)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($$"""<div align="center">""");
-        sb.AppendLine();
-        sb.AppendLine();
-        sb.AppendLine("# 泰拉商店");
-        sb.AppendLine();
-        sb.AppendLine();
-        sb.AppendLine("</div>");
-        sb.AppendLine();
-        sb.AppendLine("|商品ID|商品名称|数量|价格|");
-        sb.AppendLine("|:--:|:--:|:--:|:--:|");
-        var table = new string[TerrariaShop.Instance.TrShop.Count, 4];
-
+        var tableBuilder = new TableBuilder()
+            .SetTitle("泰拉商店")
+            .AddRow("商品ID", "商品名称", "数量", "价格");
         var id = 1;
         foreach (var item in TerrariaShop.Instance.TrShop)
         {
-            sb.AppendLine($"|{id}|{item.Name}|{item.Num}|{item.Price}|");
+            tableBuilder.AddRow(item.ID.ToString(), item.Name, item.Num.ToString(), item.Price.ToString());
             id++;
         }
-        await args.MessageBuilder.MarkdownImage(sb.ToString()).Reply();
+        await args.MessageBuilder.Image(await tableBuilder.BuildAsync()).Reply();
     }
     #endregion
 
@@ -326,24 +317,17 @@ public class OneBotCommand
     [CommandMatch("泰拉奖池", OneBotPermissions.TerrariaPrize)]
     public static async ValueTask Prize(CommandArgs args)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($$"""<div align="center">""");
-        sb.AppendLine();
-        sb.AppendLine();
-        sb.AppendLine("# 泰拉奖池");
-        sb.AppendLine();
-        sb.AppendLine();
-        sb.AppendLine("</div>");
-        sb.AppendLine();
-        sb.AppendLine("|奖品ID|奖品名称|最大数量|最小数量|中奖概率|");
-        sb.AppendLine("|:--:|:--:|:--:|:--:|:--:|");
+        var tableBuilder = new TableBuilder()
+            .SetTitle("泰拉奖池")
+            .AddRow("奖品ID", "奖品名称", "最大数量", "最小数量", "中奖概率");
         var id = 1;
         foreach (var item in TerrariaPrize.Instance.Pool)
         {
-            sb.AppendLine($"|{id}|{item.Name}|{item.Max}|{item.Min}|{item.Probability}％|");
+            tableBuilder.AddRow(id.ToString(), item.Name, item.Max.ToString(), item.Min.ToString(), item.Probability.ToString());
             id++;
         }
-        await args.MessageBuilder.MarkdownImage(sb.ToString()).Reply();
+        var s = await args.MessageBuilder.Image(await tableBuilder.BuildAsync()).Reply();
+        Console.WriteLine(s.Result);
     }
     #endregion
 
@@ -1159,39 +1143,49 @@ public class OneBotCommand
             await args.EventArgs.Reply("服务器列表空空如也!");
             return;
         }
-        var sb = new StringBuilder();
-
-        foreach (var x in XocMatSetting.Instance.Servers)
+        var tableBuilder = new TableBuilder();
+        tableBuilder.SetTitle("服务器列表");
+        tableBuilder.AddRow("服务器名称", "服务器IP", "服务器端口", "服务器版本", "服务器介绍", "运行状态", "世界名称", "世界种子", "世界大小");
+        foreach (var server in XocMatSetting.Instance.Servers)
         {
-            var status = await x.ServerStatus();
-            sb.AppendLine($$"""<div align="center">""");
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine($"# {x.Name}");
-            sb.AppendLine($"### 地址: {x.IP}");
-            sb.AppendLine($"### 端口: {x.NatProt}");
-            sb.AppendLine($"### 版本: {x.Version}");
-            sb.AppendLine($"### 介绍: {x.Describe}");
-            sb.AppendLine($"### 状态: {(status != null && status.Status ? $"已运行 {status.RunTime:dd\\.hh\\:mm\\:ss}" : "无法连接")}");
-            if (status != null && status.Status)
-            {
-                sb.AppendLine($"### 地图大小: {status.WorldWidth}x{status.WorldHeight}");
-                sb.AppendLine($"### 地图名称: {status.WorldName}");
-                sb.AppendLine($"### 地图种子: {status.WorldSeed}");
-                sb.AppendLine($"### 地图ID: {status.WorldID}");
-                sb.AppendLine($"## 服务器插件");
-                sb.AppendLine($"|插件名称|插件作者|插件介绍");
-                sb.AppendLine($"|:-:|:-:|:-:|");
-                foreach (var plugin in status.Plugins)
-                {
-                    sb.AppendLine($"|{plugin.Name}|{plugin.Author}|{plugin.Description}");
-                }
-            }
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine("</div>");
+            var status = await server.ServerStatus();
+            tableBuilder.AddRow(server.Name, server.IP, server.NatProt.ToString(), server.Version, server.Describe, 
+                !status.Status ? "无法连接" : $"已运行:{status.RunTime:dd\\.hh\\:mm\\:ss}",
+                !status.Status ? "无法获取" : status.WorldName,
+                !status.Status ? "无法获取" : status.WorldSeed,
+                !status.Status ? "无法获取" : $"{status.WorldWidth}x{status.WorldHeight}");
         }
-        await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).MarkdownImage(sb.ToString()));
+       
+        await args.MessageBuilder.Image(await tableBuilder.BuildAsync()).Reply();
+    }
+    #endregion
+
+    #region 服务器列表
+    [CommandMatch("插件列表", OneBotPermissions.ServerList)]
+    public static async ValueTask ServerInfo(CommandArgs args)
+    {
+        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        {
+            var status = await server.ServerStatus();
+            if(!status.Status)
+            {
+                await args.EventArgs.Reply("无法连接服务器!", true);
+                return;
+            }
+            var tableBuilder = new TableBuilder();
+            tableBuilder.SetTitle($"{server.Name}插件列表");
+            tableBuilder.SetTitleBottom(true);
+            tableBuilder.AddRow("插件名称", "插件说明", "插件作者");
+            foreach (var plugin in status.Plugins)
+            {
+                tableBuilder.AddRow(plugin.Name, plugin.Description, plugin.Author);
+            }
+            await args.MessageBuilder.Image(await tableBuilder.BuildAsync()).Reply();
+        }
+        else
+        {
+            await args.EventArgs.Reply("未切换服务器或服务器无效!", true);
+        }
     }
     #endregion
 
