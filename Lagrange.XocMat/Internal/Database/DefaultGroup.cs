@@ -56,7 +56,7 @@ public class DefaultGroup : Group
     }
     public DefaultGroup() : base(XocMatSetting.Instance.DefaultPermGroup)
     {
-        if (permissions.Count == 0)
+        if (Permissions.Count == 0)
             SetPermission(Selfpermissions);
     }
 }

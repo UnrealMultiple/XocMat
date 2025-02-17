@@ -1477,7 +1477,7 @@ public class OneBotCommand
     #endregion
 
     #region 查询注册人
-    [CommandMap("注册查询")]
+    [CommandMap("注册查询", "name")]
     [CommandPermission(OneBotPermissions.SearchUser)]
     public static async ValueTask SearchUser(CommandArgs args)
     {
@@ -1497,7 +1497,7 @@ public class OneBotCommand
                 var result = (await args.Bot.FetchMembers(args.EventArgs.Chain.GroupUin!.Value)).FirstOrDefault(x => x.Uin == user.Id);
                 if (result != null)
                 {
-                    sb.AppendLine($"群昵称: {result.MemberCard}");
+                    sb.AppendLine($"群昵称: {result.MemberName}");
                 }
                 else
                 {
