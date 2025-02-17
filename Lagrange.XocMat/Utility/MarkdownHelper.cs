@@ -22,7 +22,7 @@ internal class MarkdownHelper
             await new BrowserFetcher().DownloadAsync();
             browser = await Puppeteer.LaunchAsync(new LaunchOptions()
             {
-                Headless = false,
+                Headless = true,
             });
         }
 
