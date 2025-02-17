@@ -1,5 +1,6 @@
 using Lagrange.XocMat.Extensions;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -124,10 +125,28 @@ public class SystemHelper
     {
         foreach (var process in Process.GetProcesses())
         {
-            if (process.ProcessName.Contains("chrome"))
+            if (process.ProcessName.Contains("chrome") && CanAccessProcess(process))
             {
                 process.Kill();
             }
+        }
+    }
+    
+    public static bool CanAccessProcess(Process process)
+    {
+        try
+        {
+            // 尝试访问进程的一个需要权限的属性
+            var modules = process.Modules;
+            return true;
+        }
+        catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // 拒绝访问
+        {
+            return false;
+        }
+        catch // 其他异常，如进程已退出
+        {
+            return false;
         }
     }
 

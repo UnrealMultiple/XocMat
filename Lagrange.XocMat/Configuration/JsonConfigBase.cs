@@ -28,7 +28,9 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
         var file = t.FullFilename;
         if (File.Exists(file))
         {
-            return File.ReadAllText(file).ToObject<T>() ?? t;
+            var obj = File.ReadAllText(file).ToObject<T>() ?? t;
+            obj.SaveTo();
+            return obj;
         }
         t.SetDefault();
         t.SaveTo();
