@@ -218,27 +218,28 @@ public class CommandManager
     {
         var flag = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public;
         var methods = type.GetMethods(flag)
-            .Where(m => m.IsDefined(typeof(CommandMatch)) && (m.CommandParamPares(typeof(CommandArgs)) || m.CommandParamPares(typeof(ServerCommandArgs))))
+            .Where(m => m.IsDefined(typeof(CommandMap)) && (m.CommandParamPares(typeof(CommandArgs)) || m.CommandParamPares(typeof(ServerCommandArgs))))
             .ToArray();
         var instance = Activator.CreateInstance(type);
         if (instance == null)
             return;
         foreach (var method in methods)
         {
-            var attr = method.GetCustomAttribute<CommandMatch>()!;
+            var cmdMap = method.GetCustomAttribute<CommandMap>()!;
+            var cmdPerm = method.GetCustomAttribute<CommandPermission>()!;
             if (method.IsStatic)
             {
                 if (method.CommandParamPares(typeof(CommandArgs)))
-                    AddGroupCommand(new(attr.Name, method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(), attr.Permission));
+                    AddGroupCommand(new(cmdMap.Name, method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(), cmdPerm.Permissions));
                 else
-                    AddServerCommand(new(attr.Name, method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(), attr.Permission));
+                    AddServerCommand(new(cmdMap.Name, method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(), cmdPerm.Permissions));
                 continue;
             }
             var _method = instance.GetType().GetMethod(method.Name, flag)!;
             if (method.CommandParamPares(typeof(CommandArgs)))
-                AddGroupCommand(new(attr.Name, _method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(instance), attr.Permission));
+                AddGroupCommand(new(cmdMap.Name, _method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(instance), cmdPerm.Permissions));
             else
-                AddServerCommand(new(attr.Name, _method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(instance), attr.Permission));
+                AddServerCommand(new(cmdMap.Name, _method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(instance), cmdPerm.Permissions));
         }
     }
 

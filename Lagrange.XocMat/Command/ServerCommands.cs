@@ -10,7 +10,8 @@ namespace Lagrange.XocMat.Commands;
 [CommandSeries]
 public class ServerCommands
 {
-    [CommandMatch("泰拉商店", OneBotPermissions.TerrariaShop)]
+    [CommandMap("泰拉商店")]
+    [CommandPermission(OneBotPermissions.TerrariaShop)]
     public static async ValueTask ShopList(ServerCommandArgs args)
     {
         if (args.Server == null) return;
@@ -25,7 +26,8 @@ public class ServerCommands
         await args.Server.PrivateMsg(args.UserName, $"泰拉商店列表:\n{sb}", Color.GreenYellow);
     }
 
-    [CommandMatch("抽", OneBotPermissions.TerrariaPrize)]
+    [CommandMap("抽")]
+    [CommandPermission(OneBotPermissions.TerrariaPrize)]
     public static async ValueTask Prize(ServerCommandArgs args)
     {
         if (args.Server == null) return;
@@ -65,7 +67,8 @@ public class ServerCommands
     }
 
 
-    [CommandMatch("购买", OneBotPermissions.TerrariaShop)]
+    [CommandMap("购买")]
+    [CommandPermission(OneBotPermissions.TerrariaShop)]
     public static async ValueTask ShopBuy(ServerCommandArgs args)
     {
         if (args.Server == null) return;
