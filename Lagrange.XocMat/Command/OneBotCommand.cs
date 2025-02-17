@@ -1998,7 +1998,7 @@ public class OneBotCommand
 
     #region 随机视频
     [CommandMap("randv")]
-    [CommandPermission("")]
+    [CommandPermission("onebot.video.rand")]
     public static async ValueTask RandVideo(CommandArgs args)
     {
         await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).Video(await HttpUtils.HttpGetByte("https://www.yujn.cn/api/heisis.php")));
