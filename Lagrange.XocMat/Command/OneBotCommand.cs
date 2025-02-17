@@ -1146,7 +1146,7 @@ public class OneBotCommand
         var tableBuilder = new TableBuilder();
         tableBuilder.SetTitle("服务器列表");
         tableBuilder.AddRow("服务器名称", "服务器IP", "服务器端口", "服务器版本", "服务器介绍", "运行状态", "世界名称", "世界种子", "世界大小");
-        foreach (var server in XocMatSetting.Instance.Servers)
+        foreach (var server in XocMatSetting.Instance.Servers.Where(s => s.Groups.Contains(args.EventArgs.Chain.GroupUin!.Value)))
         {
             var status = await server.ServerStatus();
             tableBuilder.AddRow(server.Name, server.IP, server.NatProt.ToString(), server.Version, server.Describe, 
@@ -1160,7 +1160,7 @@ public class OneBotCommand
     }
     #endregion
 
-    #region 服务器列表
+    #region 服务器信息
     [CommandMatch("插件列表", OneBotPermissions.ServerList)]
     public static async ValueTask ServerInfo(CommandArgs args)
     {
@@ -1246,7 +1246,7 @@ public class OneBotCommand
             return;
         }
         var sb = new StringBuilder();
-        foreach (var server in XocMatSetting.Instance.Servers)
+        foreach (var server in XocMatSetting.Instance.Servers.Where(s => s.Groups.Contains(args.EventArgs.Chain.GroupUin!.Value)))
         {
             var api = await server.ServerOnline();
             sb.AppendLine($"[{server.Name}]在线玩家数量({(api.Status ? api.Players.Count : 0)}/{api.MaxCount})");
