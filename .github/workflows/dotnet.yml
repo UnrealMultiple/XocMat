@@ -61,7 +61,6 @@ jobs:
       - name: 下载临时文件
         uses: dawidd6/action-download-artifact@v8
         with:
-          name: Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_9.0
           path: bin
           skip_unpack: true
       - name: 发布Release
