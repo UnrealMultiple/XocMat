@@ -57,13 +57,13 @@ jobs:
         run: |
           git tag -f V1.0.0.0
           git push -f origin V1.0.0.0
-      - name: 下载临时插文件
-        uses: actions/download-artifact@v4
+
+      - name: 下载临时文件
+        uses: dawidd6/action-download-artifact@v8
         with:
-            path: bin
-            merge-multiple: true
-      - name: 拆分压缩包
-        run: ls -R bin
+          name: Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_9.0
+          path: bin
+          skip_unpack: true
       - name: 发布Release
         uses: ncipollo/release-action@v1
         with:
