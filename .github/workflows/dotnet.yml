@@ -35,7 +35,7 @@ jobs:
         run: sudo apt-get install zip
 
       - name: 生成压缩包
-        run: zip -j Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_9.0.zip Lagrange.XocMat/bin/Release/net9.0/${{ matrix.runtimeIdentifier }}/publish/
+        run: zip -r Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_9.0.zip Lagrange.XocMat/bin/Release/net9.0/${{ matrix.runtimeIdentifier }}/publish/
       
       - name: 上传临时文件
         uses: actions/upload-artifact@v4
