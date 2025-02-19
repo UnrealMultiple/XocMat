@@ -13,7 +13,7 @@ jobs:
       matrix:
         runtimeIdentifier: [ win-x64, linux-x64]
 
-    name: 构建插件
+    name: 构建 Lagrange.XocMat
     steps:
       - uses: actions/checkout@v4
         with:
