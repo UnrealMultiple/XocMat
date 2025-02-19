@@ -29,6 +29,7 @@ jobs:
       - name: 构建插件
         run: |
           dotnet publish Lagrange.XocMat/Lagrange.XocMat.csproj -p:PublishSingleFile=true -p:RuntimeIdentifier=${{ matrix.runtimeIdentifier }} --framework net9.0
+          ls Lagrange.XocMat/bin/Release/net9.0/${{ matrix.runtimeIdentifier }}/publish/
           
       - name: 安装 zip
         run: sudo apt-get install zip
