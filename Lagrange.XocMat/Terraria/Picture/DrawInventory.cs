@@ -3,6 +3,7 @@ using Lagrange.XocMat.Internal.Socket.Internet;
 using Lagrange.XocMat.Utility.Images;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 
 namespace Lagrange.XocMat.Terraria.Picture;
 
@@ -12,8 +13,8 @@ internal class DrawInventory
     {
         var rand = new Random();
         var id = rand.Next(1, 30);
-        using Image image = Image.Load((byte[])Properties.Resources.ResourceManager.GetObject($"bg{id}")!);
-        using Image slot = Image.Load((byte[])Properties.Resources.ResourceManager.GetObject("Slot")!);
+        using Image image = Image.Load($"Resources/Backgrounds/bg{id}.png");
+        using Image slot = Image.Load($"Resources/Slot.png");
         var obj = new
         {
             //背包卡槽位置

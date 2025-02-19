@@ -153,7 +153,7 @@ public class SystemHelper
     public static Internal.Socket.Internet.Item? GetItemById(int id)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var file = "Lagrange.XocMat.Resources.TerrariaID.json";
+        var file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
         var stream = assembly.GetManifestResourceStream(file)!;
         using var reader = new StreamReader(stream);
         var jobj = reader.ReadToEnd().ToObject<JObject>()!;
@@ -176,7 +176,7 @@ public class SystemHelper
     {
         var list = new List<Internal.Socket.Internet.Item>();
         var assembly = Assembly.GetExecutingAssembly();
-        var file = "Lagrange.XocMat.Resources.TerrariaID.json";
+        var file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
         var stream = assembly.GetManifestResourceStream(file)!;
         using var reader = new StreamReader(stream);
         var jobj = JsonNode.Parse(reader.ReadToEnd());

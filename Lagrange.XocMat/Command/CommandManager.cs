@@ -144,7 +144,7 @@ public class CommandManager
                         }
                         catch (Exception ex)
                         {
-                            Logger.LogError(ex.ToString());
+                            Logger.LogInformation(ex.ToString());
                             await args.Reply("使用此命令时发生错误，错误详情请查看日志!", true);
                         }
                     }
