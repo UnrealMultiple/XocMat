@@ -28,7 +28,7 @@ jobs:
           
       - name: 构建插件
         run: |
-           dotnet publish Lagrange.XocMat/Lagrange.XocMat.csproj --no-self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none -p:RuntimeIdentifier=${{ matrix.runtimeIdentifier }} --framework net9.0
+           dotnet publish Lagrange.XocMat/Lagrange.XocMat.csproj -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:RuntimeIdentifier=${{ matrix.runtimeIdentifier }} --framework net9.0
            
       - name: 安装 zip
         run: sudo apt-get install zip
