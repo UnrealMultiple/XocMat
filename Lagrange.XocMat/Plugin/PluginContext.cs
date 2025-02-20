@@ -1,5 +1,5 @@
 ﻿using Lagrange.Core;
-using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

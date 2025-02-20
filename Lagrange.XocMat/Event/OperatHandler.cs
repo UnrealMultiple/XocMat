@@ -1,4 +1,5 @@
-﻿using Lagrange.XocMat.Commands;
+﻿using Lagrange.XocMat.Command.CommandArgs;
+using Lagrange.XocMat.Commands;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Enumerates;
@@ -12,7 +13,7 @@ public static class OperatHandler
 
     public static event EventCallBack<PermissionEventArgs, UserPermissionType>? OnUserPermission;
 
-    public static event EventCallBack<CommandArgs, ValueTask>? OnCommand;
+    public static event EventCallBack<GroupCommandArgs, ValueTask>? OnCommand;
 
     public static event EventCallBack<ReloadEventArgs, ValueTask>? OnReload;
 
@@ -38,7 +39,7 @@ public static class OperatHandler
         return args.Handler;
     }
 
-    public static async ValueTask<bool> UserCommand(CommandArgs args)
+    public static async ValueTask<bool> UserCommand(GroupCommandArgs args)
     {
         if (OnCommand == null)
             return false;

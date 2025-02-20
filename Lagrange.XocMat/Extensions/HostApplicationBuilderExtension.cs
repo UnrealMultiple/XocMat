@@ -1,6 +1,6 @@
 using Lagrange.Core.Common;
 using Lagrange.Core.Common.Interface;
-using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Net;

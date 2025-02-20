@@ -1,7 +1,8 @@
 ﻿using Lagrange.Core;
 using Lagrange.XocMat.Attributes;
-using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Command;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace Lagrange.XocMat.Plugin;
 
@@ -64,20 +65,7 @@ public abstract class XocMatPlugin : IDisposable
 
     internal void AutoLoad()
     {
-        foreach (var type in GetType().Assembly.GetTypes())
-        {
-            if (type.IsDefined(typeof(ConfigSeries), false))
-            {
-                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class '{Name}'");
-                var name = method.Invoke(null, []);
-                Logger.LogInformation($"[{Name}] config registered: {name}");
-            }
-            else if (type.IsDefined(typeof(CommandSeries), false))
-            {
-                CommandManager.RegisterCommand(type);
-            }
-
-        }
+        CommandManager.RegisterCommand(GetType().Assembly);
     }
 
     ~XocMatPlugin()
@@ -88,6 +76,7 @@ public abstract class XocMatPlugin : IDisposable
     public void Dispose()
     {
         Dispose(true);
+
         GC.SuppressFinalize(this);
     }
 

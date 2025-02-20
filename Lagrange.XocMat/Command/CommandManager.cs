@@ -1,6 +1,7 @@
 ﻿using Lagrange.Core;
 using Lagrange.Core.Event.EventArg;
 using Lagrange.XocMat.Attributes;
+using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Event;
@@ -11,7 +12,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Text;
 
-namespace Lagrange.XocMat.Commands;
+namespace Lagrange.XocMat.Command;
 
 public class CommandManager
 {
@@ -19,29 +20,21 @@ public class CommandManager
 
     public BotContext Bot { get; }
 
-    public readonly List<Command<CommandArgs>> GroupCommandDelegate = [];
-
-    public readonly List<Command<ServerCommandArgs>> ServerCommandDelegate = [];
+    public readonly List<Command> Commands = [];
 
     public CommandManager(BotContext bot, ILogger<CommandManager> logger)
     {
         Bot = bot;
         Logger = logger;
-        Bot.Invoker.OnGroupMessageReceived += async (BotContext bot, GroupMessageEvent e) => await CommandAdapter(bot, e);
+        Bot.Invoker.OnGroupMessageReceived += async (bot, e) => await GroupCommandAdapter(bot, e);
     }
 
-
-    public void AddGroupCommand(Command<CommandArgs> command)
+    private void AddCommand(Command command)
     {
-        GroupCommandDelegate.Add(command);
+        Commands.Add(command);
     }
 
-    public void AddServerCommand(Command<ServerCommandArgs> command)
-    {
-        ServerCommandDelegate.Add(command);
-    }
-
-    public List<string> ParseParameters(string str)
+    public static List<string> ParseParameters(string str)
     {
         var ret = new List<string>();
         var sb = new StringBuilder();
@@ -87,12 +80,12 @@ public class CommandManager
         return ret;
     }
 
-    private bool IsWhiteSpace(char c)
+    private static bool IsWhiteSpace(char c)
     {
         return c == ' ' || c == '\t' || c == '\n';
     }
 
-    private Dictionary<string, string> ParseCommandLine(List<string> command)
+    private static Dictionary<string, string> ParseCommandLine(List<string> command)
     {
         var args = new Dictionary<string, string>();
         for (int i = 0; i < command.Count; i++)
@@ -113,143 +106,96 @@ public class CommandManager
             }
         }
         return args;
-    }
-
-    public async ValueTask CommandAdapter(BotContext bot, GroupMessageEvent args)
+    }  
+    private RunCommandParams? Run(string text, uint uin)
     {
-        var text = args.Chain.GetText();
         string prefix = string.Empty;
-        XocMatSetting.Instance.CommamdPrefix.ForEach(x =>
+        foreach (var x in XocMatSetting.Instance.CommamdPrefix)
         {
             if (text.StartsWith(x))
             {
                 prefix = x;
-            }
-        });
-        if (!string.IsNullOrEmpty(prefix))
-        {
-            var cmdParam = ParseParameters(text[prefix.Length..]);
-            if (cmdParam.Count > 0)
-            {
-                var cmdName = cmdParam[0];
-                cmdParam.RemoveAt(0);
-                var account = Account.GetAccountNullDefault(args.Chain.GroupMemberInfo!.Uin);
-                foreach(var command in GroupCommandDelegate.ToArray())
-                { 
-                    if (command.Name.Contains(cmdName))
-                    {
-                        try
-                        {
-                            await RunCommandCallback(new CommandArgs(bot, cmdName, args, prefix, cmdParam, ParseCommandLine(cmdParam), account), command);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogInformation(ex.ToString());
-                            await args.Reply("使用此命令时发生错误，错误详情请查看日志!", true);
-                        }
-                    }
-                }
+                break;
             }
         }
-    }
-
-    private async ValueTask RunCommandCallback(CommandArgs args, Command<CommandArgs> command)
-    {
-        foreach (var perm in command.Permission)
-        {
-            if (args.Account.HasPermission(perm))
-            {
-                if (!await OperatHandler.UserCommand(args))
-                {
-                    await command.CallBack(args);
-                    Logger.LogInformation($"group:{args.EventArgs.Chain.GroupUin} {args.EventArgs.Chain.GroupMemberInfo!.MemberName}({args.EventArgs.Chain.GroupMemberInfo!.Uin}) 使用命令: {args.CommamdPrefix}{args.Name}", ConsoleColor.Cyan);
-                }
-                return;
-            }
-        }
-        Logger.LogInformation($"group: {args.EventArgs.Chain.GroupUin} {args.EventArgs.Chain.GroupMemberInfo!.MemberName}({args.EventArgs.Chain.GroupMemberInfo.Uin}) 试图使用命令: {args.CommamdPrefix}{args.Name}", ConsoleColor.Yellow);
-        await args.EventArgs.Reply("你无权使用此命令！");
-    }
-
-    public async ValueTask CommandAdapter(PlayerCommandMessage args)
-    {
-        var text = args.Command;
-        var cmdParam = ParseParameters(text[args.CommandPrefix.Length..]);
+        var cmdParam = ParseParameters(text[prefix.Length..]);
         if (cmdParam.Count > 0)
         {
             var cmdName = cmdParam[0];
             cmdParam.RemoveAt(0);
-            foreach (var command in ServerCommandDelegate)
+            var account = Account.GetAccountNullDefault(uin);
+            foreach (var command in Commands.ToArray())
             {
-                if (command.Name.Contains(cmdName))
+                if (command.Name.Contains(cmdName.ToLower()))
                 {
-                    try
-                    {
-                        await RunCommandCallback(new ServerCommandArgs(Bot, args.ServerName, args.Name, cmdName, args.CommandPrefix, cmdParam, ParseCommandLine(cmdParam)), command);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex.ToString());
-                        if (args.TerrariaServer != null)
-                            await args.TerrariaServer.PrivateMsg(args.Name, ex.Message, Color.DarkRed);
-                    }
+                    return new RunCommandParams(command, cmdParam, cmdName, account, ParseCommandLine(cmdParam), prefix);
                 }
             }
         }
+        return null;
     }
 
-    private async ValueTask RunCommandCallback(ServerCommandArgs args, Command<ServerCommandArgs> command)
-    {
-        foreach (var perm in command.Permission)
-        {
-            if (args.Account.HasPermission(perm))
-            {
-                if (!await OperatHandler.ServerUserCommand(args))
-                {
-                    await command.CallBack(args);
-                    Logger.LogInformation($"Server:{args.ServerName} {args.UserName} 使用命令: {command.Name.First()}", ConsoleColor.Cyan);
-                }
-                return;
-            }
-        }
-    }
 
-    public void RegisterCommand(Type type)
+    public async ValueTask GroupCommandAdapter(BotContext bot, GroupMessageEvent args)
     {
-        var flag = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public;
-        var methods = type.GetMethods(flag)
-            .Where(m => m.IsDefined(typeof(CommandMap)) && (m.CommandParamPares(typeof(CommandArgs)) || m.CommandParamPares(typeof(ServerCommandArgs))))
-            .ToArray();
-        var instance = Activator.CreateInstance(type);
-        if (instance == null)
+        var comm = Run(args.Chain.GetText(), args.Chain.GroupMemberInfo!.Uin);
+        if(comm == null)
             return;
-        foreach (var method in methods)
+        var commandArgs = new GroupCommandArgs(bot, args.Chain.GroupMemberInfo!.MemberName, args, comm.Prefix, comm.CmdParams, comm.CommandLine, comm.Account);
+        if (comm.Account.HasPermission(comm.Command.Permission))
         {
-            var cmdMap = method.GetCustomAttribute<CommandMap>()!;
-            var cmdPerm = method.GetCustomAttribute<CommandPermission>()!;
-            if (method.IsStatic)
+            if (!await OperatHandler.UserCommand(commandArgs))
             {
-                if (method.CommandParamPares(typeof(CommandArgs)))
-                    AddGroupCommand(new(cmdMap.Name, method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(), cmdPerm.Permissions));
-                else
-                    AddServerCommand(new(cmdMap.Name, method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(), cmdPerm.Permissions));
-                continue;
+                await comm.Command.InvokeAsync(commandArgs);
+                Logger.LogInformation($"group:{args.Chain.GroupUin} {args.Chain.GroupMemberInfo!.MemberName}({args.Chain.GroupMemberInfo!.Uin}) 使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Cyan);
             }
-            var _method = instance.GetType().GetMethod(method.Name, flag)!;
-            if (method.CommandParamPares(typeof(CommandArgs)))
-                AddGroupCommand(new(cmdMap.Name, _method.CreateDelegate<Command<CommandArgs>.CommandCallBack>(instance), cmdPerm.Permissions));
-            else
-                AddServerCommand(new(cmdMap.Name, _method.CreateDelegate<Command<ServerCommandArgs>.CommandCallBack>(instance), cmdPerm.Permissions));
+            return;
         }
+        Logger.LogInformation($"group: {args.Chain.GroupUin} {args.Chain.GroupMemberInfo!.MemberName}({args.Chain.GroupMemberInfo.Uin}) 试图使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Yellow);
+        await args.Reply("你无权使用此命令！");
     }
 
-    public void RegisterCommand(Assembly assembly)
+    internal async Task CommandAdapter(PlayerCommandMessage args)
     {
-        var mapping = assembly.GetExportedTypes()
-            .Where(x => x.IsDefined(typeof(CommandSeries)));
-        foreach (var type in mapping)
+        var server = XocMatSetting.Instance.GetServer(args.ServerName);
+        var user = TerrariaUser.GetUsersByName(args.Name, args.ServerName);
+        var account = Account.GetAccountNullDefault(user == null ? 0 : user.Id);
+        if (account == null || server == null || user == null)
+            return;
+        var comm = Run(args.Command, (uint)account.UserId);
+        if (comm == null)
+            return;
+        var commandArgs = new ServerCommandArgs(XocMatAPI.BotContext, args.ServerName, args.Name, comm.Name, comm.Prefix, comm.CmdParams, comm.CommandLine);
+
+        if (comm.Account.HasPermission(comm.Command.Permission))
         {
-            RegisterCommand(type);
+            if (!await OperatHandler. ServerUserCommand(commandArgs))
+            {
+                await comm.Command.InvokeAsync(commandArgs);
+                Logger.LogInformation($"server:{user.Name} ({user.Id}) 使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Cyan);
+            }
+            return;
         }
+        Logger.LogInformation($"server: {user.Name}  ( {user.Id}) 试图使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Yellow);
+        await server.PrivateMsg(args.Name, "你无权使用此命令！", Color.DarkRed);
+    }
+
+
+    public List<Command> RegisterCommand(Assembly assembly)
+    {
+        var cmds = new List<Command>();
+        foreach (var type in assembly.GetExportedTypes())
+        {
+             if(type.IsSubclassOf(typeof(Command)))
+            {
+                if (Activator.CreateInstance(type) is not Command instance)
+                    continue;
+                cmds.Add(instance);
+                AddCommand(instance);
+            }
+        }
+        return cmds;
     }
 }
+
+public record RunCommandParams(Command Command, List<string> CmdParams, string Name, Account Account, Dictionary<string, string> CommandLine,  string Prefix);

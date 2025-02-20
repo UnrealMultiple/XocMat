@@ -1,5 +1,5 @@
 ﻿using Lagrange.Core;
-using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Utility;

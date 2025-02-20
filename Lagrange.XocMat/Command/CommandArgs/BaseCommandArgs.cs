@@ -1,8 +1,6 @@
-﻿
+﻿using Lagrange.Core;
 
-using Lagrange.Core;
-
-namespace Lagrange.XocMat.Commands;
+namespace Lagrange.XocMat.Command.CommandArgs;
 
 public class BaseCommandArgs(BotContext bot, string name, string prefix, List<string> param, Dictionary<string, string> cmdLine) : System.EventArgs
 {

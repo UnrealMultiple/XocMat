@@ -3,7 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Terraria;
 
-namespace Lagrange.XocMat.Commands;
+namespace Lagrange.XocMat.Command.CommandArgs;
 
 public class ServerCommandArgs(BotContext bot, string serverName, string userName, string cmdName, string commamdPrefix, List<string> parameters, Dictionary<string, string> commamdLine)
     : BaseCommandArgs(bot, cmdName, commamdPrefix, parameters, commamdLine)
@@ -16,6 +16,6 @@ public class ServerCommandArgs(BotContext bot, string serverName, string userNam
 
     public TerrariaUser? User => TerrariaUser.GetUsersByName(UserName, ServerName);
 
-    public DB.Manager.Account Account => DB.Manager.Account.GetAccountNullDefault(User == null ? 0 : User.Id);
+    public Account Account => Account.GetAccountNullDefault(User == null ? 0 : User.Id);
 
 }

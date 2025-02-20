@@ -2,7 +2,7 @@
 using Lagrange.Core.Common.Interface.Api;
 using Lagrange.Core.Event.EventArg;
 using Lagrange.Core.Message;
-using Lagrange.XocMat.Commands;
+using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.EventArgs;

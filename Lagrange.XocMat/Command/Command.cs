@@ -1,26 +1,25 @@
-﻿namespace Lagrange.XocMat.Commands;
+﻿using Lagrange.XocMat.Command.CommandArgs;
+using Lagrange.XocMat.Extensions;
+using System.Drawing;
 
-public class Command<T> where T : BaseCommandArgs
+namespace Lagrange.XocMat.Command;
+
+public abstract class Command
 {
-    public delegate ValueTask CommandCallBack(T args);
+    public virtual string[] Name { get; } = [];
 
-    public List<string> Name { get; }
+    public virtual string HelpText { get; } = string.Empty;
 
-    public CommandCallBack CallBack { get; }
+    public virtual string Permission { get; } = string.Empty;
 
-    public List<string> Permission { get; }
-
-    public Command(List<string> name, CommandCallBack callBack, params string[] permission)
+    public virtual async Task InvokeAsync(GroupCommandArgs args)
     {
-        Name = name;
-        CallBack = callBack;
-        Permission = [.. permission];
+        await args.EventArgs.Reply("This command is not available in this context.");
     }
 
-    public Command(string name, CommandCallBack callBack, params string[] permission)
+    public virtual async Task InvokeAsync(ServerCommandArgs args)
     {
-        Name = [name];
-        CallBack = callBack;
-        Permission = [.. permission];
+        if (args.Server != null)
+            await args.Server.PrivateMsg(args.UserName, "This command is not available in this context.", Color.GreenYellow);
     }
 }

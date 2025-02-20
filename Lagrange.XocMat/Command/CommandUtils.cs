@@ -1,35 +1,21 @@
 ﻿using Lagrange.Core.Message;
-using Lagrange.Core.Message.Entity;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
-using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Utility;
 using System.Reflection;
 
-namespace Lagrange.XocMat.Commands;
+namespace Lagrange.XocMat.Command;
 
 internal static class CommandUtils
 {
-    public static async ValueTask SendImagsEmoji(string url, CommandArgs args)
-    {
-        var at = args.EventArgs.Chain
-            .Where(c => c is MentionEntity).Select(c => ((MentionEntity)c));
+    //public static async ValueTask SendImagsEmoji(string url, CommandArgs args)
+    //{                                                                
+    //    var at = args.EventArgs.Chain
+    //        .Where(c => c is MentionEntity).Select(c => (MentionEntity)c);
 
-        long target = -1;
-        if (at.Any())
-        {
-            target = at.First().Uin;
-        }
-        else
-        {
-            if (args.Parameters.Count > 0)
-            {
-                _ = long.TryParse(args.Parameters[0], out target);
-            }
-        }
-        if (target != -1)
-            await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).Image(await HttpUtils.HttpGetByte(url + "?QQ=" + target)));
-    }
+    //    long target = -1;
+    //    await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).Image(await HttpUtils.HttpGetByte(url + "?QQ=" + target)));
+    //}
     public static bool ParseBool(string str)
     {
         return str switch
