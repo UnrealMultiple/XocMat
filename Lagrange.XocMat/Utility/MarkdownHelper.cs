@@ -1,4 +1,4 @@
-﻿Ã¯Â»Â¿using Markdig;
+﻿using Markdig;
 using PuppeteerSharp;
 
 namespace Lagrange.XocMat.Utility;
