@@ -29,7 +29,7 @@ public class HelpCommand : Command
                 });
             }
         }
-        List<string> commands = XocMatAPI.Command!.Commands
+        List<string> commands = XocMatAPI.CommandManager!.Commands
             .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(GroupCommandArgs)]))
             .Select(x => args.CommamdPrefix + x.Alias.First()).ToList();
         Show(commands);
@@ -51,7 +51,7 @@ public class HelpCommand : Command
                 });
             }
         }
-        List<string> commands = XocMatAPI.Command!.Commands
+        List<string> commands = XocMatAPI.CommandManager!.Commands
             .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(FriendCommandArgs)]))
             .Select(x => args.CommamdPrefix + x.Alias.First()).ToList();
         Show(commands);

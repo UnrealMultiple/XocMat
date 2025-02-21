@@ -14,7 +14,7 @@ public class SearchCommandPermission : Command
         if (args.Parameters.Count == 1)
         {
             string banName = args.Parameters[0];
-            List<string> comm = XocMatAPI.Command.Commands.Where(x => x.Alias.Contains(banName)).SelectMany(x => x.Permissions).ToList();
+            List<string> comm = XocMatAPI.CommandManager.Commands.Where(x => x.Alias.Contains(banName)).SelectMany(x => x.Permissions).ToList();
             if (comm == null || comm.Count == 0)
             {
                 await args.Event.Reply("没有找到该指令，无法查询！");

@@ -19,7 +19,7 @@ public class CommandManager
 
     public BotContext Bot { get; }
 
-    public readonly List<Command> Commands = [];
+    internal readonly List<Command> Commands = [];
 
     public CommandManager(BotContext bot, ILogger<CommandManager> logger)
     {
@@ -136,7 +136,7 @@ public class CommandManager
         return null;
     }
 
-    public async ValueTask GroupCommandAdapter(BotContext bot, GroupMessageEvent args)
+    internal async ValueTask GroupCommandAdapter(BotContext bot, GroupMessageEvent args)
     {
         RunCommandParams? comm = Run(args.Chain.GetText(), args.Chain.GroupMemberInfo!.Uin);
         if (comm == null)
@@ -201,7 +201,7 @@ public class CommandManager
     }
 
 
-    public List<Command> RegisterCommand(Assembly assembly)
+    internal List<Command> RegisterCommand(Assembly assembly)
     {
         List<Command> cmds = [];
         foreach (Type type in assembly.GetExportedTypes())

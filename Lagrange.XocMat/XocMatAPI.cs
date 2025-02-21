@@ -25,7 +25,7 @@ public class XocMatAPI : BackgroundService
 
     public static TerrariaMsgReceiveHandler TerrariaMsgReceive => XocMatApp.Instance.Services.GetRequiredService<TerrariaMsgReceiveHandler>();
 
-    public static CommandManager Command => XocMatApp.Instance.Services.GetRequiredService<CommandManager>();
+    public static CommandManager CommandManager => XocMatApp.Instance.Services.GetRequiredService<CommandManager>();
 
     public XocMatAPI(BotContext botContext, ILogger<XocMatAPI> logger)
     {
