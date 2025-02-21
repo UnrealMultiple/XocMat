@@ -18,7 +18,7 @@ public class ExecuteCommand : Command
             await args.Event.Reply("请输入要执行的命令!", true);
             return;
         }
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             string cmd = "/" + string.Join(" ", args.Parameters);
             Internal.Socket.Action.Response.ServerCommand api = await server.Command(cmd);

@@ -174,7 +174,7 @@ public class SystemHelper
 
     public static List<Internal.Socket.Internet.Item> GetItemByName(string name)
     {
-        List<Internal.Socket.Internet.Item> list = new List<Internal.Socket.Internet.Item>();
+        List<Internal.Socket.Internet.Item> list = [];
         Assembly assembly = Assembly.GetExecutingAssembly();
         string file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
         Stream stream = assembly.GetManifestResourceStream(file)!;
@@ -197,7 +197,7 @@ public class SystemHelper
 
     public static List<Internal.Socket.Internet.Item> GetItemByIdOrName(string ji)
     {
-        List<Internal.Socket.Internet.Item> list = new List<Internal.Socket.Internet.Item>();
+        List<Internal.Socket.Internet.Item> list = [];
         if (int.TryParse(ji, out int i))
         {
             Internal.Socket.Internet.Item? item = GetItemById(i);

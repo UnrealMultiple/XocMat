@@ -111,7 +111,7 @@ public class Group : RecordBase<Group>
         get
         {
             Group? cur = this;
-            List<Group> traversed = new List<Group>();
+            List<Group> traversed = [];
             HashSet<string> all = [];
             while (cur != null)
             {
@@ -166,7 +166,7 @@ public class Group : RecordBase<Group>
             return true;
 
         Group? cur = this;
-        List<Group> traversed = new List<Group>();
+        List<Group> traversed = [];
         while (cur != null)
         {
             if (cur.negatedpermissions.Contains(permission))

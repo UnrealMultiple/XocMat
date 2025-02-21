@@ -20,7 +20,7 @@ public class SetGroupName : Command
                 await args.Event.Reply("群名不能未空！");
                 return;
             }
-            await args.Bot.RenameGroup(args.Event.Chain.GroupUin!.Value, args.Parameters[0]);
+            await args.Bot.RenameGroup(args.GroupUin, args.Parameters[0]);
             await args.Event.Reply($"群名称已修改为`{args.Parameters[0]}`");
         }
         else

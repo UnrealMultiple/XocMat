@@ -86,7 +86,7 @@ public class TerrariaMsgReceiveHandler
                 return;
             foreach (uint group in data.TerrariaServer.ForwardGroups)
             {
-                await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}: {data.Text}").Build());
+                await Bot.SendMessage(MessageBuilder.Group(group).Text($"[{data.TerrariaServer.Name}] {data.Name}: {data.Text}").Build());
             }
         }
     }
@@ -117,7 +117,7 @@ public class TerrariaMsgReceiveHandler
         {
             foreach (uint group in data.TerrariaServer.ForwardGroups)
             {
-                await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}]服务器初始化已完成..").Build());
+                await Bot.SendMessage(MessageBuilder.Group(group).Text($"[{data.TerrariaServer.Name}]服务器初始化已完成..").Build());
             }
         }
     }
@@ -140,7 +140,7 @@ public class TerrariaMsgReceiveHandler
         {
             foreach (uint group in data.TerrariaServer.ForwardGroups)
             {
-                await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}离开服务器..").Build());
+                await Bot.SendMessage(MessageBuilder.Group(group).Text($"[{data.TerrariaServer.Name}] {data.Name}离开服务器..").Build());
             }
         }
     }
@@ -153,7 +153,7 @@ public class TerrariaMsgReceiveHandler
         {
             foreach (uint group in data.TerrariaServer.ForwardGroups)
             {
-                await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}进入服务器..").Build());
+                await Bot.SendMessage(MessageBuilder.Group(group).Text($"[{data.TerrariaServer.Name}] {data.Name}进入服务器..").Build());
             }
         }
     }
@@ -259,7 +259,7 @@ public class TerrariaMsgReceiveHandler
         {
             foreach (Terraria.TerrariaServer setting in XocMatSetting.Instance.Servers)
             {
-                if (file.FileUrl != null && setting != null && setting.Groups.Contains(Convert.ToUInt32(args.Chain.GroupUin)) && setting.WaitFile != null)
+                if (file.FileUrl != null && setting != null && setting.Groups.Contains(args.Chain.GroupUin!.Value) && setting.WaitFile != null)
                 {
                     setting.WaitFile.SetResult(await HttpUtils.HttpGetByte(file.FileUrl));
                 }

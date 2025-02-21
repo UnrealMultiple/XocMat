@@ -20,13 +20,13 @@ public class MuteAll : Command
                 case "开启":
                 case "开":
                 case "true":
-                    await args.Bot.MuteGroupGlobal(args.Event.Chain.GroupUin!.Value, true);
+                    await args.Bot.MuteGroupGlobal(args.GroupUin, true);
                     await args.Event.Reply("开启成功！");
                     break;
                 case "关闭":
                 case "关":
                 case "false":
-                    await args.Bot.MuteGroupGlobal(args.Event.Chain.GroupUin!.Value, false);
+                    await args.Bot.MuteGroupGlobal(args.GroupUin, false);
                     await args.Event.Reply("关闭成功");
                     break;
                 default:

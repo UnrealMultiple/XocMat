@@ -1,8 +1,8 @@
 ﻿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
-using Lagrange.XocMat.Internal.Terraria;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Internal.Terraria;
 using Lagrange.XocMat.Utility;
 
 namespace Lagrange.XocMat.Command.GroupCommands;

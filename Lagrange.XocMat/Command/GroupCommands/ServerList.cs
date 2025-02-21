@@ -14,7 +14,7 @@ public class ServerList : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        IEnumerable<Terraria.TerrariaServer> groupServers = XocMatSetting.Instance.Servers.Where(s => s.Groups.Contains(args.Event.Chain.GroupUin!.Value));
+        IEnumerable<Terraria.TerrariaServer> groupServers = XocMatSetting.Instance.Servers.Where(s => s.Groups.Contains(args.GroupUin));
         if (!groupServers.Any())
         {
             await args.Event.Reply("此群未配置任何服务器!", true);

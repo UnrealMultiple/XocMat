@@ -21,7 +21,7 @@ public class UnMute : Command
                 await args.Event.Reply("未指令目标成员!");
                 return;
             }
-            atlist.ForEach(async x => await args.Bot.MuteGroupMember(args.Event.Chain.GroupUin!.Value, x.Uin, 0));
+            atlist.ForEach(async x => await args.Bot.MuteGroupMember(args.GroupUin, x.Uin, 0));
             await args.Event.Reply("解禁成功！");
         }
         else

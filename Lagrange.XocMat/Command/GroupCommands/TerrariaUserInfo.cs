@@ -16,7 +16,7 @@ public class TerrariaUserInfo : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        if (!UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) || server == null)
+        if (!UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) || server == null)
         {
             await args.Event.Reply("服务器不存在或，未切换至一个服务器！", true);
             return;

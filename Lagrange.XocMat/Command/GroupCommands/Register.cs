@@ -19,7 +19,7 @@ public class Register : Command
     {
         if (args.Parameters.Count == 1)
         {
-            if (!UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) || server == null)
+            if (!UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) || server == null)
             {
                 await args.Event.Reply("未切换服务器或服务器无效!", true);
                 return;
@@ -34,7 +34,7 @@ public class Register : Command
                 await args.Event.Reply("注册的人物名称不能包含中文,字母,数字和/:[]以外的字符", true);
                 return;
             }
-            if (TerrariaUser.GetUserById(args.Event.Chain.GroupMemberInfo!.Uin, server.Name).Count >= server.RegisterMaxCount)
+            if (TerrariaUser.GetUserById(args.MemberUin, server.Name).Count >= server.RegisterMaxCount)
             {
                 await args.Event.Reply($"同一个服务器上注册账户不能超过{server.RegisterMaxCount}个", true);
                 return;
@@ -42,18 +42,18 @@ public class Register : Command
             string pass = Guid.NewGuid().ToString()[..8];
             try
             {
-                TerrariaUser.Add(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, server.Name, args.Parameters[0], pass);
+                TerrariaUser.Add(args.MemberUin, args.GroupUin, server.Name, args.Parameters[0], pass);
                 Internal.Socket.Action.Response.BaseActionResponse api = await server.Register(args.Parameters[0], pass);
                 Core.Message.MessageBuilder build = args.MessageBuilder;
                 if (api.Status)
                 {
-                    MailHelper.SendMail($"{args.Event.Chain.GroupMemberInfo!.Uin}@qq.com",
+                    MailHelper.SendMail($"{args.MemberUin}@qq.com",
                         $"{server.Name}服务器注册密码",
                         $"您的注册密码是:{pass}<br>请注意保存不要暴露给他人");
                     build.Text($"注册成功!" +
                         $"\n注册服务器: {server.Name}" +
                         $"\n注册名称: {args.Parameters[0]}" +
-                        $"\n注册账号: {args.Event.Chain.GroupMemberInfo!.Uin}" +
+                        $"\n注册账号: {args.MemberUin}" +
                         $"\n注册人昵称: {args.Event.Chain.GroupMemberInfo!.MemberName}" +
                         $"\n注册密码已发送至QQ邮箱请点击下方链接查看" +
                         $"\nhttps://wap.mail.qq.com/home/index" +

@@ -15,7 +15,7 @@ public class ResetTShock : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             TerrariaUser.RemoveByServer(server.Name);
             await server.Reset(args.CommamdLine, async type =>

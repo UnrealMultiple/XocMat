@@ -18,7 +18,7 @@ namespace Lagrange.XocMat.Command.GroupCommands
             try
             {
                 IEnumerable<DB.Manager.Sign> signs = DB.Manager.Sign.GetSigns().OrderByDescending(x => x.Date).Take(10);
-                var sb = new StringBuilder("签到排行\n\n");
+                StringBuilder sb = new StringBuilder("签到排行\n\n");
                 int i = 1;
                 foreach (DB.Manager.Sign? sign in signs)
                 {

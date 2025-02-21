@@ -14,10 +14,10 @@ public class ReStartServer : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             Internal.Socket.Action.Response.BaseActionResponse api = await server.ReStartServer(args.CommamdLine);
-            MessageBuilder build = MessageBuilder.Group(args.Event.Chain.GroupUin!.Value);
+            MessageBuilder build = MessageBuilder.Group(args.GroupUin);
             if (api.Status)
             {
                 build.Text("正在重启服务器，请稍后...");

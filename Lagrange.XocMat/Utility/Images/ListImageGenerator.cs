@@ -29,7 +29,7 @@ public class ListImageGenerator
         TextOptions options = new TextOptions(font) { Dpi = 96 };
         int maxTextWidth = maxWidth - (margin * 2) - (bulletRadius * 2) - bulletTextSpacing;
 
-        List<List<TextLayout>> layoutResults = new List<List<TextLayout>>();
+        List<List<TextLayout>> layoutResults = [];
         float totalHeight = margin * 2;
         float maxContentWidth = 0;
 
@@ -37,7 +37,7 @@ public class ListImageGenerator
         foreach (string item in items)
         {
             List<string> lines = WrapText(item, maxTextWidth, font, options);
-            List<TextLayout> lineLayouts = new List<TextLayout>();
+            List<TextLayout> lineLayouts = [];
             float itemHeight = 0;
 
             foreach (string line in lines)
@@ -111,7 +111,7 @@ public class ListImageGenerator
 
     private List<string> WrapText(string text, float maxWidth, Font font, TextOptions options)
     {
-        List<string> lines = new List<string>();
+        List<string> lines = [];
         string[] words = text.Split(' ');
         string currentLine = "";
 

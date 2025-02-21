@@ -28,7 +28,7 @@ public class SearchUser : Command
             {
                 sb.AppendLine($"◊¢≤·√˚≥∆: {user.Name}");
                 sb.AppendLine($"◊¢≤·’À∫≈: {user.Id}");
-                Core.Common.Entity.BotGroupMember? result = (await args.Bot.FetchMembers(args.Event.Chain.GroupUin!.Value)).FirstOrDefault(x => x.Uin == user.Id);
+                Core.Common.Entity.BotGroupMember? result = (await args.Bot.FetchMembers(args.GroupUin)).FirstOrDefault(x => x.Uin == user.Id);
                 if (result != null)
                 {
                     sb.AppendLine($"»∫Í«≥∆: {result.MemberName}");

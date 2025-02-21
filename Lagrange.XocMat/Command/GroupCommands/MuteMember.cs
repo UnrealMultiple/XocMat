@@ -25,7 +25,7 @@ public class MuteMember : Command
                 await args.Event.Reply("未指令目标成员!");
                 return;
             }
-            atlist.ForEach(async x => await args.Bot.MuteGroupMember(args.Event.Chain.GroupUin!.Value, x.Uin, muted * 60));
+            atlist.ForEach(async x => await args.Bot.MuteGroupMember(args.GroupUin, x.Uin, muted * 60));
             await args.Event.Reply("禁言成功！");
         }
         else

@@ -17,7 +17,7 @@ public class GenerateMap : Command
         ImageType type = ImageType.Jpg;
         if (args.Parameters.Count > 0 && args.Parameters[0] == "-p")
             type = ImageType.Png;
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             Internal.Socket.Action.Response.MapImage api = await server.MapImage(type);
             if (api.Status)

@@ -37,7 +37,7 @@ public class CommandManager
 
     public static List<string> ParseParameters(string str)
     {
-        List<string> ret = new List<string>();
+        List<string> ret = [];
         StringBuilder sb = new StringBuilder();
         bool instr = false;
         for (int i = 0; i < str.Length; i++)
@@ -88,7 +88,7 @@ public class CommandManager
 
     private static Dictionary<string, string> ParseCommandLine(List<string> command)
     {
-        Dictionary<string, string> args = new Dictionary<string, string>();
+        Dictionary<string, string> args = [];
         for (int i = 0; i < command.Count; i++)
         {
             string cmd = command[i];
@@ -203,7 +203,7 @@ public class CommandManager
 
     public List<Command> RegisterCommand(Assembly assembly)
     {
-        List<Command> cmds = new List<Command>();
+        List<Command> cmds = [];
         foreach (Type type in assembly.GetExportedTypes())
         {
             if (type.IsSubclassOf(typeof(Command)))

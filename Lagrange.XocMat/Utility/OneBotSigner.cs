@@ -118,9 +118,7 @@ public class OneBotSigner : SignProvider
 
     public BotAppInfo GetAppInfo()
     {
-        return _info != null
-            ? _info
-            : FallbackAsync<BotAppInfo>.Create()
+        return _info ?? FallbackAsync<BotAppInfo>.Create()
             .Add(async token =>
             {
                 try { return await _client.GetFromJsonAsync<BotAppInfo>($"{_signServer}/appinfo", token); }

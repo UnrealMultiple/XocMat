@@ -17,7 +17,7 @@ public class ExportPlayerFile : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             if (args.Parameters.Count == 1)
             {
@@ -53,7 +53,7 @@ public class ExportPlayerFile : Command
 
                 if (sb.Length > 0)
                     await args.Event.Reply(sb.ToString().Trim());
-                await args.Bot.GroupFSUpload(args.Event.Chain.GroupUin!.Value, new(ms.GetBuffer(), zipName));
+                await args.Bot.GroupFSUpload(args.GroupUin, new(ms.GetBuffer(), zipName));
             }
             else
             {

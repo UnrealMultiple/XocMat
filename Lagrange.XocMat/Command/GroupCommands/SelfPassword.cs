@@ -16,16 +16,16 @@ public class SelfPassword : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
-            List<TerrariaUser> user = TerrariaUser.GetUserById(args.Event.Chain.GroupMemberInfo!.Uin, server.Name);
+            List<TerrariaUser> user = TerrariaUser.GetUserById(args.MemberUin, server.Name);
             if (user.Count > 0)
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (TerrariaUser u in user)
                     sb.AppendLine($"人物{u.Name}的注册密码为: {u.Password}");
                 sb.AppendLine("请注意保存不要暴露给他人");
-                MailHelper.SendMail($"{args.Event.Chain.GroupMemberInfo!.Uin}@qq.com",
+                MailHelper.SendMail($"{args.MemberUin}@qq.com",
                             $"{server.Name}服务器注册密码",
                             sb.ToString().Trim());
                 await args.Event.Reply("密码查询成功已发送至你的QQ邮箱。", true);

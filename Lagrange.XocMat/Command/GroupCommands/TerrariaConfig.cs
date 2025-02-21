@@ -21,7 +21,7 @@ public class TerrariaConfig : Command
             await args.Event.Reply($"语法错误,正确语法；{args.CommamdPrefix}{args.Name} [选项] [值]");
             return;
         }
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             bool status = CommandUtils.ParseBool(args.Parameters[1]);
             switch (args.Parameters[0].ToLower())

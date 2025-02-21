@@ -18,7 +18,7 @@ public class UnsetGroupAdmin : Command
             Core.Message.Entity.MentionEntity atlist = args.Event.Chain.GetMention().First();
             if (atlist != null)
             {
-                await args.Bot.SetGroupAdmin(args.Event.Chain.GroupUin!.Value, atlist.Uin, false);
+                await args.Bot.SetGroupAdmin(args.GroupUin, atlist.Uin, false);
                 await args.Event.Reply($"已取消`{atlist.Uin}`的管理员!");
             }
             else

@@ -14,7 +14,7 @@ public class GameProgress : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             Internal.Socket.Action.Response.GameProgress api = await server.QueryServerProgress();
             Core.Message.MessageBuilder body = args.MessageBuilder;

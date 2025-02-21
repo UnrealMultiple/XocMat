@@ -16,11 +16,11 @@ public class ResetPassword : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             try
             {
-                List<TerrariaUser> user = TerrariaUser.GetUserById(args.Event.Chain.GroupMemberInfo!.Uin, server.Name);
+                List<TerrariaUser> user = TerrariaUser.GetUserById(args.MemberUin, server.Name);
 
                 if (user.Count > 0)
                 {
@@ -35,10 +35,10 @@ public class ResetPassword : Command
                             await args.Event.Reply("无法连接到服务器更改密码!");
                             return;
                         }
-                        TerrariaUser.ResetPassword(args.Event.Chain.GroupMemberInfo!.Uin, server.Name, u.Name, pwd);
+                        TerrariaUser.ResetPassword(args.MemberUin, server.Name, u.Name, pwd);
                     }
                     sb.Append("请注意保存不要暴露给他人");
-                    MailHelper.SendMail($"{args.Event.Chain.GroupMemberInfo!.Uin}@qq.com",
+                    MailHelper.SendMail($"{args.MemberUin}@qq.com",
                                 $"{server.Name}服密码重置",
                                 sb.ToString().Trim());
                     await args.Event.Reply("密码重置成功已发送至你的QQ邮箱。", true);

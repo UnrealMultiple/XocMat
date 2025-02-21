@@ -41,7 +41,7 @@ public class TerrariaPrize : JsonConfigBase<TerrariaPrize>
 
     public List<Prize> Nexts(int count)
     {
-        List<Prize> res = new List<Prize>();
+        List<Prize> res = [];
         for (int i = 0; i < count; i++)
         {
             Prize? item = Next();

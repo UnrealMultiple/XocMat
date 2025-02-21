@@ -13,8 +13,8 @@ public static class DatabaseExtension
     public static SqlType GetSqlType(this IDbConnection conn)
     {
         string name = conn.GetType().Name;
-        if (name == "SqliteConnection" || name == "SQLiteConnection")
-            return SqlType.Sqlite;
-        return name == "MySqlConnection" ? SqlType.Mysql : SqlType.Unknown;
+        return name == "SqliteConnection" || name == "SQLiteConnection"
+            ? SqlType.Sqlite
+            : name == "MySqlConnection" ? SqlType.Mysql : SqlType.Unknown;
     }
 }

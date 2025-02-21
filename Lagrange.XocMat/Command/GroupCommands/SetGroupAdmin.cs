@@ -18,7 +18,7 @@ public class SetGroupAdmin : Command
             Core.Message.Entity.MentionEntity atlist = args.Event.Chain.GetMention().First();
             if (atlist != null)
             {
-                await args.Bot.SetGroupAdmin(args.Event.Chain.GroupUin!.Value, atlist.Uin, true);
+                await args.Bot.SetGroupAdmin(args.GroupUin, atlist.Uin, true);
                 await args.Event.Reply($"已将`{atlist.Uin}`设置为管理员!");
             }
             else

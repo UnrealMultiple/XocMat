@@ -9,7 +9,7 @@ public class ImageMerger
 {
     public async Task<byte[]> MergeImagesAsync(List<byte[]> imageBuffers, bool isHorizontal)
     {
-        List<Image<Rgba32>> images = new List<Image<Rgba32>>();
+        List<Image<Rgba32>> images = [];
         foreach (byte[] buffer in imageBuffers)
         {
             using MemoryStream ms = new MemoryStream(buffer);

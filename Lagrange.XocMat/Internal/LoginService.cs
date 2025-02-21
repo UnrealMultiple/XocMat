@@ -31,8 +31,9 @@ public class LoginService(IConfiguration configuration, ILogger<LoginService> lo
             .Add((token) =>
             {
                 Core.Common.BotKeystore keystore = _lagrange.UpdateKeystore();
-                if (keystore.Session.TempPassword == null) return Task.FromResult(false);
-                return keystore.Session.TempPassword.Length == 0 ? Task.FromResult(false) : _lagrange.LoginByPassword(token);
+                return keystore.Session.TempPassword == null
+                    ? Task.FromResult(false)
+                    : keystore.Session.TempPassword.Length == 0 ? Task.FromResult(false) : _lagrange.LoginByPassword(token);
             })
             .Add(async (token) =>
             {

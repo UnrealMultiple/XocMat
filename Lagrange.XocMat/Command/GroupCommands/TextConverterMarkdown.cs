@@ -18,7 +18,7 @@ public class TextConverterMarkdown : Command
     {
         if (args.Parameters.Count == 1 && !string.IsNullOrEmpty(args.Parameters[0]))
         {
-            MessageBuilder builder = MessageBuilder.Group(args.Event.Chain.GroupUin!.Value)
+            MessageBuilder builder = MessageBuilder.Group(args.GroupUin)
                 .MultiMsg(MessageBuilder.Friend(args.Bot.BotUin)
                 .MultiMsg(MessageBuilder.Friend(args.Bot.BotUin)
                 .Markdown(new MarkdownData()

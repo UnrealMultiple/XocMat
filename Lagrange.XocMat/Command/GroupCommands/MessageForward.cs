@@ -15,18 +15,18 @@ public class MessageForward : Command
     {
         if (args.Parameters.Count == 1)
         {
-            if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
+            if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
             {
                 switch (args.Parameters[0])
                 {
                     case "开启":
                     case "true":
-                        server.ForwardGroups.Add(args.Event.Chain.GroupUin!.Value);
+                        server.ForwardGroups.Add(args.GroupUin);
                         await args.Event.Reply("开启成功", true);
                         break;
                     case "关闭":
                     case "false":
-                        server.ForwardGroups.Remove(args.Event.Chain.GroupUin!.Value);
+                        server.ForwardGroups.Remove(args.GroupUin);
                         await args.Event.Reply("关闭成功", true);
                         break;
                     default:
