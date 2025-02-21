@@ -1,8 +1,8 @@
-﻿using Lagrange.Core;
+﻿using System.Reflection;
+using Lagrange.Core;
 using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Command;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
 
 namespace Lagrange.XocMat.Plugin;
 
@@ -36,12 +36,12 @@ public class PluginLoader
             directoryInfo.Create();
         PluginContext.LoadPlugins(directoryInfo, Logger, CommandManager, BotContext);
         CommandManager.RegisterCommand(Assembly.GetExecutingAssembly());
-        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
         {
             if (type.IsDefined(typeof(ConfigSeries), false))
             {
-                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class");
-                var name = method.Invoke(null, []);
+                MethodInfo method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class");
+                object? name = method.Invoke(null, []);
                 Logger.LogInformation($"config registered: {name}");
             }
         }
@@ -57,7 +57,7 @@ public class PluginLoader
 
     internal Assembly? Resolve(object? sender, ResolveEventArgs args)
     {
-        var dirpath = Path.Combine(XocMatAPI.PATH, "bin");
+        string dirpath = Path.Combine(XocMatAPI.PATH, "bin");
         if (!Directory.Exists(dirpath))
             Directory.CreateDirectory(dirpath);
         string fileName = args.Name.Split(',')[0];

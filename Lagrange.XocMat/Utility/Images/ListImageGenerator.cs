@@ -1,9 +1,9 @@
 ﻿using SixLabors.Fonts;
-using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Lagrange.XocMat.Utility.Images;
 
@@ -26,23 +26,23 @@ public class ListImageGenerator
         const int lineSpacing = 4;
 
         // 测量文本布局
-        var options = new TextOptions(font) { Dpi = 96 };
-        var maxTextWidth = maxWidth - margin * 2 - bulletRadius * 2 - bulletTextSpacing;
+        TextOptions options = new TextOptions(font) { Dpi = 96 };
+        int maxTextWidth = maxWidth - (margin * 2) - (bulletRadius * 2) - bulletTextSpacing;
 
-        var layoutResults = new List<List<TextLayout>>();
+        List<List<TextLayout>> layoutResults = new List<List<TextLayout>>();
         float totalHeight = margin * 2;
         float maxContentWidth = 0;
 
         // 预计算所有文本布局
-        foreach (var item in items)
+        foreach (string item in items)
         {
-            var lines = WrapText(item, maxTextWidth, font, options);
-            var lineLayouts = new List<TextLayout>();
+            List<string> lines = WrapText(item, maxTextWidth, font, options);
+            List<TextLayout> lineLayouts = new List<TextLayout>();
             float itemHeight = 0;
 
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
-                var size = TextMeasurer.MeasureSize(line, options);
+                FontRectangle size = TextMeasurer.MeasureSize(line, options);
                 lineLayouts.Add(new TextLayout(line, size.Width, size.Height));
                 itemHeight += size.Height + lineSpacing;
                 maxContentWidth = Math.Max(maxContentWidth, size.Width);
@@ -54,11 +54,11 @@ public class ListImageGenerator
 
         // 计算最终尺寸
         int imageWidth = backgroundImage?.Width ?? Math.Min(maxWidth,
-            (int)(maxContentWidth + margin * 2 + bulletRadius * 2 + bulletTextSpacing));
+            (int)(maxContentWidth + (margin * 2) + (bulletRadius * 2) + bulletTextSpacing));
         int imageHeight = backgroundImage?.Height ?? (int)totalHeight;
 
         // 创建画布
-        var image = new Image<Rgba32>(imageWidth, imageHeight);
+        Image<Rgba32> image = new Image<Rgba32>(imageWidth, imageHeight);
         backgroundColor ??= Color.White;
 
         image.Mutate(ctx =>
@@ -75,22 +75,22 @@ public class ListImageGenerator
 
             // 绘制列表项
             float currentY = margin;
-            foreach (var (lineLayouts, index) in layoutResults.Select((v, i) => (v, i)))
+            foreach ((List<TextLayout> lineLayouts, int index) in layoutResults.Select((v, i) => (v, i)))
             {
                 // 绘制圆点
-                float bulletY = currentY + lineLayouts.First().Height / 2;
+                float bulletY = currentY + (lineLayouts.First().Height / 2);
                 ctx.Fill(bulletColor,
                     new EllipsePolygon(margin + bulletRadius, bulletY, bulletRadius));
 
                 // 绘制文本
                 float currentLineY = currentY;
-                foreach (var layout in lineLayouts)
+                foreach (TextLayout? layout in lineLayouts)
                 {
                     ctx.DrawText(
                         new RichTextOptions(font)
                         {
                             Origin = new PointF(
-                                margin + bulletRadius * 2 + bulletTextSpacing,
+                                margin + (bulletRadius * 2) + bulletTextSpacing,
                                 currentLineY
                             ),
                             Dpi = 96,
@@ -111,14 +111,14 @@ public class ListImageGenerator
 
     private List<string> WrapText(string text, float maxWidth, Font font, TextOptions options)
     {
-        var lines = new List<string>();
-        var words = text.Split(' ');
-        var currentLine = "";
+        List<string> lines = new List<string>();
+        string[] words = text.Split(' ');
+        string currentLine = "";
 
-        foreach (var word in words)
+        foreach (string word in words)
         {
-            var testLine = string.IsNullOrEmpty(currentLine) ? word : $"{currentLine} {word}";
-            var size = TextMeasurer.MeasureSize(testLine, options);
+            string testLine = string.IsNullOrEmpty(currentLine) ? word : $"{currentLine} {word}";
+            FontRectangle size = TextMeasurer.MeasureSize(testLine, options);
 
             if (size.Width <= maxWidth)
             {

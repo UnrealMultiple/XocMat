@@ -1,8 +1,8 @@
-﻿using Lagrange.XocMat.Configuration;
-using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Net;
 using System.Net.WebSockets;
+using Lagrange.XocMat.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Net;
 
@@ -40,14 +40,13 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
 
     public ConnectionContext? GetConnect(string id)
     {
-        if (!_connections.TryGetValue(id, out ConnectionContext? connection)) return null;
-        return connection;
+        return !_connections.TryGetValue(id, out ConnectionContext? connection) ? null : connection;
     }
 
     private async Task HandleHttpListenerContext(HttpListenerContext context1, CancellationToken token)
     {
         string identifier = Guid.NewGuid().ToString();
-        var response = context1.Response;
+        HttpListenerResponse response = context1.Response;
         try
         {
             if (!context1.Request.IsWebSocketRequest)
@@ -59,8 +58,8 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
                 return;
             }
             OnConnect?.Invoke(identifier);
-            var wsContext = await context1.AcceptWebSocketAsync(null).WaitAsync(token);
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            HttpListenerWebSocketContext wsContext = await context1.AcceptWebSocketAsync(null).WaitAsync(token);
+            CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(token);
             _connections.TryAdd(identifier, new(wsContext, cts, identifier));
             await ReceiveAsyncLoop(identifier, cts.Token);
         }
@@ -89,8 +88,8 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
                 int received = 0;
                 while (true)
                 {
-                    var resultTask = connection.WsContext.WebSocket.ReceiveAsync(buffer.AsMemory(received), default);
-                    var result = !resultTask.IsCompleted ?
+                    ValueTask<ValueWebSocketReceiveResult> resultTask = connection.WsContext.WebSocket.ReceiveAsync(buffer.AsMemory(received), default);
+                    ValueWebSocketReceiveResult result = !resultTask.IsCompleted ?
                         await resultTask.AsTask().WaitAsync(token) :
                         resultTask.Result;
 
@@ -116,8 +115,8 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         {
             bool isCanceled = e is OperationCanceledException;
 
-            var status = WebSocketCloseStatus.NormalClosure;
-            var t = default(CancellationToken);
+            WebSocketCloseStatus status = WebSocketCloseStatus.NormalClosure;
+            CancellationToken t = default(CancellationToken);
             if (!isCanceled)
             {
                 status = WebSocketCloseStatus.InternalServerError;

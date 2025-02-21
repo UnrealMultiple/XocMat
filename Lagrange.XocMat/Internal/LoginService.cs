@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Lagrange.Core;
 using Lagrange.Core.Common.Interface.Api;
 using Lagrange.Core.Event.EventArg;
@@ -5,7 +6,6 @@ using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 using LagrangeLogLevel = Lagrange.Core.Event.EventArg.LogLevel;
 using MicrosoftLogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -30,10 +30,9 @@ public class LoginService(IConfiguration configuration, ILogger<LoginService> lo
         bool isSucceed = await FallbackAsync.Create()
             .Add((token) =>
             {
-                var keystore = _lagrange.UpdateKeystore();
+                Core.Common.BotKeystore keystore = _lagrange.UpdateKeystore();
                 if (keystore.Session.TempPassword == null) return Task.FromResult(false);
-                if (keystore.Session.TempPassword.Length == 0) return Task.FromResult(false);
-                return _lagrange.LoginByPassword(token);
+                return keystore.Session.TempPassword.Length == 0 ? Task.FromResult(false) : _lagrange.LoginByPassword(token);
             })
             .Add(async (token) =>
             {

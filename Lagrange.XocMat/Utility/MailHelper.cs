@@ -1,8 +1,8 @@
-﻿using Lagrange.XocMat.Configuration;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
+using Lagrange.XocMat.Configuration;
 
 namespace Lagrange.XocMat.Utility;
 

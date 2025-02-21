@@ -1,24 +1,23 @@
-﻿using Lagrange.XocMat.Attributes;
-using Lagrange.XocMat.Command.CommandArgs;
+﻿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
-using Lagrange.XocMat.Permission;
+using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Utility;
 
-namespace Lagrange.XocMat.Command.InternalCommands;
+namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ClearMemoryCommand : Command
 {
-    public override string[] Name => ["清理内存"];
+    public override string[] Alias => ["清理内存"];
 
     public override string HelpText => "清理机子内存空间";
 
-    public override string Permission => OneBotPermissions.ClearMemory;
+    public override string[] Permissions => [OneBotPermissions.ClearMemory];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        var old = SystemHelper.GetUsedPhys();
+        ulong old = SystemHelper.GetUsedPhys();
         SystemHelper.FreeMemory();
-        var curr = old - SystemHelper.GetUsedPhys();
-        await args.EventArgs.Reply($"已释放内存:{SystemHelper.FormatSize(curr)}");
+        ulong curr = old - SystemHelper.GetUsedPhys();
+        await args.Event.Reply($"已释放内存:{SystemHelper.FormatSize(curr)}");
     }
 }

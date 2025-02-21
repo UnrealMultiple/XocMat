@@ -1,21 +1,13 @@
-﻿using Lagrange.Core.Message;
+﻿using System.Reflection;
+using Lagrange.Core.Message;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Utility;
-using System.Reflection;
 
 namespace Lagrange.XocMat.Command;
 
 internal static class CommandUtils
 {
-    //public static async ValueTask SendImagsEmoji(string url, CommandArgs args)
-    //{                                                                
-    //    var at = args.EventArgs.Chain
-    //        .Where(c => c is MentionEntity).Select(c => (MentionEntity)c);
-
-    //    long target = -1;
-    //    await args.EventArgs.Reply(MessageBuilder.Group(args.EventArgs.Chain.GroupUin!.Value).Image(await HttpUtils.HttpGetByte(url + "?QQ=" + target)));
-    //}
     public static bool ParseBool(string str)
     {
         return str switch
@@ -25,34 +17,18 @@ internal static class CommandUtils
             _ => false,
         };
     }
-    public static bool ClassConstructParamIsZerp(this ConstructorInfo[] constructors)
-    {
-        return constructors.Any(ctor => ctor.GetParameters().Length == 0);
-    }
 
-    public static bool CommandParamPares(this MethodInfo method, Type type)
-    {
-        if (method != null)
-        {
-            var param = method.GetParameters();
-            if (param.Length == 1)
-            {
-                return param[0].ParameterType == type;
-            }
-        }
-        return false;
-    }
 
     public static async Task<MessageBuilder> GetAccountInfo(uint groupid, uint uin, string groupName)
     {
-        var userid = uin;
-        var serverName = UserLocation.Instance.TryGetServer(userid, groupid, out var server) ? server?.Name ?? "NULL" : "NULL";
-        var bindUser = TerrariaUser.GetUserById(userid, serverName);
-        var bindName = bindUser.Count == 0 ? "NULL" : string.Join(",", bindUser.Select(x => x.Name)); ;
-        var signInfo = Sign.Query(groupid, userid);
-        var sign = signInfo != null ? signInfo.Date : 0;
-        var currencyInfo = Currency.Query(groupid, userid);
-        var currency = currencyInfo != null ? currencyInfo.Num : 0;
+        uint userid = uin;
+        string serverName = UserLocation.Instance.TryGetServer(userid, groupid, out Terraria.TerrariaServer? server) ? server?.Name ?? "NULL" : "NULL";
+        List<TerrariaUser> bindUser = TerrariaUser.GetUserById(userid, serverName);
+        string bindName = bindUser.Count == 0 ? "NULL" : string.Join(",", bindUser.Select(x => x.Name)); ;
+        Sign? signInfo = Sign.Query(userid);
+        long sign = signInfo != null ? signInfo.Date : 0;
+        Currency? currencyInfo = Currency.Query(userid);
+        long currency = currencyInfo != null ? currencyInfo.Num : 0;
         return MessageBuilder.Group(groupid)
             .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={uin}&spec=640&img_type=png"))
             .Text($"[QQ账号]:{userid}\n")

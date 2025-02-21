@@ -7,12 +7,8 @@ namespace Lagrange.XocMat.DB.Manager;
 [Table("Currency")]
 public class Currency : RecordBase<Currency>
 {
-    [Column("GroupId")]
-    [PrimaryKey(2)]
-    public long GroupID { get; set; }
-
     [Column("QQ")]
-    [PrimaryKey(1)]
+    [PrimaryKey]
     public long UserId { get; set; }
 
     [Column("num")]
@@ -20,29 +16,28 @@ public class Currency : RecordBase<Currency>
 
     private static Context context => Db.Context<Currency>("Currency");
 
-    public static Currency? Query(long groupid, long id)
+    public static Currency? Query(long id)
     {
-        return context.Records.FirstOrDefault(x => x.GroupID == groupid && x.UserId == id);
+        return context.Records.FirstOrDefault(x => x.UserId == id);
     }
 
-    public static Currency? Del(long groupid, long id, long num)
+    public static Currency? Del(long id, long num)
     {
-        var usercurr = Query(groupid, id) ?? throw new Exception("用户没有星币可以扣除!");
+        Currency usercurr = Query(id) ?? throw new Exception("用户没有星币可以扣除!");
         usercurr.Num -= num;
         context.Update(usercurr);
         return usercurr;
     }
 
 
-    public static Currency Add(long groupid, long id, long num)
+    public static Currency Add(long id, long num)
     {
-        var usercurr = Query(groupid, id);
+        Currency? usercurr = Query(id);
         if (usercurr == null)
         {
-            var curr = new Currency()
+            Currency curr = new Currency()
             {
                 UserId = id,
-                GroupID = groupid,
                 Num = num
             };
             context.Insert(curr);

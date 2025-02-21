@@ -11,7 +11,7 @@ public class KillNpc
 
     [ProtoMember(3)] public string Name { get; set; } = "";
 
-    [ProtoMember(4)] public List<PlayerStrike> Strikes { get; set; } = new();
+    [ProtoMember(4)] public List<PlayerStrike> Strikes { get; set; } = [];
 
     [ProtoMember(5)] public DateTime KillTime { get; set; }
 

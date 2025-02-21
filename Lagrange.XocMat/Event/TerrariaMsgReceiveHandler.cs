@@ -1,4 +1,7 @@
-﻿using Lagrange.Core;
+﻿using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Reactive.Threading.Tasks;
+using Lagrange.Core;
 using Lagrange.Core.Common.Interface.Api;
 using Lagrange.Core.Event.EventArg;
 using Lagrange.Core.Message;
@@ -18,9 +21,6 @@ using Lagrange.XocMat.Net;
 using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Logging;
 using ProtoBuf;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
 
 namespace Lagrange.XocMat.Event;
 
@@ -44,7 +44,7 @@ public class TerrariaMsgReceiveHandler
 
     private readonly ReplaySubject<(BaseAction, byte[])> ApiSubject = new(2);
 
-    private Dictionary<PostMessageType, EventCallBack<ServerMsgArgs, ValueTask>> _action;
+    private readonly Dictionary<PostMessageType, EventCallBack<ServerMsgArgs, ValueTask>> _action;
 
     public BotContext Bot { get; }
 
@@ -77,14 +77,14 @@ public class TerrariaMsgReceiveHandler
 
     private async ValueTask PlayerMessageHandler(ServerMsgArgs args)
     {
-        var data = Serializer.Deserialize<PlayerChatMessage>(args.Stream);
+        PlayerChatMessage data = Serializer.Deserialize<PlayerChatMessage>(args.Stream);
         if (OnPlayerChat != null)
             await OnPlayerChat(data);
         if (!data.Handler && data.TerrariaServer != null && !data.Mute)
         {
             if (data.Text.Length >= data.TerrariaServer.MsgMaxLength)
                 return;
-            foreach (var group in data.TerrariaServer.ForwardGroups)
+            foreach (uint group in data.TerrariaServer.ForwardGroups)
             {
                 await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}: {data.Text}").Build());
             }
@@ -93,7 +93,7 @@ public class TerrariaMsgReceiveHandler
 
     private async ValueTask HeartBeatHandler(ServerMsgArgs args)
     {
-        var data = Serializer.Deserialize<BaseMessage>(args.Stream);
+        BaseMessage data = Serializer.Deserialize<BaseMessage>(args.Stream);
         WebSocketConnectManager.Add(data.ServerName, args.id);
         if (OnHeartBeat != null)
             await OnHeartBeat(data);
@@ -102,7 +102,7 @@ public class TerrariaMsgReceiveHandler
 
     private async ValueTask ConnectHandler(ServerMsgArgs args)
     {
-        var data = Serializer.Deserialize<BaseMessage>(args.Stream);
+        BaseMessage data = Serializer.Deserialize<BaseMessage>(args.Stream);
         WebSocketConnectManager.Add(data.ServerName, args.id);
         if (OnConnect != null) await OnConnect(data);
         Logger.LogInformation($"Terraria Server {data.ServerName} {args.id} 已连接...", ConsoleColor.Green);
@@ -111,11 +111,11 @@ public class TerrariaMsgReceiveHandler
 
     private async ValueTask GamePostInitHandler(ServerMsgArgs args)
     {
-        var data = Serializer.Deserialize<GameInitMessage>(args.Stream);
+        GameInitMessage data = Serializer.Deserialize<GameInitMessage>(args.Stream);
         if (OnGameInit != null) await OnGameInit(data);
         if (!data.Handler && data.TerrariaServer != null)
         {
-            foreach (var group in data.TerrariaServer.ForwardGroups)
+            foreach (uint group in data.TerrariaServer.ForwardGroups)
             {
                 await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}]服务器初始化已完成..").Build());
             }
@@ -124,7 +124,7 @@ public class TerrariaMsgReceiveHandler
 
     private async ValueTask PlayerCommandHandler(ServerMsgArgs args)
     {
-        var data = Serializer.Deserialize<PlayerCommandMessage>(args.Stream);
+        PlayerCommandMessage data = Serializer.Deserialize<PlayerCommandMessage>(args.Stream);
         if (OnPlayerCommand != null) await OnPlayerCommand(data);
         if (!data.Handler)
         {
@@ -134,11 +134,11 @@ public class TerrariaMsgReceiveHandler
 
     private async ValueTask PlayerLeaveHandler(ServerMsgArgs args)
     {
-        var data = Serializer.Deserialize<PlayerLeaveMessage>(args.Stream);
+        PlayerLeaveMessage data = Serializer.Deserialize<PlayerLeaveMessage>(args.Stream);
         if (OnPlayerLeave != null) await OnPlayerLeave(data);
         if (!data.Handler && data.TerrariaServer != null)
         {
-            foreach (var group in data.TerrariaServer.ForwardGroups)
+            foreach (uint group in data.TerrariaServer.ForwardGroups)
             {
                 await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}离开服务器..").Build());
             }
@@ -147,11 +147,11 @@ public class TerrariaMsgReceiveHandler
 
     private async ValueTask PlayerJoinHandler(ServerMsgArgs args)
     {
-        var data = Serializer.Deserialize<PlayerJoinMessage>(args.Stream);
+        PlayerJoinMessage data = Serializer.Deserialize<PlayerJoinMessage>(args.Stream);
         if (OnPlayerJoin != null) await OnPlayerJoin(data);
         if (!data.Handler && data.TerrariaServer != null)
         {
-            foreach (var group in data.TerrariaServer.ForwardGroups)
+            foreach (uint group in data.TerrariaServer.ForwardGroups)
             {
                 await Bot.SendMessage(MessageBuilder.Group(Convert.ToUInt32(group)).Text($"[{data.TerrariaServer.Name}] {data.Name}进入服务器..").Build());
             }
@@ -160,7 +160,7 @@ public class TerrariaMsgReceiveHandler
 
     private ValueTask ActionHandler(ServerMsgArgs args)
     {
-        var msg = Serializer.Deserialize<BaseAction>(args.Stream);
+        BaseAction msg = Serializer.Deserialize<BaseAction>(args.Stream);
         ApiSubject.OnNext((msg, args.Stream.ToArray()));
         return ValueTask.CompletedTask;
     }
@@ -171,13 +171,13 @@ public class TerrariaMsgReceiveHandler
         {
             if (timeout == null)
                 timeout = TimeSpan.FromSeconds(15);
-            var task = ApiSubject.Where(x => x.Item1.Echo == echo)
+            Task<byte[]> task = ApiSubject.Where(x => x.Item1.Echo == echo)
             .Select(x => x.Item2)
                 .Timeout((TimeSpan)timeout)
                 .Take(1)
                 .ToTask();
-            var buffer = await task;
-            using var Stream = new MemoryStream(buffer);
+            byte[] buffer = await task;
+            using MemoryStream Stream = new MemoryStream(buffer);
             return Serializer.Deserialize<T>(Stream);
         }
         catch (Exception ex)
@@ -194,10 +194,10 @@ public class TerrariaMsgReceiveHandler
     {
         try
         {
-            var baseMsg = Serializer.Deserialize<BaseMessage>(args.Stream);
+            BaseMessage baseMsg = Serializer.Deserialize<BaseMessage>(args.Stream);
             if (baseMsg.TerrariaServer != null
                 && baseMsg.Token == baseMsg.TerrariaServer.Token
-                && _action.TryGetValue(baseMsg.MessageType, out var action))
+                && _action.TryGetValue(baseMsg.MessageType, out EventCallBack<ServerMsgArgs, ValueTask>? action))
             {
                 args.Stream.Position = 0;
                 await action(new()
@@ -210,9 +210,9 @@ public class TerrariaMsgReceiveHandler
             }
             else
             {
-                var echo = Guid.NewGuid().ToString();
-                using var ms = new MemoryStream();
-                var response = new SocketConnectStatusArgs()
+                string echo = Guid.NewGuid().ToString();
+                using MemoryStream ms = new MemoryStream();
+                SocketConnectStatusArgs response = new SocketConnectStatusArgs()
                 {
                     ServerName = baseMsg.ServerName,
                     ActionType = ActionType.ConnectStatus,
@@ -254,10 +254,10 @@ public class TerrariaMsgReceiveHandler
         {
             return;
         }
-        var file = args.Chain.GetFile();
+        Core.Message.Entity.FileEntity? file = args.Chain.GetFile();
         if (file != null && file.FileSize < 1024 * 1024 * 30)
         {
-            foreach (var setting in XocMatSetting.Instance.Servers)
+            foreach (Terraria.TerrariaServer setting in XocMatSetting.Instance.Servers)
             {
                 if (file.FileUrl != null && setting != null && setting.Groups.Contains(Convert.ToUInt32(args.Chain.GroupUin)) && setting.WaitFile != null)
                 {
@@ -265,10 +265,10 @@ public class TerrariaMsgReceiveHandler
                 }
             }
         }
-        var text = args.Chain.GetText();
+        string text = args.Chain.GetText();
         if (string.IsNullOrEmpty(text))
             return;
-        var eventArgs = new GroupMessageForwardArgs()
+        GroupMessageForwardArgs eventArgs = new GroupMessageForwardArgs()
         {
             Handler = false,
             GroupMessageEventArgs = args,
@@ -276,7 +276,7 @@ public class TerrariaMsgReceiveHandler
         };
         if (!await OperatHandler.MessageForward(eventArgs))
         {
-            foreach (var server in XocMatSetting.Instance.Servers)
+            foreach (Terraria.TerrariaServer server in XocMatSetting.Instance.Servers)
             {
                 if (server != null && text.Length <= server.MsgMaxLength)
                 {

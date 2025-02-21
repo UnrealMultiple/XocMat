@@ -18,7 +18,7 @@ public class FallbackAsync
 
     public async Task<bool> ExecuteAsync(CancellationToken token = default)
     {
-        foreach (var executor in _executors)
+        foreach (Func<CancellationToken, Task<bool>> executor in _executors)
         {
             if (await executor(token)) return true;
         }

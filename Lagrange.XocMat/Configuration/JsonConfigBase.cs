@@ -24,11 +24,11 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
 
     private static T GetConfig()
     {
-        var t = new T();
-        var file = t.FullFilename;
+        T t = new T();
+        string file = t.FullFilename;
         if (File.Exists(file))
         {
-            var obj = File.ReadAllText(file).ToObject<T>() ?? t;
+            T obj = File.ReadAllText(file).ToObject<T>() ?? t;
             obj.SaveTo();
             return obj;
         }
@@ -39,11 +39,11 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
 
     public virtual void SaveTo(string? path = null)
     {
-        var filepath = path ?? FullFilename;
-        var dirPath = Path.GetDirectoryName(filepath);
+        string filepath = path ?? FullFilename;
+        string? dirPath = Path.GetDirectoryName(filepath);
         if (!string.IsNullOrEmpty(dirPath))
         {
-            var dirInfo = new DirectoryInfo(dirPath);
+            DirectoryInfo dirInfo = new DirectoryInfo(dirPath);
             if (!dirInfo.Exists)
             {
                 dirInfo.Create();

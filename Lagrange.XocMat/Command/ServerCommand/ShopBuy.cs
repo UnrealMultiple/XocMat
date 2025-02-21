@@ -1,18 +1,18 @@
-﻿using Lagrange.XocMat.Command.CommandArgs;
+﻿using System.Drawing;
+using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
-using Lagrange.XocMat.Permission;
-using System.Drawing;
+using Lagrange.XocMat.Internal;
 
 namespace Lagrange.XocMat.Command.ServerCommand;
 
 public class ShopBuy : Command
 {
-    public override string[] Name => ["购买"];
+    public override string[] Alias => ["购买"];
 
     public override string HelpText => "购买商店物品";
 
-    public override string Permission => OneBotPermissions.TerrariaShop;
+    public override string[] Permissions => [OneBotPermissions.TerrariaShop];
 
     public override async Task InvokeAsync(ServerCommandArgs args)
     {
@@ -29,17 +29,17 @@ public class ShopBuy : Command
         }
         if (args.User != null)
         {
-            if (int.TryParse(args.Parameters[0], out var id))
+            if (int.TryParse(args.Parameters[0], out int id))
             {
-                if (TerrariaShop.Instance.TryGetShop(id, out var shop) && shop != null)
+                if (TerrariaShop.Instance.TryGetShop(id, out Internal.Terraria.Shop? shop) && shop != null)
                 {
-                    var curr = Currency.Query(args.User.GroupID, args.User.Id);
+                    Currency? curr = Currency.Query(args.User.Id);
                     if (curr != null && curr.Num >= shop.Price)
                     {
-                        var res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
+                        Internal.Socket.Action.Response.ServerCommand res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
                         if (res.Status)
                         {
-                            Currency.Del(args.User.GroupID, args.User.Id, shop.Price);
+                            Currency.Del(args.User.Id, shop.Price);
                             await args.Server.PrivateMsg(args.UserName, "购买成功!", Color.GreenYellow);
                         }
                         else
@@ -59,15 +59,15 @@ public class ShopBuy : Command
             }
             else
             {
-                if (TerrariaShop.Instance.TryGetShop(args.Parameters[0], out var shop) && shop != null)
+                if (TerrariaShop.Instance.TryGetShop(args.Parameters[0], out Internal.Terraria.Shop? shop) && shop != null)
                 {
-                    var curr = Currency.Query(args.User.GroupID, args.User.Id);
+                    Currency? curr = Currency.Query(args.User.Id);
                     if (curr != null && curr.Num >= shop.Price)
                     {
-                        var res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
+                        Internal.Socket.Action.Response.ServerCommand res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
                         if (res.Status)
                         {
-                            Currency.Del(args.User.GroupID, args.User.Id, shop.Price);
+                            Currency.Del(args.User.Id, shop.Price);
                             await args.Server.PrivateMsg(args.UserName, "购买成功!", Color.GreenYellow);
                         }
                         else

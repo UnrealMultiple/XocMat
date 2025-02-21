@@ -1,10 +1,10 @@
-﻿using Lagrange.Core;
+﻿using System.Reflection;
+using System.Runtime.Loader;
+using Lagrange.Core;
 using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
-using System.Runtime.Loader;
 
 namespace Lagrange.XocMat.Plugin;
 
@@ -28,18 +28,18 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
     {
         foreach (FileInfo file in dir.GetFiles("*.dll", SearchOption.AllDirectories))
         {
-            using var stream = file.OpenRead();
-            using var pdbStream = File.Exists(Path.ChangeExtension(file.FullName, ".pdb")) ? File.OpenRead(Path.ChangeExtension(file.FullName, ".pdb")) : null;
-            var assembly = LoadFromStream(stream, pdbStream);
+            using FileStream stream = file.OpenRead();
+            using FileStream? pdbStream = File.Exists(Path.ChangeExtension(file.FullName, ".pdb")) ? File.OpenRead(Path.ChangeExtension(file.FullName, ".pdb")) : null;
+            Assembly assembly = LoadFromStream(stream, pdbStream);
             LoadAssemblys.Add(assembly);
         }
         foreach (Assembly assembly in LoadAssemblys)
         {
-            foreach (var type in assembly.GetExportedTypes())
+            foreach (Type type in assembly.GetExportedTypes())
             {
                 if (type.IsSubclassOf(typeof(XocMatPlugin)) && !type.IsAbstract)
                 {
-                    var loggerFactory = XocMatApp.Instance.Services.GetRequiredService<LoggerFactory>();
+                    LoggerFactory loggerFactory = XocMatApp.Instance.Services.GetRequiredService<LoggerFactory>();
                     if (Activator.CreateInstance(type, loggerFactory.CreateLogger(type), cmdManager, bot) is XocMatPlugin instance)
                         Plugins.Add(new(instance));
                 }

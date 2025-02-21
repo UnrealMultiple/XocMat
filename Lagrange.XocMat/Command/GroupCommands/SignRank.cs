@@ -1,25 +1,26 @@
-﻿using Lagrange.XocMat.Command.CommandArgs;
+﻿using System.Text;
+using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
-using System.Text;
+using Lagrange.XocMat.Internal;
 
-namespace Lagrange.XocMat.Command.InternalCommands
+namespace Lagrange.XocMat.Command.GroupCommands
 {
-    public class SignRank : Command 
+    public class SignRank : Command
     {
-        public override string[] Name => ["签到排行"];
+        public override string[] Alias => ["签到排行"];
 
         public override string HelpText => "查看签到排行榜";
 
-        public override string Permission => base.Permission;
+        public override string[] Permissions => [OneBotPermissions.Sign];
 
         public override async Task InvokeAsync(GroupCommandArgs args)
         {
             try
             {
-                var signs = DB.Manager.Sign.GetSigns().Where(x => x.GroupID == args.EventArgs.Chain.GroupUin!.Value).OrderByDescending(x => x.Date).Take(10);
+                IEnumerable<DB.Manager.Sign> signs = DB.Manager.Sign.GetSigns().OrderByDescending(x => x.Date).Take(10);
                 var sb = new StringBuilder("签到排行\n\n");
                 int i = 1;
-                foreach (var sign in signs)
+                foreach (DB.Manager.Sign? sign in signs)
                 {
                     sb.AppendLine($"签到排名: {i}");
                     sb.AppendLine($"账号: {sign.UserId}");
@@ -28,11 +29,11 @@ namespace Lagrange.XocMat.Command.InternalCommands
                     i++;
                 }
 
-                await args.EventArgs.Reply(sb.ToString().Trim());
+                await args.Event.Reply(sb.ToString().Trim());
             }
             catch (Exception e)
             {
-                await args.EventArgs.Reply(e.Message);
+                await args.Event.Reply(e.Message);
             }
         }
     }

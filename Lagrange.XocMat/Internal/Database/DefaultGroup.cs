@@ -1,6 +1,6 @@
 ﻿using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
-using Lagrange.XocMat.Permission;
+using Lagrange.XocMat.Internal;
 
 namespace Lagrange.XocMat.Internal.Database;
 
@@ -36,7 +36,7 @@ public class DefaultGroup : Group
         OneBotPermissions.KillRank
     ];
 
-    public readonly static DefaultGroup Instance = new();
+    public static readonly DefaultGroup Instance = new();
     public override void NegatePermission(string permission)
     {
         base.NegatePermission(permission);

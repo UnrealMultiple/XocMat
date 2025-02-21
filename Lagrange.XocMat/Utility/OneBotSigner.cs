@@ -1,13 +1,13 @@
-﻿using Lagrange.Core.Common;
-using Lagrange.Core.Utility.Sign;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Lagrange.Core.Common;
+using Lagrange.Core.Utility.Sign;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 
 namespace Lagrange.XocMat.Utility;
@@ -69,7 +69,7 @@ public class OneBotSigner : SignProvider
         if (!WhiteListCommand.Contains(cmd)) return null;
         if (_signServer == null) throw new Exception("Sign server is not configured");
 
-        using var request = new HttpRequestMessage
+        using HttpRequestMessage request = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri(_signServer),
@@ -81,9 +81,9 @@ public class OneBotSigner : SignProvider
             })
         };
 
-        using var message = _client.Send(request);
+        using HttpResponseMessage message = _client.Send(request);
         if (message.StatusCode != HttpStatusCode.OK) throw new Exception($"Signer server returned a {message.StatusCode}");
-        var json = JsonDocument.Parse(message.Content.ReadAsStream()).RootElement;
+        JsonElement json = JsonDocument.Parse(message.Content.ReadAsStream()).RootElement;
 
         if (json.TryGetProperty("platform", out JsonElement platformJson))
         {
@@ -103,10 +103,10 @@ public class OneBotSigner : SignProvider
             _logger.LogWarning("Signer version miss");
         }
 
-        var valueJson = json.GetProperty("value");
-        var extraJson = valueJson.GetProperty("extra");
-        var tokenJson = valueJson.GetProperty("token");
-        var signJson = valueJson.GetProperty("sign");
+        JsonElement valueJson = json.GetProperty("value");
+        JsonElement extraJson = valueJson.GetProperty("extra");
+        JsonElement tokenJson = valueJson.GetProperty("token");
+        JsonElement signJson = valueJson.GetProperty("sign");
 
         string? token = tokenJson.GetString();
         string? extra = extraJson.GetString();
@@ -118,9 +118,9 @@ public class OneBotSigner : SignProvider
 
     public BotAppInfo GetAppInfo()
     {
-        if (_info != null) return _info;
-
-        return FallbackAsync<BotAppInfo>.Create()
+        return _info != null
+            ? _info
+            : FallbackAsync<BotAppInfo>.Create()
             .Add(async token =>
             {
                 try { return await _client.GetFromJsonAsync<BotAppInfo>($"{_signServer}/appinfo", token); }

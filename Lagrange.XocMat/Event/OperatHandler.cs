@@ -1,5 +1,4 @@
 ﻿using Lagrange.XocMat.Command.CommandArgs;
-using Lagrange.XocMat.Commands;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Enumerates;
@@ -13,7 +12,11 @@ public static class OperatHandler
 
     public static event EventCallBack<PermissionEventArgs, UserPermissionType>? OnUserPermission;
 
-    public static event EventCallBack<GroupCommandArgs, ValueTask>? OnCommand;
+    public static event EventCallBack<GroupCommandArgs, ValueTask>? OnGroupCommand;
+
+    public static event EventCallBack<FriendCommandArgs, ValueTask>? OnFriendCommand;
+
+    public static event EventCallBack<TempCommandArgs, ValueTask>? OnTempCommand;
 
     public static event EventCallBack<ReloadEventArgs, ValueTask>? OnReload;
 
@@ -27,7 +30,7 @@ public static class OperatHandler
             return UserPermissionType.Granted;
         if (OnUserPermission == null)
             return UserPermissionType.Denied;
-        var args = new PermissionEventArgs(account, prem, UserPermissionType.Denied);
+        PermissionEventArgs args = new PermissionEventArgs(account, prem, UserPermissionType.Denied);
         return OnUserPermission(args);
     }
 
@@ -39,11 +42,27 @@ public static class OperatHandler
         return args.Handler;
     }
 
-    public static async ValueTask<bool> UserCommand(GroupCommandArgs args)
+    public static async ValueTask<bool> GroupCommand(GroupCommandArgs args)
     {
-        if (OnCommand == null)
+        if (OnGroupCommand == null)
             return false;
-        await OnCommand(args);
+        await OnGroupCommand(args);
+        return args.Handler;
+    }
+
+    public static async ValueTask<bool> FriendCommand(FriendCommandArgs args)
+    {
+        if (OnFriendCommand == null)
+            return false;
+        await OnFriendCommand(args);
+        return args.Handler;
+    }
+
+    public static async ValueTask<bool> TempCommand(TempCommandArgs args)
+    {
+        if (OnTempCommand == null)
+            return false;
+        await OnTempCommand(args);
         return args.Handler;
     }
 

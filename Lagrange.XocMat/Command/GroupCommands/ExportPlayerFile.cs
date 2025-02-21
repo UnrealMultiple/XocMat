@@ -1,42 +1,40 @@
-﻿using Lagrange.Core.Common.Interface.Api;
-using Lagrange.XocMat.Attributes;
+﻿using System.IO.Compression;
+using System.Text;
+using Lagrange.Core.Common.Interface.Api;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
-using Lagrange.XocMat.Permission;
-using System.IO.Compression;
-using System.Text;
+using Lagrange.XocMat.Internal;
 
-namespace Lagrange.XocMat.Command.InternalCommands;
+namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ExportPlayerFile : Command
 {
-    public override string[] Name => ["导出存档"];
-
+    public override string[] Alias => ["导出存档"];
     public override string HelpText => "导出服务器存档";
 
-    public override string Permission => OneBotPermissions.ExportFile;
+    public override string[] Permissions => [OneBotPermissions.ExportFile];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
-        if (UserLocation.Instance.TryGetServer(args.EventArgs.Chain.GroupMemberInfo!.Uin, args.EventArgs.Chain.GroupUin!.Value, out var server) && server != null)
+        if (UserLocation.Instance.TryGetServer(args.Event.Chain.GroupMemberInfo!.Uin, args.Event.Chain.GroupUin!.Value, out Terraria.TerrariaServer? server) && server != null)
         {
             if (args.Parameters.Count == 1)
             {
                 List<string> names = [];
                 if (args.Parameters[0] != "all")
                     names.Add(args.Parameters[0]);
-                var files = await server.ExportPlayer(names);
+                Internal.Socket.Action.Response.ExportPlayer files = await server.ExportPlayer(names);
                 if (!files.PlayerFiles.Any(x => x.Active))
                 {
-                    await args.EventArgs.Reply("没有可以导出的存档!", true);
+                    await args.Event.Reply("没有可以导出的存档!", true);
                     return;
                 }
-                var sb = new StringBuilder();
-                var zipName = $"[{server.Name}]人物存档[{DateTime.Now:yyyy_MM_dd_HH_mm_ss}].zip";
-                using var ms = new MemoryStream();
-                using var zip = new ZipArchive(ms, ZipArchiveMode.Create);
-                foreach (var file in files.PlayerFiles)
+                StringBuilder sb = new StringBuilder();
+                string zipName = $"[{server.Name}]人物存档[{DateTime.Now:yyyy_MM_dd_HH_mm_ss}].zip";
+                using MemoryStream ms = new MemoryStream();
+                using ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create);
+                foreach (Internal.Socket.Internet.PlayerFile file in files.PlayerFiles)
                 {
                     if (!file.Active)
                     {
@@ -44,8 +42,8 @@ public class ExportPlayerFile : Command
                     }
                     else
                     {
-                        var entry = zip.CreateEntry(file.Name + ".plr");
-                        using var stream = entry.Open();
+                        ZipArchiveEntry entry = zip.CreateEntry(file.Name + ".plr");
+                        using Stream stream = entry.Open();
                         stream.Write(file.Buffer);
                         if (files.PlayerFiles.Count == 1)
                             stream.Flush();
@@ -54,17 +52,17 @@ public class ExportPlayerFile : Command
                 }
 
                 if (sb.Length > 0)
-                    await args.EventArgs.Reply(sb.ToString().Trim());
-                await args.Bot.GroupFSUpload(args.EventArgs.Chain.GroupUin!.Value, new(ms.GetBuffer(), zipName));
+                    await args.Event.Reply(sb.ToString().Trim());
+                await args.Bot.GroupFSUpload(args.Event.Chain.GroupUin!.Value, new(ms.GetBuffer(), zipName));
             }
             else
             {
-                await args.EventArgs.Reply($"语法错误 正确语法:\n{args.CommamdPrefix}{args.Name} [名称 or all]", true);
+                await args.Event.Reply($"语法错误 正确语法:\n{args.CommamdPrefix}{args.Name} [名称 or all]", true);
             }
         }
         else
         {
-            await args.EventArgs.Reply("服务器无效或未切换服务器!");
+            await args.Event.Reply("服务器无效或未切换服务器!");
         }
     }
 }

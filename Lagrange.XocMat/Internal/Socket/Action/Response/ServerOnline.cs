@@ -6,7 +6,7 @@ namespace Lagrange.XocMat.Internal.Socket.Action.Response;
 [ProtoContract]
 public class ServerOnline : BaseActionResponse
 {
-    [ProtoMember(8)] public List<PlayerInfo> Players { get; set; } = new();
+    [ProtoMember(8)] public List<PlayerInfo> Players { get; set; } = [];
 
     [ProtoMember(9)] public int MaxCount { get; set; }
 

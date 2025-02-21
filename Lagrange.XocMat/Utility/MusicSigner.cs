@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Utility;
 
@@ -9,7 +9,7 @@ public class MusicSigner
 {
     private static string? _signServer;
 
-    private readonly static HttpClient _client = new();
+    private static readonly HttpClient _client = new();
 
     public MusicSigner(IConfiguration config, ILogger<MusicSigner> logger)
     {
@@ -43,7 +43,7 @@ public class MusicSigner
         };
         try
         {
-            var message = _client.PostAsJsonAsync(_signServer, payload).Result;
+            HttpResponseMessage message = _client.PostAsJsonAsync(_signServer, payload).Result;
             return message.Content.ReadAsStringAsync().Result;
         }
         catch

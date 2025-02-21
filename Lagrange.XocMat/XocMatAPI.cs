@@ -1,4 +1,5 @@
-﻿using Lagrange.Core;
+﻿using System.Data;
+using Lagrange.Core;
 using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Event;
@@ -8,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
-using System.Data;
 
 
 namespace Lagrange.XocMat;

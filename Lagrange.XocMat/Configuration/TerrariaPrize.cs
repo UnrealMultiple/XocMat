@@ -23,7 +23,7 @@ public class TerrariaPrize : JsonConfigBase<TerrariaPrize>
         int totalWeight = Pool.Sum(x => x.Probability);
         int randomNumber = random.Next(1, totalWeight + 1);
         int num = 0;
-        foreach (var prize in Pool)
+        foreach (Prize prize in Pool)
         {
             num += prize.Probability;
             if (randomNumber <= num)
@@ -36,17 +36,15 @@ public class TerrariaPrize : JsonConfigBase<TerrariaPrize>
 
     public Prize? GetPrize(int id)
     {
-        if (id > 0 && id <= Pool.Count)
-            return Pool[id - 1];
-        return null;
+        return id > 0 && id <= Pool.Count ? Pool[id - 1] : null;
     }
 
     public List<Prize> Nexts(int count)
     {
-        var res = new List<Prize>();
+        List<Prize> res = new List<Prize>();
         for (int i = 0; i < count; i++)
         {
-            var item = Next();
+            Prize? item = Next();
             if (item != null)
                 res.Add(item);
         }

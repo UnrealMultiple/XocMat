@@ -7,7 +7,7 @@ internal class MarkdownHelper
 {
     private static IBrowser? browser = null;
 
-    private static Dictionary<string, string> ReplaceDic = new()
+    private static readonly Dictionary<string, string> ReplaceDic = new()
     {
         { "\n", "\\n" },
         { "\r\n", "\\n" },
@@ -26,15 +26,15 @@ internal class MarkdownHelper
             });
         }
 
-        using var Page = await browser.NewPageAsync();
+        using IPage Page = await browser.NewPageAsync();
         await Page.GoToAsync($"http://docs.oiapi.net/view.php?theme=light", 5000).ConfigureAwait(false);
-        var App = await Page.QuerySelectorAsync("body").ConfigureAwait(false);
+        IElementHandle App = await Page.QuerySelectorAsync("body").ConfigureAwait(false);
         await Page.WaitForNetworkIdleAsync(new()
         {
             Timeout = 5000
         });
-        var guid = Guid.NewGuid().ToString();
-        var option = new MarkdownPipelineBuilder()
+        string guid = Guid.NewGuid().ToString();
+        MarkdownPipeline option = new MarkdownPipelineBuilder()
             .UseAdvancedExtensions()
             .UseAlertBlocks()
             .UsePipeTables()
@@ -63,8 +63,8 @@ internal class MarkdownHelper
             .UseAutoLinks()
             .UseGlobalization()
             .Build();
-        var postData = Markdig.Markdown.ToHtml(md, option);
-        foreach (var (oldChar, newChar) in ReplaceDic)
+        string postData = Markdig.Markdown.ToHtml(md, option);
+        foreach ((string oldChar, string newChar) in ReplaceDic)
         {
             postData = postData.Replace(oldChar, newChar);
         }
@@ -73,8 +73,8 @@ internal class MarkdownHelper
         await Page.EvaluateExpressionAsync($"document.querySelector('#app').innerHTML = '{postData.Trim()}'");
         await App!.EvaluateFunctionAsync("element => element.style.width = 'fit-content'");
 
-        var clip = await App!.BoundingBoxAsync().ConfigureAwait(false);
-        var ret = await Page.ScreenshotDataAsync(new()
+        BoundingBox clip = await App!.BoundingBoxAsync().ConfigureAwait(false);
+        byte[] ret = await Page.ScreenshotDataAsync(new()
         {
             Clip = new()
             {

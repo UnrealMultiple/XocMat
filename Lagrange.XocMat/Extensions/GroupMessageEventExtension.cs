@@ -5,7 +5,7 @@ using Lagrange.Core.Message.Entity;
 
 namespace Lagrange.XocMat.Extensions;
 
-public static class GroupMessageEventExt
+public static class GroupMessageEventExtension
 {
     public static async Task<MessageResult> Reply(this GroupMessageEvent e, MessageBuilder builder, bool type = false)
     {
@@ -14,10 +14,10 @@ public static class GroupMessageEventExt
 
     public static async Task<MessageResult> Reply(this GroupMessageEvent e, string text, bool type = false)
     {
-        var builder = MessageBuilder.Group(e.Chain.GroupUin!.Value).Text(text);
+        MessageBuilder builder = MessageBuilder.Group(e.Chain.GroupUin!.Value).Text(text);
         if (type)
         {
-            var forwardEntity = new ForwardEntity(e.Chain)
+            ForwardEntity forwardEntity = new ForwardEntity(e.Chain)
             {
                 ClientSequence = 1
             };

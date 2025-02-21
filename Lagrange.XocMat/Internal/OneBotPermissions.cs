@@ -1,5 +1,4 @@
-﻿
-namespace Lagrange.XocMat.Permission;
+﻿namespace Lagrange.XocMat.Internal;
 
 public class OneBotPermissions
 {

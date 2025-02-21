@@ -1,5 +1,5 @@
-﻿using Lagrange.XocMat.EventArgs.Sockets;
-using System.Net.WebSockets;
+﻿using System.Net.WebSockets;
+using Lagrange.XocMat.EventArgs.Sockets;
 
 
 namespace Lagrange.XocMat.Net;
@@ -44,7 +44,7 @@ public class TShockReceive
             {
                 if (SocketMessage != null)
                 {
-                    using var stream = new MemoryStream(buffer);
+                    using MemoryStream stream = new MemoryStream(buffer);
                     await SocketMessage(new(context, stream));
                     stream.Dispose();
                 }

@@ -1,10 +1,10 @@
+using System.Data;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Exceptions;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal.Database;
 using LinqToDB;
 using LinqToDB.Mapping;
-using System.Data;
 
 namespace Lagrange.XocMat.DB.Manager;
 
@@ -110,17 +110,17 @@ public class Group : RecordBase<Group>
     {
         get
         {
-            var cur = this;
-            var traversed = new List<Group>();
-            HashSet<string> all = new();
+            Group? cur = this;
+            List<Group> traversed = new List<Group>();
+            HashSet<string> all = [];
             while (cur != null)
             {
-                foreach (var perm in cur.permissions)
+                foreach (string perm in cur.permissions)
                 {
                     all.Add(perm);
                 }
 
-                foreach (var perm in cur.negatedpermissions)
+                foreach (string perm in cur.negatedpermissions)
                 {
                     all.Remove(perm);
                 }
@@ -139,7 +139,7 @@ public class Group : RecordBase<Group>
     public virtual bool HasPermission(string permission)
     {
         bool negated = false;
-        if (string.IsNullOrEmpty(permission) || RealHasPermission(permission, ref negated) && !negated)
+        if (string.IsNullOrEmpty(permission) || (RealHasPermission(permission, ref negated) && !negated))
         {
             return true;
         }
@@ -165,8 +165,8 @@ public class Group : RecordBase<Group>
         if (string.IsNullOrEmpty(permission))
             return true;
 
-        var cur = this;
-        var traversed = new List<Group>();
+        Group? cur = this;
+        List<Group> traversed = new List<Group>();
         while (cur != null)
         {
             if (cur.negatedpermissions.Contains(permission))
@@ -194,7 +194,7 @@ public class Group : RecordBase<Group>
             {
                 throw new GroupException("此组已经存在了，无法重复添加!");
             }
-        var exec = context.Insert(new Group()
+        int exec = context.Insert(new Group()
         {
             Name = groupName,
             Permission = perms,
@@ -206,7 +206,7 @@ public class Group : RecordBase<Group>
 
     public static void AddPerm(string groupName, string perm)
     {
-        var group = GetGroup(groupName) ?? throw new GroupException($"组 {groupName} 不存在!");
+        Group group = GetGroup(groupName) ?? throw new GroupException($"组 {groupName} 不存在!");
         if (!group.permissions.Contains(perm))
         {
             group.AddPermission(perm);
@@ -220,7 +220,7 @@ public class Group : RecordBase<Group>
 
     public static void ReParentGroup(string groupName, string Parent)
     {
-        var group = GetGroup(groupName) ?? throw new GroupException($"组 {groupName} 不存在!");
+        Group group = GetGroup(groupName) ?? throw new GroupException($"组 {groupName} 不存在!");
         group.Parent = GetGroupNullDefault(Parent);
         context.Update(group);
     }
@@ -233,7 +233,7 @@ public class Group : RecordBase<Group>
 
     public static void RemovePerm(string groupName, string perm)
     {
-        var group = GetGroup(groupName) ?? throw new GroupException("删除权限指向的目标组不存在!");
+        Group group = GetGroup(groupName) ?? throw new GroupException("删除权限指向的目标组不存在!");
         if (group.permissions.Contains(perm))
         {
             group.RemovePermission(perm);
@@ -257,7 +257,7 @@ public class Group : RecordBase<Group>
 
     public static List<string> GetGroupPerms(string groupName)
     {
-        return context.Records.FirstOrDefault(i => i.Name == groupName)?.permissions ?? new List<string>();
+        return context.Records.FirstOrDefault(i => i.Name == groupName)?.permissions ?? [];
     }
 
     public static bool HasPermssions(string groupName, string perm)

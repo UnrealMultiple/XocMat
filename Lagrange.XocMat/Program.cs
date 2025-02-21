@@ -1,5 +1,4 @@
-﻿using Lagrange.XocMat;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime;
 using System.Text;
 
@@ -24,9 +23,9 @@ internal abstract class Program
         {
             Console.WriteLine("No exist config file, create it now...");
 
-            var assm = Assembly.GetExecutingAssembly();
-            using var istr = assm.GetManifestResourceStream("Lagrange.XocMat.Resources.Json.appsettings.json")!;
-            using var temp = File.Create("appsettings.json");
+            Assembly assm = Assembly.GetExecutingAssembly();
+            using Stream istr = assm.GetManifestResourceStream("Lagrange.XocMat.Resources.Json.appsettings.json")!;
+            using FileStream temp = File.Create("appsettings.json");
             istr.CopyTo(temp);
 
             istr.Close();

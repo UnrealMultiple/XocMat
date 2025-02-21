@@ -14,7 +14,7 @@ internal class ImageUtils
     public static readonly ImageUtils Instance = new();
     private ImageUtils()
     {
-        var fc = new FontCollection();
+        FontCollection fc = new FontCollection();
         FontFamily = fc.Add("Resources/Font/simhei.ttf");
     }
 
@@ -25,7 +25,7 @@ internal class ImageUtils
 
     public void DrawText(Image image, string text, int x, int y, int fontSize, Color color)
     {
-        var font = new Font(FontFamily, fontSize);
+        Font font = new Font(FontFamily, fontSize);
         RichTextOptions textOptions = new(font)
         {
             Origin = new(x, y),
@@ -41,8 +41,8 @@ internal class ImageUtils
     /// <param name="size"></param>
     public void ResetSize(Image image, int size)
     {
-        var height = image.Height;
-        var width = image.Width;
+        int height = image.Height;
+        int width = image.Width;
         if (height > width)
         {
             width = size * (width / height);
@@ -58,29 +58,29 @@ internal class ImageUtils
     public void DrawProgresst(Image image, Image slot, Dictionary<string, bool> progress, int x, int y, int slotSize = 400, int maxLineCount = 10, int darwCount = 50, bool erect = false)
     {
         ResetSize(slot, slotSize);
-        var textSlot = slot.CloneAs<Rgba32>();
+        Image<Rgba32> textSlot = slot.CloneAs<Rgba32>();
         textSlot.Mutate(x => x.Resize(textSlot.Width, 250));
-        var sourceX = x;
-        var sourceY = y;
-        var intervalX = 40;
-        var intervalY = 350;
-        var i = 0;
-        foreach (var (prog, status) in progress)
+        int sourceX = x;
+        int sourceY = y;
+        int intervalX = 40;
+        int intervalY = 350;
+        int i = 0;
+        foreach ((string prog, bool status) in progress)
         {
             if (i >= darwCount)
                 return;
-            var res = $"Resources/Boss/{prog}.jpg";
+            string res = $"Resources/Boss/{prog}.jpg";
             if (File.Exists(res))
             {
 
                 DrawImage(image, slot, sourceX, sourceY);
                 DrawImage(image, textSlot, sourceX, sourceY + slot.Height + intervalX);
-                using var itemPng = Image.Load(res);
+                using Image itemPng = Image.Load(res);
                 ResetSize(itemPng, slotSize - 40);
-                DrawImage(image, itemPng, (slot.Width - itemPng.Width) / 2 + sourceX, (slot.Height - itemPng.Height) / 2 + sourceY);
-                var text = status ? "已击杀" : "未击杀";
-                var color = status ? Color.GreenYellow : Color.White;
-                DrawText(image, text, sourceX + 30, sourceY + slot.Height + intervalX + textSlot.Height / 3, 110, color);
+                DrawImage(image, itemPng, ((slot.Width - itemPng.Width) / 2) + sourceX, ((slot.Height - itemPng.Height) / 2) + sourceY);
+                string text = status ? "已击杀" : "未击杀";
+                Color color = status ? Color.GreenYellow : Color.White;
+                DrawText(image, text, sourceX + 30, sourceY + slot.Height + intervalX + (textSlot.Height / 3), 110, color);
             }
             if ((i + 1) % maxLineCount == 0)
             {
@@ -122,18 +122,18 @@ internal class ImageUtils
     {
         ResetSize(slot, slotSize);
 
-        var sourceX = x;
-        var sourceY = y;
-        var interval = 10;
+        int sourceX = x;
+        int sourceY = y;
+        int interval = 10;
         for (int i = 0; i < darwCount; i++)
         {
 
             DrawImage(image, slot, sourceX, sourceY);
             if (items[i].stack > 0)
             {
-                using var itemPng = Image.Load($"Resources/Item/{items[i].netID}.png");
+                using Image itemPng = Image.Load($"Resources/Item/{items[i].netID}.png");
                 ResetSize(itemPng, slotSize - 40);
-                DrawImage(image, itemPng, (slot.Width - itemPng.Width) / 2 + sourceX, (slot.Height - itemPng.Height) / 2 + sourceY);
+                DrawImage(image, itemPng, ((slot.Width - itemPng.Width) / 2) + sourceX, ((slot.Height - itemPng.Height) / 2) + sourceY);
                 DrawText(image, items[i].stack.ToString(), sourceX, sourceY + slot.Height - 30, 30, Color.White);
             }
             if ((i + 1) % maxLineCount == 0)

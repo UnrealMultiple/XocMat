@@ -1,7 +1,7 @@
-﻿using Lagrange.XocMat.Exceptions;
+﻿using System.Data;
+using Lagrange.XocMat.Exceptions;
 using LinqToDB;
 using LinqToDB.Mapping;
-using System.Data;
 
 namespace Lagrange.XocMat.DB.Manager;
 
@@ -39,7 +39,7 @@ public class TerrariaUser : RecordBase<TerrariaUser>
         if (context.Records.Any(x => x.Id == id && x.Name == Name && x.Server == Server))
             throw new TerrariaUserException("此用户已经注册过了!");
         //搜索名字和服务器
-        var user = GetUsersByName(Name, Server);
+        TerrariaUser? user = GetUsersByName(Name, Server);
         if (user != null)
             throw new TerrariaUserException($"此名称已经被{user.Id}注册过了!");
         context.Insert(new TerrariaUser()
@@ -54,14 +54,14 @@ public class TerrariaUser : RecordBase<TerrariaUser>
     }
     public static void ResetPassword(long id, string servername, string name, string pwd)
     {
-        var user = GetUserById(id, servername, name) ?? throw new GroupException("删除权限指向的目标组不存在!");
+        TerrariaUser user = GetUserById(id, servername, name) ?? throw new GroupException("删除权限指向的目标组不存在!");
         user.Password = pwd;
         context.Update(user);
     }
 
     public static void Remove(string Server, string Name)
     {
-        var user = GetUsersByName(Name, Server);
+        TerrariaUser? user = GetUsersByName(Name, Server);
         if (user == null)
             throw new TerrariaUserException($"在{Server} 上没有找到{Name}");
         context.Records.Delete(i => i.Server == Server && i.Name == Name);

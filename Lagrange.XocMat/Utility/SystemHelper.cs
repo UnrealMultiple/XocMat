@@ -1,10 +1,10 @@
-using Lagrange.XocMat.Extensions;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json.Nodes;
+using Lagrange.XocMat.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace Lagrange.XocMat.Utility;
 
@@ -18,7 +18,7 @@ public class SystemHelper
     {
         GC.Collect();
         GC.WaitForPendingFinalizers();
-        foreach (var process in Process.GetProcesses())
+        foreach (Process process in Process.GetProcesses())
         {
             if ((process.ProcessName == "System") && (process.ProcessName == "Idle"))
                 continue;
@@ -67,7 +67,7 @@ public class SystemHelper
             i++;
         }
         string[] unit = { "B", "KB", "MB", "GB", "TB" };
-        return (string.Format("{0} {1}", Math.Round(d, 2), unit[i]));
+        return string.Format("{0} {1}", Math.Round(d, 2), unit[i]);
     }
     #endregion
 
@@ -105,7 +105,7 @@ public class SystemHelper
     public static ulong GetUsedPhys()
     {
         MEMORY_INFO mi = GetMemoryStatus();
-        return (mi.ullTotalPhys - mi.ullAvailPhys);
+        return mi.ullTotalPhys - mi.ullAvailPhys;
     }
     #endregion
 
@@ -123,7 +123,7 @@ public class SystemHelper
 
     public static void KillChrome()
     {
-        foreach (var process in Process.GetProcesses())
+        foreach (Process process in Process.GetProcesses())
         {
             if (process.ProcessName.Contains("chrome") && CanAccessProcess(process))
             {
@@ -131,13 +131,13 @@ public class SystemHelper
             }
         }
     }
-    
+
     public static bool CanAccessProcess(Process process)
     {
         try
         {
             // 尝试访问进程的一个需要权限的属性
-            var modules = process.Modules;
+            ProcessModuleCollection modules = process.Modules;
             return true;
         }
         catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // 拒绝访问
@@ -152,13 +152,13 @@ public class SystemHelper
 
     public static Internal.Socket.Internet.Item? GetItemById(int id)
     {
-        var assembly = Assembly.GetExecutingAssembly();
-        var file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
-        var stream = assembly.GetManifestResourceStream(file)!;
-        using var reader = new StreamReader(stream);
-        var jobj = reader.ReadToEnd().ToObject<JObject>()!;
-        var array = (JArray)jobj["物品"]!;
-        foreach (var item in array)
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        string file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
+        Stream stream = assembly.GetManifestResourceStream(file)!;
+        using StreamReader reader = new StreamReader(stream);
+        JObject jobj = reader.ReadToEnd().ToObject<JObject>()!;
+        JArray array = (JArray)jobj["物品"]!;
+        foreach (JToken item in array)
         {
             if (item != null && item["ID"]!.Value<int>() == id)
             {
@@ -174,14 +174,14 @@ public class SystemHelper
 
     public static List<Internal.Socket.Internet.Item> GetItemByName(string name)
     {
-        var list = new List<Internal.Socket.Internet.Item>();
-        var assembly = Assembly.GetExecutingAssembly();
-        var file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
-        var stream = assembly.GetManifestResourceStream(file)!;
-        using var reader = new StreamReader(stream);
-        var jobj = JsonNode.Parse(reader.ReadToEnd());
-        var array = jobj?["物品"]?.AsArray()!;
-        foreach (var item in array)
+        List<Internal.Socket.Internet.Item> list = new List<Internal.Socket.Internet.Item>();
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        string file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
+        Stream stream = assembly.GetManifestResourceStream(file)!;
+        using StreamReader reader = new StreamReader(stream);
+        JsonNode? jobj = JsonNode.Parse(reader.ReadToEnd());
+        JsonArray array = jobj?["物品"]?.AsArray()!;
+        foreach (JsonNode? item in array)
         {
             if (item != null && item["中文名称"]!.GetValue<string>().Contains(name))
             {
@@ -197,10 +197,10 @@ public class SystemHelper
 
     public static List<Internal.Socket.Internet.Item> GetItemByIdOrName(string ji)
     {
-        var list = new List<Internal.Socket.Internet.Item>();
-        if (int.TryParse(ji, out var i))
+        List<Internal.Socket.Internet.Item> list = new List<Internal.Socket.Internet.Item>();
+        if (int.TryParse(ji, out int i))
         {
-            var item = GetItemById(i);
+            Internal.Socket.Internet.Item? item = GetItemById(i);
             if (item != null)
                 list.Add(item);
         }

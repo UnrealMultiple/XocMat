@@ -25,9 +25,9 @@ public class UserLocation : JsonConfigBase<UserLocation>
 
     public bool TryGetServer(uint id, uint groupid, out TerrariaServer? terrariaServer)
     {
-        if (Location.TryGetValue(id, out var name) && !string.IsNullOrEmpty(name))
+        if (Location.TryGetValue(id, out string? name) && !string.IsNullOrEmpty(name))
         {
-            var server = XocMatSetting.Instance.GetServer(name, groupid);
+            TerrariaServer? server = XocMatSetting.Instance.GetServer(name, groupid);
             if (server != null)
             {
                 terrariaServer = server;

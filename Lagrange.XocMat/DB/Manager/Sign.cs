@@ -8,12 +8,9 @@ namespace Lagrange.XocMat.DB.Manager;
 [Table("Sign")]
 public class Sign : RecordBase<Sign>
 {
-    [Column("GroupId")]
-    [PrimaryKey(2)]
-    public long GroupID { get; init; }
 
     [Column("QQ")]
-    [PrimaryKey(1)]
+    [PrimaryKey]
     public long UserId { get; init; }
 
     [Column("LastDate")]
@@ -24,24 +21,23 @@ public class Sign : RecordBase<Sign>
 
     private static Context context => Db.Context<Sign>("Sign");
 
-    public static Sign? Query(long groupid, long id)
+    public static Sign? Query(long id)
     {
-        return context.Records.FirstOrDefault(x => x.GroupID == groupid && x.UserId == id);
+        return context.Records.FirstOrDefault(x => x.UserId == id);
     }
 
     public static List<Sign> GetSigns() => context.Records.ToList();
 
-    public static Sign SingIn(long groupid, long id)
+    public static Sign SingIn(long id)
     {
-        var signinfo = Query(groupid, id);
-        var Now = DateTime.Now.ToString("yyyyMMdd");
+        Sign? signinfo = Query(id);
+        string Now = DateTime.Now.ToString("yyyyMMdd");
         if (signinfo == null)
         {
-            var signin = new Sign()
+            Sign signin = new Sign()
             {
                 Date = 1,
                 UserId = id,
-                GroupID = groupid,
                 LastDate = Now,
             };
             context.Insert(signin);

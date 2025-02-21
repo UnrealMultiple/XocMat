@@ -1,7 +1,7 @@
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Formats.Png;
 
 namespace Lagrange.XocMat.Utility.Images;
 
@@ -9,20 +9,20 @@ public class ImageMerger
 {
     public async Task<byte[]> MergeImagesAsync(List<byte[]> imageBuffers, bool isHorizontal)
     {
-        var images = new List<Image<Rgba32>>();
-        foreach (var buffer in imageBuffers)
+        List<Image<Rgba32>> images = new List<Image<Rgba32>>();
+        foreach (byte[] buffer in imageBuffers)
         {
-            using var ms = new MemoryStream(buffer);
+            using MemoryStream ms = new MemoryStream(buffer);
             images.Add(await Image.LoadAsync<Rgba32>(ms));
         }
 
         int width = isHorizontal ? images.Sum(img => img.Width) : images.Max(img => img.Width);
         int height = isHorizontal ? images.Max(img => img.Height) : images.Sum(img => img.Height);
 
-        using (var outputImage = new Image<Rgba32>(width, height))
+        using (Image<Rgba32> outputImage = new Image<Rgba32>(width, height))
         {
             int offset = 0;
-            foreach (var img in images)
+            foreach (Image<Rgba32> img in images)
             {
                 if (isHorizontal)
                 {
@@ -36,7 +36,7 @@ public class ImageMerger
                 }
             }
 
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 await outputImage.SaveAsync(ms, new PngEncoder());
                 return ms.ToArray();

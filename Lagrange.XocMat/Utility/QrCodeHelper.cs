@@ -8,17 +8,17 @@ internal static class QrCodeHelper
     // Thanks to "https://github.com/eric2788"
     internal static void Output(string text, bool compatibilityMode)
     {
-        var segments = QrSegment.MakeSegments(text);
-        var qrCode = QrCode.EncodeSegments(segments, QrCode.Ecc.Low);
+        List<QrSegment> segments = QrSegment.MakeSegments(text);
+        QrCode qrCode = QrCode.EncodeSegments(segments, QrCode.Ecc.Low);
 
-        var (bottomHalfBlock, topHalfBlock, emptyBlock, fullBlock) = compatibilityMode ? (".", "^", " ", "@") : ("▄", "▀", " ", "█");
+        (string bottomHalfBlock, string topHalfBlock, string emptyBlock, string fullBlock) = compatibilityMode ? (".", "^", " ", "@") : ("▄", "▀", " ", "█");
 
-        for (var y = 0; y < qrCode.Size + 2; y += 2)
+        for (int y = 0; y < qrCode.Size + 2; y += 2)
         {
-            for (var x = 0; x < qrCode.Size + 2; ++x)
+            for (int x = 0; x < qrCode.Size + 2; ++x)
             {
-                var foregroundBlack = qrCode.GetModule(x - 1, y - 1);
-                var backgroundBlack = qrCode.GetModule(x - 1, y) || y > qrCode.Size;
+                bool foregroundBlack = qrCode.GetModule(x - 1, y - 1);
+                bool backgroundBlack = qrCode.GetModule(x - 1, y) || y > qrCode.Size;
 
                 if (foregroundBlack && !backgroundBlack)
                 {

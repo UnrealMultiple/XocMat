@@ -5,11 +5,11 @@ namespace Lagrange.XocMat.Utility.Images;
 public class TableBuilder
 {
     private string _title = string.Empty;
-    private List<List<string>> _tableData;
+    private readonly List<List<string>> _tableData;
     private Font _font = ImageUtils.Instance.FontFamily.CreateFont(24);
     private bool _titleBottom;
     private string _backgroundImagePath = string.Empty;
-    private TableGenerator _generator;
+    private readonly TableGenerator _generator;
 
     public TableBuilder()
     {

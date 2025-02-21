@@ -1,28 +1,29 @@
-﻿using Lagrange.XocMat.Command.CommandArgs;
+﻿using System.Diagnostics;
+using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.EventArgs;
 using Lagrange.XocMat.Extensions;
-using System.Diagnostics;
+using Lagrange.XocMat.Internal;
 
-namespace Lagrange.XocMat.Command.InternalCommands
+namespace Lagrange.XocMat.Command.GroupCommands
 {
     public class Reload : Command
     {
-        public override string[] Name => ["reload"];
+        public override string[] Alias => ["reload"];
 
         public override string HelpText => "重读配置文件";
 
-        public override string Permission => "reload";
+        public override string[] Permissions => [OneBotPermissions.Reload];
 
         public override async Task InvokeAsync(GroupCommandArgs args)
         {
-            var sw = new Stopwatch();
+            Stopwatch sw = new Stopwatch();
             sw.Start();
-            var reloadArgs = new ReloadEventArgs(args.EventArgs.Chain.GroupUin!.Value);
+            ReloadEventArgs reloadArgs = new ReloadEventArgs(args.Event.Chain.GroupUin!.Value);
             await OperatHandler.Reload(reloadArgs);
             sw.Stop();
             reloadArgs.Message.Text($"所有配置文件已成功重新加载，耗时 {sw.Elapsed.TotalSeconds:F5} 秒。");
-            await args.EventArgs.Reply(reloadArgs.Message);
+            await args.Event.Reply(reloadArgs.Message);
         }
     }
 }

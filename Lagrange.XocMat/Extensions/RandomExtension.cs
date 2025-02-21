@@ -16,25 +16,31 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using System.Text;
+
 namespace Lagrange.XocMat.Extensions
 {
-    public static class StringExt
+    public static class RandomExtension
     {
-        //Can't name it Format :(
-        public static string SFormat(this string str, params object[] args)
+        public static string NextString(this Random rand, int length)
         {
-            return string.Format(str, args);
-        }
-
-        /// <summary>
-        /// Wraps the string representation of an object with a Terraria color code for the given color
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        public static string Color(this object obj, string color)
-        {
-            return $"[c/{color}:{obj}]";
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < length; i++)
+            {
+                switch (rand.Next(0, 3))
+                {
+                    case 0:
+                        sb.Append((char)rand.Next('a', 'z' + 1));
+                        break;
+                    case 1:
+                        sb.Append((char)rand.Next('A', 'Z' + 1));
+                        break;
+                    case 2:
+                        sb.Append((char)rand.Next('0', '9' + 1));
+                        break;
+                }
+            }
+            return sb.ToString();
         }
     }
 }

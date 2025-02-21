@@ -19,9 +19,7 @@ public class TerrariaShop : JsonConfigBase<TerrariaShop>
 
     public Shop? GetShop(int id)
     {
-        if (id > 0 && id <= TrShop.Count)
-            return TrShop[id - 1];
-        return null;
+        return id > 0 && id <= TrShop.Count ? TrShop[id - 1] : null;
     }
 
     public bool TryGetShop(int id, out Shop? shop)

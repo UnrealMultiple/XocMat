@@ -1,22 +1,20 @@
 ﻿
-using Lagrange.XocMat.Enumerates;
 using System.Data;
+using Lagrange.XocMat.Enumerates;
 
 namespace Lagrange.XocMat.Extensions;
 
 /// <summary>
 /// Database extensions
 /// </summary>
-public static class DbExt
+public static class DatabaseExtension
 {
 
     public static SqlType GetSqlType(this IDbConnection conn)
     {
-        var name = conn.GetType().Name;
+        string name = conn.GetType().Name;
         if (name == "SqliteConnection" || name == "SQLiteConnection")
             return SqlType.Sqlite;
-        if (name == "MySqlConnection")
-            return SqlType.Mysql;
-        return SqlType.Unknown;
+        return name == "MySqlConnection" ? SqlType.Mysql : SqlType.Unknown;
     }
 }

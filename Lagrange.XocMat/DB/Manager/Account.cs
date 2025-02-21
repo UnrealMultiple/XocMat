@@ -36,7 +36,7 @@ public class Account : RecordBase<Account>
 
     public bool HasPermission(string perm)
     {
-        var result = OperatHandler.UserPermission(this, perm);
+        UserPermissionType result = OperatHandler.UserPermission(this, perm);
         return result switch
         {
             UserPermissionType.Unhandled => false,
@@ -71,7 +71,7 @@ public class Account : RecordBase<Account>
             throw new AccountException($"账户 {userid} 已经存在了，无法重复添加!");
         if (!Group.HasGroup(group))
             throw new AccountException($"组 {group} 不存在，无法添加!");
-        var exec = context.Insert(new Account()
+        int exec = context.Insert(new Account()
         {
             UserId = userid,
             GroupName = group
@@ -116,7 +116,7 @@ public class Account : RecordBase<Account>
     {
         if (!HasAccount(userid))
             throw new AccountException($"账户 {userid} 不存在无法更改组!");
-        var account = GetAccountNullDefault(userid);
+        Account account = GetAccountNullDefault(userid);
         account.Group = Group.GetGroupNullDefault(group);
         context.Update(account);
 

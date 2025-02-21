@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Lagrange.XocMat.Extensions
 {
-    public static class LinqExt
+    public static class LinqExtension
     {
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
