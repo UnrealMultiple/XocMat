@@ -3,6 +3,7 @@ using Lagrange.Core;
 using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Event;
+using Lagrange.XocMat.Plugin;
 using Lagrange.XocMat.Utility;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,10 +28,11 @@ public class XocMatAPI : BackgroundService
 
     public static CommandManager CommandManager => XocMatApp.Instance.Services.GetRequiredService<CommandManager>();
 
+    public static PluginLoader PluginLoader => XocMatApp.Instance.Services.GetRequiredService<PluginLoader>();
+
     public XocMatAPI(BotContext botContext, ILogger<XocMatAPI> logger)
     {
         BotContext = botContext;
-
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -43,7 +45,7 @@ public class XocMatAPI : BackgroundService
         return Task.CompletedTask;
     }
 
-    private void InitDb()
+    private static void InitDb()
     {
         switch (XocMatSetting.Instance.DbType.ToLower())
         {

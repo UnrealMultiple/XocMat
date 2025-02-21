@@ -141,7 +141,7 @@ public class CommandManager
         RunCommandParams? comm = Run(args.Chain.GetText(), args.Chain.GroupMemberInfo!.Uin);
         if (comm == null)
             return;
-        GroupCommandArgs commandArgs = new GroupCommandArgs(bot, comm.Name, args, comm.Prefix, comm.CmdParams, comm.CommandLine, comm.Account);
+        GroupCommandArgs commandArgs = new(bot, comm.Name, args, comm.Prefix, comm.CmdParams, comm.CommandLine, comm.Account);
         if (comm.Command.Permissions.Any(comm.Account.HasPermission))
         {
             if (!await OperatHandler.GroupCommand(commandArgs))
@@ -185,7 +185,7 @@ public class CommandManager
         RunCommandParams? comm = Run(args.Command, (uint)account.UserId);
         if (comm == null)
             return;
-        ServerCommandArgs commandArgs = new ServerCommandArgs(XocMatAPI.BotContext, args.ServerName, args.Name, comm.Name, comm.Prefix, comm.CmdParams, comm.CommandLine);
+        ServerCommandArgs commandArgs = new ServerCommandArgs(XocMatAPI.BotContext, server, user, account, comm.Name, comm.Prefix, comm.CmdParams, comm.CommandLine);
 
         if (comm.Command.Permissions.Any(comm.Account.HasPermission))
         {
