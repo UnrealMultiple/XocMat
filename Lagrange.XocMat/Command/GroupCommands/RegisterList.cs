@@ -1,4 +1,4 @@
-using System.Text;
+锘縰sing System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
@@ -9,8 +9,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class RegisterList : Command
 {
-    public override string[] Alias => ["注册列表"];
-    public override string HelpText => "注册列表";
+    public override string[] Alias => ["娉ㄥ唽鍒楄〃"];
+    public override string HelpText => "娉ㄥ唽鍒楄〃";
     public override string[] Permissions => [OneBotPermissions.QueryUserList];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -20,10 +20,10 @@ public class RegisterList : Command
             List<TerrariaUser> users = TerrariaUser.GetUsers(server.Name);
             if (users == null || users.Count == 0)
             {
-                await args.Event.Reply("注册列表空空如也!");
+                await args.Event.Reply("娉ㄥ唽鍒楄〃绌虹┖濡備篃!");
                 return;
             }
-            StringBuilder sb = new StringBuilder($"[{server.Name}]注册列表\n");
+            StringBuilder sb = new StringBuilder($"[{server.Name}]娉ㄥ唽鍒楄〃\n");
             foreach (TerrariaUser user in users)
             {
                 sb.AppendLine($"{user.Name} => {user.Id}");
@@ -32,7 +32,7 @@ public class RegisterList : Command
         }
         else
         {
-            await args.Event.Reply("未切换服务器或服务器无效!", true);
+            await args.Event.Reply("鏈垏鎹㈡湇鍔″櫒鎴栨湇鍔″櫒鏃犳晥!", true);
         }
     }
 }

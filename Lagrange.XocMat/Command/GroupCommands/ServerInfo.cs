@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ServerInfo : Command
 {
-    public override string[] Alias => ["²å¼şÁĞ±í"];
-    public override string HelpText => "·şÎñÆ÷ĞÅÏ¢";
+    public override string[] Alias => ["æ’ä»¶åˆ—è¡¨"];
+    public override string HelpText => "æœåŠ¡å™¨ä¿¡æ¯";
     public override string[] Permissions => [OneBotPermissions.ServerList];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -19,13 +19,13 @@ public class ServerInfo : Command
             Internal.Socket.Action.Response.ServerStatus status = await server.ServerStatus();
             if (!status.Status)
             {
-                await args.Event.Reply("ÎŞ·¨Á¬½Ó·şÎñÆ÷!", true);
+                await args.Event.Reply("æ— æ³•è¿æ¥æœåŠ¡å™¨!", true);
                 return;
             }
             TableBuilder tableBuilder = new TableBuilder();
-            tableBuilder.SetTitle($"{server.Name}²å¼şÁĞ±í");
+            tableBuilder.SetTitle($"{server.Name}æ’ä»¶åˆ—è¡¨");
             tableBuilder.SetTitleBottom(true);
-            tableBuilder.AddRow("²å¼şÃû³Æ", "²å¼şËµÃ÷", "²å¼ş×÷Õß");
+            tableBuilder.AddRow("æ’ä»¶åç§°", "æ’ä»¶è¯´æ˜", "æ’ä»¶ä½œè€…");
             foreach (Internal.Socket.Internet.PluginInfo plugin in status.Plugins)
             {
                 tableBuilder.AddRow(plugin.Name, plugin.Description, plugin.Author);
@@ -34,7 +34,7 @@ public class ServerInfo : Command
         }
         else
         {
-            await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

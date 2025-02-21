@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class AcountInfo : Command
 {
-    public override string[] Alias => ["²é"];
-    public override string HelpText => "²éÑ¯ËûÈËĞÅÏ¢";
+    public override string[] Alias => ["æŸ¥"];
+    public override string HelpText => "æŸ¥è¯¢ä»–äººä¿¡æ¯";
     public override string[] Permissions => [OneBotPermissions.OtherInfo];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -26,7 +26,7 @@ public class AcountInfo : Command
         }
         else
         {
-            await args.Event.Reply("²éË­ÄØ?", true);
+            await args.Event.Reply("æŸ¥è°å‘¢?", true);
         }
     }
 }

@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+锘縰sing Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.Extensions;
@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class GenerateMap : Command
 {
-    public override string[] Alias => ["生成地图"];
-    public override string HelpText => "生成地图";
+    public override string[] Alias => ["鐢熸垚鍦板浘"];
+    public override string HelpText => "鐢熸垚鍦板浘";
     public override string[] Permissions => [OneBotPermissions.GenerateMap];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -41,7 +41,7 @@ public class GenerateMap : Command
         }
         else
         {
-            await args.Event.Reply("未切换服务器或服务器无效!", true);
+            await args.Event.Reply("鏈垏鎹㈡湇鍔″櫒鎴栨湇鍔″櫒鏃犳晥!", true);
         }
     }
 }

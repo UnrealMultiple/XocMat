@@ -1,4 +1,4 @@
-using Lagrange.Core.Common;
+﻿using Lagrange.Core.Common;
 using Lagrange.Core.Common.Interface;
 using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Event;

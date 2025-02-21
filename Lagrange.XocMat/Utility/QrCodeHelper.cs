@@ -1,4 +1,4 @@
-using Net.Codecrete.QrCodeGenerator;
+﻿using Net.Codecrete.QrCodeGenerator;
 
 namespace Lagrange.XocMat.Utility;
 
@@ -11,7 +11,7 @@ internal static class QrCodeHelper
         List<QrSegment> segments = QrSegment.MakeSegments(text);
         QrCode qrCode = QrCode.EncodeSegments(segments, QrCode.Ecc.Low);
 
-        (string bottomHalfBlock, string topHalfBlock, string emptyBlock, string fullBlock) = compatibilityMode ? (".", "^", " ", "@") : ("▄", "▀", " ", "█");
+        (string bottomHalfBlock, string topHalfBlock, string emptyBlock, string fullBlock) = compatibilityMode ? (".", "^", " ", "@") : ("Ôûä", "ÔûÇ", " ", "Ôûê");
 
         for (int y = 0; y < qrCode.Size + 2; y += 2)
         {

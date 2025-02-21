@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class MessageForward : Command
 {
-    public override string[] Alias => ["ÏûÏ¢×ª·¢"];
-    public override string HelpText => "ÏûÏ¢×ª·¢";
+    public override string[] Alias => ["æ¶ˆæ¯è½¬å‘"];
+    public override string HelpText => "æ¶ˆæ¯è½¬å‘";
     public override string[] Permissions => [OneBotPermissions.ForwardMsg];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -19,30 +19,30 @@ public class MessageForward : Command
             {
                 switch (args.Parameters[0])
                 {
-                    case "¿ªÆô":
+                    case "å¼€å¯":
                     case "true":
                         server.ForwardGroups.Add(args.GroupUin);
-                        await args.Event.Reply("¿ªÆô³É¹¦", true);
+                        await args.Event.Reply("å¼€å¯æˆåŠŸ", true);
                         break;
-                    case "¹Ø±Õ":
+                    case "å…³é—­":
                     case "false":
                         server.ForwardGroups.Remove(args.GroupUin);
-                        await args.Event.Reply("¹Ø±Õ³É¹¦", true);
+                        await args.Event.Reply("å…³é—­æˆåŠŸ", true);
                         break;
                     default:
-                        await args.Event.Reply("Î´Öª×ÓÃüÁî£¡", true);
+                        await args.Event.Reply("æœªçŸ¥å­å‘½ä»¤ï¼", true);
                         break;
                 }
                 XocMatSetting.Instance.SaveTo();
             }
             else
             {
-                await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+                await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
             }
         }
         else
         {
-            await args.Event.Reply($"Óï·¨´íÎó,ÕıÈ·Óï·¨:\n{args.CommamdPrefix}{args.Name} [¿ªÆô|¹Ø±Õ]!", true);
+            await args.Event.Reply($"è¯­æ³•é”™è¯¯,æ­£ç¡®è¯­æ³•:\n{args.CommamdPrefix}{args.Name} [å¼€å¯|å…³é—­]!", true);
         }
     }
 }

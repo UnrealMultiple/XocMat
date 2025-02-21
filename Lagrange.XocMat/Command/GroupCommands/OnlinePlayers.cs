@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
@@ -8,29 +8,29 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class OnlinePlayers : Command
 {
-    public override string[] Alias => ["ÔÚÏß"];
-    public override string HelpText => "²éÑ¯ÔÚÏßÍæ¼Ò";
+    public override string[] Alias => ["åœ¨çº¿"];
+    public override string HelpText => "æŸ¥è¯¢åœ¨çº¿ç©å®¶";
     public override string[] Permissions => [OneBotPermissions.QueryOnlienPlayer];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
         if (XocMatSetting.Instance.Servers.Count == 0)
         {
-            await args.Event.Reply("»¹Ã»ÓĞÅäÖÃÈÎºÎÒ»¸ö·şÎñÆ÷!", true);
+            await args.Event.Reply("è¿˜æ²¡æœ‰é…ç½®ä»»ä½•ä¸€ä¸ªæœåŠ¡å™¨!", true);
             return;
         }
         IEnumerable<Terraria.TerrariaServer> groupServers = XocMatSetting.Instance.Servers.Where(s => s.Groups.Contains(args.GroupUin));
         if (!groupServers.Any())
         {
-            await args.Event.Reply("´ËÈºÎ´ÅäÖÃÈÎºÎ·şÎñÆ÷!", true);
+            await args.Event.Reply("æ­¤ç¾¤æœªé…ç½®ä»»ä½•æœåŠ¡å™¨!", true);
             return;
         }
         StringBuilder sb = new StringBuilder();
         foreach (Terraria.TerrariaServer? server in groupServers)
         {
             Internal.Socket.Action.Response.ServerOnline api = await server.ServerOnline();
-            sb.AppendLine($"[{server.Name}]ÔÚÏßÍæ¼ÒÊıÁ¿({(api.Status ? api.Players.Count : 0)}/{api.MaxCount})");
-            sb.AppendLine(api.Status ? string.Join(",", api.Players.Select(x => x.Name)) : "ÎŞ·¨Á¬½Ó·şÎñÆ÷");
+            sb.AppendLine($"[{server.Name}]åœ¨çº¿ç©å®¶æ•°é‡({(api.Status ? api.Players.Count : 0)}/{api.MaxCount})");
+            sb.AppendLine(api.Status ? string.Join(",", api.Players.Select(x => x.Name)) : "æ— æ³•è¿æ¥æœåŠ¡å™¨");
         }
         await args.Event.Reply(sb.ToString().Trim());
     }

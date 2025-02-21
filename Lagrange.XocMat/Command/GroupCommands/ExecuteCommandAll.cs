@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
@@ -8,15 +8,15 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ExecuteCommandAll : Command
 {
-    public override string[] Alias => ["Ö´ÐÐÈ«²¿"];
-    public override string HelpText => "Ö´ÐÐÈ«²¿ÃüÁî";
+    public override string[] Alias => ["æ‰§è¡Œå…¨éƒ¨"];
+    public override string HelpText => "æ‰§è¡Œå…¨éƒ¨å‘½ä»¤";
     public override string[] Permissions => [OneBotPermissions.ExecuteCommand];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
         if (args.Parameters.Count < 1)
         {
-            await args.Event.Reply("ÇëÊäÈëÒªÖ´ÐÐµÄÃüÁî!", true);
+            await args.Event.Reply("è¯·è¾“å…¥è¦æ‰§è¡Œçš„å‘½ä»¤!", true);
             return;
         }
         StringBuilder sb = new StringBuilder();
@@ -24,8 +24,8 @@ public class ExecuteCommandAll : Command
         {
             string cmd = "/" + string.Join(" ", args.Parameters);
             Internal.Socket.Action.Response.ServerCommand api = await server.Command(cmd);
-            sb.AppendLine($"[{server.Name}]ÃüÁîÖ´ÐÐ½á¹û:");
-            sb.AppendLine(api.Status ? string.Join("\n", api.Params) : "ÎÞ·¨Á¬½Óµ½·þÎñÆ÷£¡");
+            sb.AppendLine($"[{server.Name}]å‘½ä»¤æ‰§è¡Œç»“æžœ:");
+            sb.AppendLine(api.Status ? string.Join("\n", api.Params) : "æ— æ³•è¿žæŽ¥åˆ°æœåŠ¡å™¨ï¼");
         }
         await args.Event.Reply(sb.ToString().Trim());
     }

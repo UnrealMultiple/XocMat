@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Enumerates;
@@ -9,8 +9,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ResetTShock : Command
 {
-    public override string[] Alias => ["Ì©À­·şÎñÆ÷ÖØÖÃ"];
-    public override string HelpText => "ÖØÖÃ·şÎñÆ÷";
+    public override string[] Alias => ["æ³°æ‹‰æœåŠ¡å™¨é‡ç½®"];
+    public override string HelpText => "é‡ç½®æœåŠ¡å™¨";
     public override string[] Permissions => [OneBotPermissions.StartTShock];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -24,27 +24,27 @@ public class ResetTShock : Command
                 {
                     case RestServerType.WaitFile:
                         {
-                            await args.Event.Reply("ÕıÔÚµÈ´ıÉÏ´«µØÍ¼£¬60ÃëºóÊ§Ğ§!");
+                            await args.Event.Reply("æ­£åœ¨ç­‰å¾…ä¸Šä¼ åœ°å›¾ï¼Œ60ç§’åå¤±æ•ˆ!");
                             break;
                         }
                     case RestServerType.TimeOut:
                         {
-                            await args.Event.Reply("µØÍ¼ÉÏ´«³¬Ê±£¬×Ô¶¯´´½¨µØÍ¼¡£");
+                            await args.Event.Reply("åœ°å›¾ä¸Šä¼ è¶…æ—¶ï¼Œè‡ªåŠ¨åˆ›å»ºåœ°å›¾ã€‚");
                             break;
                         }
                     case RestServerType.Success:
                         {
-                            await args.Event.Reply("ÕıÔÚÖØÖÃ·şÎñÆ÷!!");
+                            await args.Event.Reply("æ­£åœ¨é‡ç½®æœåŠ¡å™¨!!");
                             break;
                         }
                     case RestServerType.LoadFile:
                         {
-                            await args.Event.Reply("ÒÑ½ÓÊÜµ½µØÍ¼£¬ÕıÔÚÉÏ´«·şÎñÆ÷!!");
+                            await args.Event.Reply("å·²æ¥å—åˆ°åœ°å›¾ï¼Œæ­£åœ¨ä¸Šä¼ æœåŠ¡å™¨!!");
                             break;
                         }
                     case RestServerType.UnLoadFile:
                         {
-                            await args.Event.Reply("ÉÏ´«µÄµØÍ¼·Ç¹ú¼ÊÕı°æ£¬»òµØÍ¼²»ºÏ·¨£¬Çë¾¡¿ìÖØĞ´ÉÏ´«!");
+                            await args.Event.Reply("ä¸Šä¼ çš„åœ°å›¾éå›½é™…æ­£ç‰ˆï¼Œæˆ–åœ°å›¾ä¸åˆæ³•ï¼Œè¯·å°½å¿«é‡å†™ä¸Šä¼ !");
                             break;
                         }
                 }
@@ -52,7 +52,7 @@ public class ResetTShock : Command
         }
         else
         {
-            await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 
@@ -6,8 +6,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class SelfInfo : Command
 {
-    public override string[] Alias => ["ÎÒµÄÐÅÏ¢"];
-    public override string HelpText => "²éÑ¯×Ô¼ºµÄÐÅÏ¢";
+    public override string[] Alias => ["æˆ‘çš„ä¿¡æ¯"];
+    public override string HelpText => "æŸ¥è¯¢è‡ªå·±çš„ä¿¡æ¯";
     public override string[] Permissions => [OneBotPermissions.SelfInfo];
 
     public override async Task InvokeAsync(GroupCommandArgs args)

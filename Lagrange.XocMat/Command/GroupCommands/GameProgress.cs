@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class GameProgress : Command
 {
-    public override string[] Alias => ["进度查询"];
-    public override string HelpText => "进度查询";
+    public override string[] Alias => ["杩涘害鏌ヨ"];
+    public override string HelpText => "杩涘害鏌ヨ";
     public override string[] Permissions => [OneBotPermissions.QueryProgress];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -25,13 +25,13 @@ public class GameProgress : Command
             }
             else
             {
-                body.Text("无法获取服务器信息！");
+                body.Text("鏃犳硶鑾峰彇鏈嶅姟鍣ㄤ俊鎭紒");
             }
             await args.Event.Reply(body);
         }
         else
         {
-            await args.Event.Reply("未切换服务器或服务器无效!", true);
+            await args.Event.Reply("鏈垏鎹㈡湇鍔″櫒鎴栨湇鍔″櫒鏃犳晥!", true);
         }
     }
 }

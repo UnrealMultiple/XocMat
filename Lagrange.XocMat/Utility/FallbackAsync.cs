@@ -1,4 +1,4 @@
-
+﻿
 namespace Lagrange.XocMat.Utility;
 
 public class FallbackAsync

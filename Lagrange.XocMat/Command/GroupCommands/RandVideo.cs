@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+﻿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Utility;
 
@@ -7,7 +7,7 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 public class RandVideo : Command
 {
     public override string[] Alias => ["randv"];
-    public override string HelpText => "�����Ƶ";
+    public override string HelpText => "Ëæ»úÊÓÆ”";
     public override string[] Permissions => ["onebot.video.rand"];
 
     public override async Task InvokeAsync(GroupCommandArgs args)

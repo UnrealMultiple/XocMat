@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class StartTShock : Command
 {
-    public override string[] Alias => ["Æô¶¯"];
-    public override string HelpText => "Æô¶¯·şÎñÆ÷";
+    public override string[] Alias => ["å¯åŠ¨"];
+    public override string HelpText => "å¯åŠ¨æœåŠ¡å™¨";
     public override string[] Permissions => [OneBotPermissions.StartTShock];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -17,14 +17,14 @@ public class StartTShock : Command
         {
             if (server.Start(args.CommamdLine))
             {
-                await args.Event.Reply($"{server.Name} ÕıÔÚ¶ÔÆäÖ´ĞĞÆô¶¯ÃüÁî!", true);
+                await args.Event.Reply($"{server.Name} æ­£åœ¨å¯¹å…¶æ‰§è¡Œå¯åŠ¨å‘½ä»¤!", true);
                 return;
             }
-            await args.Event.Reply($"{server.Name} Æô¶¯Ê§°Ü!", true);
+            await args.Event.Reply($"{server.Name} å¯åŠ¨å¤±è´¥!", true);
         }
         else
         {
-            await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

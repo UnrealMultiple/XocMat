@@ -1,4 +1,4 @@
-using Lagrange.Core.Common.Interface.Api;
+ï»¿using Lagrange.Core.Common.Interface.Api;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class MuteAll : Command
 {
-    public override string[] Alias => ["È«½û"];
-    public override string HelpText => "È«Ìå½ûÑÔ";
+    public override string[] Alias => ["å…¨ç¦"];
+    public override string HelpText => "å…¨ä½“ç¦è¨€";
     public override string[] Permissions => [OneBotPermissions.Mute];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -17,26 +17,26 @@ public class MuteAll : Command
         {
             switch (args.Parameters[0])
             {
-                case "¿ªÆô":
-                case "¿ª":
+                case "å¼€å¯":
+                case "å¼€":
                 case "true":
                     await args.Bot.MuteGroupGlobal(args.GroupUin, true);
-                    await args.Event.Reply("¿ªÆô³É¹¦£¡");
+                    await args.Event.Reply("å¼€å¯æˆåŠŸï¼");
                     break;
-                case "¹Ø±Õ":
-                case "¹Ø":
+                case "å…³é—­":
+                case "å…³":
                 case "false":
                     await args.Bot.MuteGroupGlobal(args.GroupUin, false);
-                    await args.Event.Reply("¹Ø±Õ³É¹¦");
+                    await args.Event.Reply("å…³é—­æˆåŠŸ");
                     break;
                 default:
-                    await args.Event.Reply("Óï·¨´íÎó,ÕıÈ·Óï·¨:\nÈ«½û [¿ªÆô|¹Ø±Õ]");
+                    await args.Event.Reply("è¯­æ³•é”™è¯¯,æ­£ç¡®è¯­æ³•:\nå…¨ç¦ [å¼€å¯|å…³é—­]");
                     break;
             }
         }
         else
         {
-            await args.Event.Reply("Óï·¨´íÎó,ÕıÈ·Óï·¨:\nÈ«½û [¿ªÆô|¹Ø±Õ]");
+            await args.Event.Reply("è¯­æ³•é”™è¯¯,æ­£ç¡®è¯­æ³•:\nå…¨ç¦ [å¼€å¯|å…³é—­]");
         }
     }
 }

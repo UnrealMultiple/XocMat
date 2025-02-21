@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class DeathRank : Command
 {
-    public override string[] Alias => new[] { "ËÀÍöÅÅĞĞ" };
-    public override string HelpText => "ËÀÍöÅÅĞĞ";
+    public override string[] Alias => new[] { "æ­»äº¡æ’è¡Œ" };
+    public override string HelpText => "æ­»äº¡æ’è¡Œ";
     public override string[] Permissions => new[] { OneBotPermissions.DeathRank };
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -22,26 +22,26 @@ public class DeathRank : Command
             {
                 if (api.Rank.Count == 0)
                 {
-                    await args.Event.Reply("µ±Ç°»¹Ã»ÓĞÊı¾İ¼ÇÂ¼", true);
+                    await args.Event.Reply("å½“å‰è¿˜æ²¡æœ‰æ•°æ®è®°å½•", true);
                     return;
                 }
-                StringBuilder sb = new StringBuilder($"[{server.Name}]ËÀÍöÅÅĞĞ:\n");
+                StringBuilder sb = new StringBuilder($"[{server.Name}]æ­»äº¡æ’è¡Œ:\n");
                 IOrderedEnumerable<KeyValuePair<string, int>> rank = api.Rank.OrderByDescending(x => x.Value);
                 foreach ((string name, int count) in rank)
                 {
-                    sb.AppendLine($"[{name}]ËÀÍö´ÎÊı: {count}");
+                    sb.AppendLine($"[{name}]æ­»äº¡æ¬¡æ•°: {count}");
                 }
                 body.Text(sb.ToString().Trim());
             }
             else
             {
-                body.Text("ÎŞ·¨Á¬½Óµ½·şÎñÆ÷£¡");
+                body.Text("æ— æ³•è¿æ¥åˆ°æœåŠ¡å™¨ï¼");
             }
             await args.Event.Reply(body);
         }
         else
         {
-            await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

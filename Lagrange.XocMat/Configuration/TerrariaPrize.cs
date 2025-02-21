@@ -1,4 +1,4 @@
-
+﻿
 
 using Lagrange.XocMat.Attributes;
 using Lagrange.XocMat.Internal.Terraria;

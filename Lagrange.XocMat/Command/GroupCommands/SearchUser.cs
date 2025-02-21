@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lagrange.Core.Common.Interface.Api;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.DB.Manager;
@@ -9,8 +9,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class SearchUser : Command
 {
-    public override string[] Alias => ["×¢²á²éÑ¯", "name"];
-    public override string HelpText => "²éÑ¯×¢²áÈË";
+    public override string[] Alias => ["æ³¨å†ŒæŸ¥è¯¢", "name"];
+    public override string HelpText => "æŸ¥è¯¢æ³¨å†Œäºº";
     public override string[] Permissions => [OneBotPermissions.SearchUser];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -20,22 +20,22 @@ public class SearchUser : Command
             List<TerrariaUser> users = TerrariaUser.GetUsers(id);
             if (users.Count == 0)
             {
-                await args.Event.Reply("Î´²éÑ¯µ½¸ÃÓÃ»§µÄ×¢²áĞÅÏ¢!");
+                await args.Event.Reply("æœªæŸ¥è¯¢åˆ°è¯¥ç”¨æˆ·çš„æ³¨å†Œä¿¡æ¯!");
                 return;
             }
-            StringBuilder sb = new("²éÑ¯½á¹û:\n");
+            StringBuilder sb = new("æŸ¥è¯¢ç»“æœ:\n");
             foreach (TerrariaUser user in users)
             {
-                sb.AppendLine($"×¢²áÃû³Æ: {user.Name}");
-                sb.AppendLine($"×¢²áÕËºÅ: {user.Id}");
+                sb.AppendLine($"æ³¨å†Œåç§°: {user.Name}");
+                sb.AppendLine($"æ³¨å†Œè´¦å·: {user.Id}");
                 Core.Common.Entity.BotGroupMember? result = (await args.Bot.FetchMembers(args.GroupUin)).FirstOrDefault(x => x.Uin == user.Id);
                 if (result != null)
                 {
-                    sb.AppendLine($"ÈºêÇ³Æ: {result.MemberName}");
+                    sb.AppendLine($"ç¾¤æ˜µç§°: {result.MemberName}");
                 }
                 else
                 {
-                    sb.AppendLine("×¢²áÈË²»ÔÚ´ËÈºÖĞ");
+                    sb.AppendLine("æ³¨å†Œäººä¸åœ¨æ­¤ç¾¤ä¸­");
                 }
                 sb.AppendLine("");
             }
@@ -59,7 +59,7 @@ public class SearchUser : Command
                 TerrariaUser? user = TerrariaUser.GetUsersByName(args.Parameters[0]);
                 if (user == null)
                 {
-                    await args.Event.Reply("Î´²éÑ¯µ½×¢²áĞÅÏ¢", true);
+                    await args.Event.Reply("æœªæŸ¥è¯¢åˆ°æ³¨å†Œä¿¡æ¯", true);
                     return;
                 }
                 else

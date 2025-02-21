@@ -1,4 +1,4 @@
-using Lagrange.Core.Message;
+ï»¿using Lagrange.Core.Message;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ReStartServer : Command
 {
-    public override string[] Alias => ["ÖØÆô·şÎñÆ÷"];
-    public override string HelpText => "ÖØÆô·şÎñÆ÷";
+    public override string[] Alias => ["é‡å¯æœåŠ¡å™¨"];
+    public override string HelpText => "é‡å¯æœåŠ¡å™¨";
     public override string[] Permissions => [OneBotPermissions.ResetTShock];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -20,7 +20,7 @@ public class ReStartServer : Command
             MessageBuilder build = MessageBuilder.Group(args.GroupUin);
             if (api.Status)
             {
-                build.Text("ÕıÔÚÖØÆô·şÎñÆ÷£¬ÇëÉÔºó...");
+                build.Text("æ­£åœ¨é‡å¯æœåŠ¡å™¨ï¼Œè¯·ç¨å...");
             }
             else
             {
@@ -30,7 +30,7 @@ public class ReStartServer : Command
         }
         else
         {
-            await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

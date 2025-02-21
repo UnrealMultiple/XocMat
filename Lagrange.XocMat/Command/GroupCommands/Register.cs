@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+ï»¿using System.Text.RegularExpressions;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
@@ -11,8 +11,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class Register : Command
 {
-    public override string[] Alias => ["×¢²á"];
-    public override string HelpText => "×¢²á";
+    public override string[] Alias => ["æ³¨å†Œ"];
+    public override string HelpText => "æ³¨å†Œ";
     public override string[] Permissions => [OneBotPermissions.RegisterUser];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -21,22 +21,22 @@ public class Register : Command
         {
             if (!UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) || server == null)
             {
-                await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+                await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
                 return;
             }
             if (args.Parameters[0].Length > server.RegisterNameMax)
             {
-                await args.Event.Reply($"×¢²áµÄÈËÎïÃû³Æ²»ÄÜ´óÓÚ{server.RegisterNameMax}¸ö×Ö·û!", true);
+                await args.Event.Reply($"æ³¨å†Œçš„äººç‰©åç§°ä¸èƒ½å¤§äº{server.RegisterNameMax}ä¸ªå­—ç¬¦!", true);
                 return;
             }
             if (!new Regex("^[a-zA-Z0-9\u4e00-\u9fa5\\[\\]:/ ]+$").IsMatch(args.Parameters[0]) && server.RegisterNameLimit)
             {
-                await args.Event.Reply("×¢²áµÄÈËÎïÃû³Æ²»ÄÜ°üº¬ÖĞÎÄ,×ÖÄ¸,Êı×ÖºÍ/:[]ÒÔÍâµÄ×Ö·û", true);
+                await args.Event.Reply("æ³¨å†Œçš„äººç‰©åç§°ä¸èƒ½åŒ…å«ä¸­æ–‡,å­—æ¯,æ•°å­—å’Œ/:[]ä»¥å¤–çš„å­—ç¬¦", true);
                 return;
             }
             if (TerrariaUser.GetUserById(args.MemberUin, server.Name).Count >= server.RegisterMaxCount)
             {
-                await args.Event.Reply($"Í¬Ò»¸ö·şÎñÆ÷ÉÏ×¢²áÕË»§²»ÄÜ³¬¹ı{server.RegisterMaxCount}¸ö", true);
+                await args.Event.Reply($"åŒä¸€ä¸ªæœåŠ¡å™¨ä¸Šæ³¨å†Œè´¦æˆ·ä¸èƒ½è¶…è¿‡{server.RegisterMaxCount}ä¸ª", true);
                 return;
             }
             string pass = Guid.NewGuid().ToString()[..8];
@@ -48,21 +48,21 @@ public class Register : Command
                 if (api.Status)
                 {
                     MailHelper.SendMail($"{args.MemberUin}@qq.com",
-                        $"{server.Name}·şÎñÆ÷×¢²áÃÜÂë",
-                        $"ÄúµÄ×¢²áÃÜÂëÊÇ:{pass}<br>Çë×¢Òâ±£´æ²»Òª±©Â¶¸øËûÈË");
-                    build.Text($"×¢²á³É¹¦!" +
-                        $"\n×¢²á·şÎñÆ÷: {server.Name}" +
-                        $"\n×¢²áÃû³Æ: {args.Parameters[0]}" +
-                        $"\n×¢²áÕËºÅ: {args.MemberUin}" +
-                        $"\n×¢²áÈËêÇ³Æ: {args.Event.Chain.GroupMemberInfo!.MemberName}" +
-                        $"\n×¢²áÃÜÂëÒÑ·¢ËÍÖÁQQÓÊÏäÇëµã»÷ÏÂ·½Á´½Ó²é¿´" +
+                        $"{server.Name}æœåŠ¡å™¨æ³¨å†Œå¯†ç ",
+                        $"æ‚¨çš„æ³¨å†Œå¯†ç æ˜¯:{pass}<br>è¯·æ³¨æ„ä¿å­˜ä¸è¦æš´éœ²ç»™ä»–äºº");
+                    build.Text($"æ³¨å†ŒæˆåŠŸ!" +
+                        $"\næ³¨å†ŒæœåŠ¡å™¨: {server.Name}" +
+                        $"\næ³¨å†Œåç§°: {args.Parameters[0]}" +
+                        $"\næ³¨å†Œè´¦å·: {args.MemberUin}" +
+                        $"\næ³¨å†Œäººæ˜µç§°: {args.Event.Chain.GroupMemberInfo!.MemberName}" +
+                        $"\næ³¨å†Œå¯†ç å·²å‘é€è‡³QQé‚®ç®±è¯·ç‚¹å‡»ä¸‹æ–¹é“¾æ¥æŸ¥çœ‹" +
                         $"\nhttps://wap.mail.qq.com/home/index" +
-                        $"\n½øÈë·şÎñÆ÷ºó¿ÉÊ¹ÓÃ/password [µ±Ç°ÃÜÂë] [ĞÂÃÜÂë] ĞŞ¸ÄÄãµÄÃÜÂë");
+                        $"\nè¿›å…¥æœåŠ¡å™¨åå¯ä½¿ç”¨/password [å½“å‰å¯†ç ] [æ–°å¯†ç ] ä¿®æ”¹ä½ çš„å¯†ç ");
                 }
                 else
                 {
                     TerrariaUser.Remove(server.Name, args.Parameters[0]);
-                    build.Text(string.IsNullOrEmpty(api.Message) ? "ÎŞ·¨Á¬½Ó·şÎñÆ÷£¡" : api.Message);
+                    build.Text(string.IsNullOrEmpty(api.Message) ? "æ— æ³•è¿æ¥æœåŠ¡å™¨ï¼" : api.Message);
                 }
                 await args.Event.Reply(build);
             }
@@ -73,7 +73,7 @@ public class Register : Command
         }
         else
         {
-            await args.Event.Reply($"Óï·¨´íÎó,ÕıÈ·Óï·¨:\n{args.CommamdPrefix}{args.Name} [Ãû³Æ]");
+            await args.Event.Reply($"è¯­æ³•é”™è¯¯,æ­£ç¡®è¯­æ³•:\n{args.CommamdPrefix}{args.Name} [åç§°]");
         }
     }
 }

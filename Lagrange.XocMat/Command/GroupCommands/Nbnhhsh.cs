@@ -1,4 +1,4 @@
-using System.Text.Json.Nodes;
+ï»¿using System.Text.Json.Nodes;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class Nbnhhsh : Command
 {
-    public override string[] Alias => ["ËõĞ´"];
-    public override string HelpText => "²éÑ¯ËõĞ´";
+    public override string[] Alias => ["ç¼©å†™"];
+    public override string HelpText => "æŸ¥è¯¢ç¼©å†™";
     public override string[] Permissions => [OneBotPermissions.Nbnhhsh];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -22,16 +22,16 @@ public class Nbnhhsh : Command
             JsonArray? trans = data?["data"]?[0]?["trans"]?.AsArray();
             if (trans != null && trans.Any())
             {
-                await args.Event.Reply($"ËõĞ´:`{args.Parameters[0]}`¿ÉÄÜÎª:\n{string.Join(",", trans)}");
+                await args.Event.Reply($"ç¼©å†™:`{args.Parameters[0]}`å¯èƒ½ä¸º:\n{string.Join(",", trans)}");
             }
             else
             {
-                await args.Event.Reply("Ò²Ğí¸ÃËõĞ´Ã»ÓĞ±»ÊÕÂ¼!");
+                await args.Event.Reply("ä¹Ÿè®¸è¯¥ç¼©å†™æ²¡æœ‰è¢«æ”¶å½•!");
             }
         }
         else
         {
-            await args.Event.Reply($"Óï·¨´íÎó£¬ÕıÈ·Óï·¨:{args.CommamdPrefix}ËõĞ´ [ÎÄ±¾]");
+            await args.Event.Reply($"è¯­æ³•é”™è¯¯ï¼Œæ­£ç¡®è¯­æ³•:{args.CommamdPrefix}ç¼©å†™ [æ–‡æœ¬]");
         }
     }
 }

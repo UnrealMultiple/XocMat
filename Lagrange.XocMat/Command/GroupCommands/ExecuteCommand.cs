@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,15 +7,15 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ExecuteCommand : Command
 {
-    public override string[] Alias => ["Ö´ÐÐ"];
-    public override string HelpText => "Ö´ÐÐÃüÁî";
+    public override string[] Alias => ["æ‰§è¡Œ"];
+    public override string HelpText => "æ‰§è¡Œå‘½ä»¤";
     public override string[] Permissions => [OneBotPermissions.ExecuteCommand];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
         if (args.Parameters.Count < 1)
         {
-            await args.Event.Reply("ÇëÊäÈëÒªÖ´ÐÐµÄÃüÁî!", true);
+            await args.Event.Reply("è¯·è¾“å…¥è¦æ‰§è¡Œçš„å‘½ä»¤!", true);
             return;
         }
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
@@ -25,18 +25,18 @@ public class ExecuteCommand : Command
             Core.Message.MessageBuilder body = args.MessageBuilder;
             if (api.Status)
             {
-                string cmdResult = $"[{server.Name}]ÃüÁîÖ´ÐÐ½á¹û:\n{string.Join("\n", api.Params)}";
+                string cmdResult = $"[{server.Name}]å‘½ä»¤æ‰§è¡Œç»“æžœ:\n{string.Join("\n", api.Params)}";
                 body.Text(cmdResult);
             }
             else
             {
-                body.Text("ÎÞ·¨Á¬½Óµ½·þÎñÆ÷£¡");
+                body.Text("æ— æ³•è¿žæŽ¥åˆ°æœåŠ¡å™¨ï¼");
             }
             await args.Event.Reply(body);
         }
         else
         {
-            await args.Event.Reply("Î´ÇÐ»»·þÎñÆ÷»ò·þÎñÆ÷ÎÞÐ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

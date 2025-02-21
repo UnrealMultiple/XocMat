@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
@@ -10,8 +10,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ResetPassword : Command
 {
-    public override string[] Alias => ["ÖØÖÃÃÜÂë"];
-    public override string HelpText => "ÖØÖÃÃÜÂë";
+    public override string[] Alias => ["é‡ç½®å¯†ç "];
+    public override string HelpText => "é‡ç½®å¯†ç ";
     public override string[] Permissions => [OneBotPermissions.SelfPassword];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -28,23 +28,23 @@ public class ResetPassword : Command
                     foreach (TerrariaUser u in user)
                     {
                         string pwd = Guid.NewGuid().ToString()[..8];
-                        sb.Append($"ÈËÎï {u.Name}µÄÃÜÂëÖØÖÃÎª: {pwd}<br>");
+                        sb.Append($"äººç‰© {u.Name}çš„å¯†ç é‡ç½®ä¸º: {pwd}<br>");
                         Internal.Socket.Action.Response.BaseActionResponse res = await server.ResetPlayerPwd(u.Name, pwd);
                         if (!res.Status)
                         {
-                            await args.Event.Reply("ÎŞ·¨Á¬½Óµ½·şÎñÆ÷¸ü¸ÄÃÜÂë!");
+                            await args.Event.Reply("æ— æ³•è¿æ¥åˆ°æœåŠ¡å™¨æ›´æ”¹å¯†ç !");
                             return;
                         }
                         TerrariaUser.ResetPassword(args.MemberUin, server.Name, u.Name, pwd);
                     }
-                    sb.Append("Çë×¢Òâ±£´æ²»Òª±©Â¶¸øËûÈË");
+                    sb.Append("è¯·æ³¨æ„ä¿å­˜ä¸è¦æš´éœ²ç»™ä»–äºº");
                     MailHelper.SendMail($"{args.MemberUin}@qq.com",
-                                $"{server.Name}·şÃÜÂëÖØÖÃ",
+                                $"{server.Name}æœå¯†ç é‡ç½®",
                                 sb.ToString().Trim());
-                    await args.Event.Reply("ÃÜÂëÖØÖÃ³É¹¦ÒÑ·¢ËÍÖÁÄãµÄQQÓÊÏä¡£", true);
+                    await args.Event.Reply("å¯†ç é‡ç½®æˆåŠŸå·²å‘é€è‡³ä½ çš„QQé‚®ç®±ã€‚", true);
                     return;
                 }
-                await args.Event.Reply($"{server.Name}ÉÏÎ´ÕÒµ½ÄãµÄ×¢²áĞÅÏ¢¡£");
+                await args.Event.Reply($"{server.Name}ä¸Šæœªæ‰¾åˆ°ä½ çš„æ³¨å†Œä¿¡æ¯ã€‚");
                 return;
             }
             catch (Exception ex)
@@ -52,6 +52,6 @@ public class ResetPassword : Command
                 await args.Event.Reply(ex.Message, true);
             }
         }
-        await args.Event.Reply("·şÎñÆ÷ÎŞĞ§»òÎ´ÇĞ»»ÖÁÒ»¸öÓĞĞ§·şÎñÆ÷!");
+        await args.Event.Reply("æœåŠ¡å™¨æ— æ•ˆæˆ–æœªåˆ‡æ¢è‡³ä¸€ä¸ªæœ‰æ•ˆæœåŠ¡å™¨!");
     }
 }

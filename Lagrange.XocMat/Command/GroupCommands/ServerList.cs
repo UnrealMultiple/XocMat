@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ServerList : Command
 {
-    public override string[] Alias => ["·şÎñÆ÷ÁĞ±í"];
-    public override string HelpText => "·şÎñÆ÷ÁĞ±í";
+    public override string[] Alias => ["æœåŠ¡å™¨åˆ—è¡¨"];
+    public override string HelpText => "æœåŠ¡å™¨åˆ—è¡¨";
     public override string[] Permissions => [OneBotPermissions.ServerList];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -17,20 +17,20 @@ public class ServerList : Command
         IEnumerable<Terraria.TerrariaServer> groupServers = XocMatSetting.Instance.Servers.Where(s => s.Groups.Contains(args.GroupUin));
         if (!groupServers.Any())
         {
-            await args.Event.Reply("´ËÈºÎ´ÅäÖÃÈÎºÎ·şÎñÆ÷!", true);
+            await args.Event.Reply("æ­¤ç¾¤æœªé…ç½®ä»»ä½•æœåŠ¡å™¨!", true);
             return;
         }
         TableBuilder tableBuilder = new TableBuilder();
-        tableBuilder.SetTitle("·şÎñÆ÷ÁĞ±í");
-        tableBuilder.AddRow("·şÎñÆ÷Ãû³Æ", "·şÎñÆ÷IP", "·şÎñÆ÷¶Ë¿Ú", "·şÎñÆ÷°æ±¾", "·şÎñÆ÷½éÉÜ", "ÔËĞĞ×´Ì¬", "ÊÀ½çÃû³Æ", "ÊÀ½çÖÖ×Ó", "ÊÀ½ç´óĞ¡");
+        tableBuilder.SetTitle("æœåŠ¡å™¨åˆ—è¡¨");
+        tableBuilder.AddRow("æœåŠ¡å™¨åç§°", "æœåŠ¡å™¨IP", "æœåŠ¡å™¨ç«¯å£", "æœåŠ¡å™¨ç‰ˆæœ¬", "æœåŠ¡å™¨ä»‹ç»", "è¿è¡ŒçŠ¶æ€", "ä¸–ç•Œåç§°", "ä¸–ç•Œç§å­", "ä¸–ç•Œå¤§å°");
         foreach (Terraria.TerrariaServer? server in groupServers)
         {
             Internal.Socket.Action.Response.ServerStatus status = await server.ServerStatus();
             tableBuilder.AddRow(server.Name, server.IP, server.NatProt.ToString(), server.Version, server.Describe,
-                !status.Status ? "ÎŞ·¨Á¬½Ó" : $"ÒÑÔËĞĞ:{status.RunTime:dd\\.hh\\:mm\\:ss}",
-                !status.Status ? "ÎŞ·¨»ñÈ¡" : status.WorldName,
-                !status.Status ? "ÎŞ·¨»ñÈ¡" : status.WorldSeed,
-                !status.Status ? "ÎŞ·¨»ñÈ¡" : $"{status.WorldWidth}x{status.WorldHeight}");
+                !status.Status ? "æ— æ³•è¿æ¥" : $"å·²è¿è¡Œ:{status.RunTime:dd\\.hh\\:mm\\:ss}",
+                !status.Status ? "æ— æ³•è·å–" : status.WorldName,
+                !status.Status ? "æ— æ³•è·å–" : status.WorldSeed,
+                !status.Status ? "æ— æ³•è·å–" : $"{status.WorldWidth}x{status.WorldHeight}");
         }
 
         await args.MessageBuilder.Image(await tableBuilder.BuildAsync()).Reply();

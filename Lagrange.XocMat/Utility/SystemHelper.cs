@@ -30,33 +30,33 @@ public class SystemHelper
         }
     }
 
-    #region »ñµÃÄÚ´æĞÅÏ¢API
+    #region è·å¾—å†…å­˜ä¿¡æ¯API
     [DllImport("kernel32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool GlobalMemoryStatusEx(ref MEMORY_INFO mi);
 
-    //¶¨ÒåÄÚ´æµÄĞÅÏ¢½á¹¹
+    //å®šä¹‰å†…å­˜çš„ä¿¡æ¯ç»“æ„
     [StructLayout(LayoutKind.Sequential)]
     public struct MEMORY_INFO
     {
-        public uint dwLength; //µ±Ç°½á¹¹Ìå´óĞ¡
-        public uint dwMemoryLoad; //µ±Ç°ÄÚ´æÊ¹ÓÃÂÊ
-        public ulong ullTotalPhys; //×Ü¼ÆÎïÀíÄÚ´æ´óĞ¡
-        public ulong ullAvailPhys; //¿ÉÓÃÎïÀíÄÚ´æ´óĞ¡
-        public ulong ullTotalPageFile; //×Ü¼Æ½»»»ÎÄ¼ş´óĞ¡
-        public ulong ullAvailPageFile; //×Ü¼Æ½»»»ÎÄ¼ş´óĞ¡
-        public ulong ullTotalVirtual; //×Ü¼ÆĞéÄâÄÚ´æ´óĞ¡
-        public ulong ullAvailVirtual; //¿ÉÓÃĞéÄâÄÚ´æ´óĞ¡
-        public ulong ullAvailExtendedVirtual; //±£Áô Õâ¸öÖµÊ¼ÖÕÎª0
+        public uint dwLength; //å½“å‰ç»“æ„ä½“å¤§å°
+        public uint dwMemoryLoad; //å½“å‰å†…å­˜ä½¿ç”¨ç‡
+        public ulong ullTotalPhys; //æ€»è®¡ç‰©ç†å†…å­˜å¤§å°
+        public ulong ullAvailPhys; //å¯ç”¨ç‰©ç†å†…å­˜å¤§å°
+        public ulong ullTotalPageFile; //æ€»è®¡äº¤æ¢æ–‡ä»¶å¤§å°
+        public ulong ullAvailPageFile; //æ€»è®¡äº¤æ¢æ–‡ä»¶å¤§å°
+        public ulong ullTotalVirtual; //æ€»è®¡è™šæ‹Ÿå†…å­˜å¤§å°
+        public ulong ullAvailVirtual; //å¯ç”¨è™šæ‹Ÿå†…å­˜å¤§å°
+        public ulong ullAvailExtendedVirtual; //ä¿ç•™ è¿™ä¸ªå€¼å§‹ç»ˆä¸º0
     }
     #endregion
 
-    #region ¸ñÊ½»¯ÈİÁ¿´óĞ¡
+    #region æ ¼å¼åŒ–å®¹é‡å¤§å°
     /// <summary>
-    /// ¸ñÊ½»¯ÈİÁ¿´óĞ¡
+    /// æ ¼å¼åŒ–å®¹é‡å¤§å°
     /// </summary>
-    /// <param name="size">ÈİÁ¿£¨B£©</param>
-    /// <returns>ÒÑ¸ñÊ½»¯µÄÈİÁ¿</returns>
+    /// <param name="size">å®¹é‡ï¼ˆBï¼‰</param>
+    /// <returns>å·²æ ¼å¼åŒ–çš„å®¹é‡</returns>
     public static string FormatSize(double size)
     {
         double d = (double)size;
@@ -71,9 +71,9 @@ public class SystemHelper
     }
     #endregion
 
-    #region »ñµÃµ±Ç°ÄÚ´æÊ¹ÓÃÇé¿ö
+    #region è·å¾—å½“å‰å†…å­˜ä½¿ç”¨æƒ…å†µ
     /// <summary>
-    /// »ñµÃµ±Ç°ÄÚ´æÊ¹ÓÃÇé¿ö
+    /// è·å¾—å½“å‰å†…å­˜ä½¿ç”¨æƒ…å†µ
     /// </summary>
     /// <returns></returns>
     public static MEMORY_INFO GetMemoryStatus()
@@ -85,11 +85,11 @@ public class SystemHelper
     }
     #endregion
 
-    #region »ñµÃµ±Ç°¿ÉÓÃÎïÀíÄÚ´æ´óĞ¡
+    #region è·å¾—å½“å‰å¯ç”¨ç‰©ç†å†…å­˜å¤§å°
     /// <summary>
-    /// »ñµÃµ±Ç°¿ÉÓÃÎïÀíÄÚ´æ´óĞ¡
+    /// è·å¾—å½“å‰å¯ç”¨ç‰©ç†å†…å­˜å¤§å°
     /// </summary>
-    /// <returns>µ±Ç°¿ÉÓÃÎïÀíÄÚ´æ£¨B£©</returns>
+    /// <returns>å½“å‰å¯ç”¨ç‰©ç†å†…å­˜ï¼ˆBï¼‰</returns>
     public static ulong GetAvailPhys()
     {
         MEMORY_INFO mi = GetMemoryStatus();
@@ -97,11 +97,11 @@ public class SystemHelper
     }
     #endregion
 
-    #region »ñµÃµ±Ç°ÒÑÊ¹ÓÃµÄÄÚ´æ´óĞ¡
+    #region è·å¾—å½“å‰å·²ä½¿ç”¨çš„å†…å­˜å¤§å°
     /// <summary>
-    /// »ñµÃµ±Ç°ÒÑÊ¹ÓÃµÄÄÚ´æ´óĞ¡
+    /// è·å¾—å½“å‰å·²ä½¿ç”¨çš„å†…å­˜å¤§å°
     /// </summary>
-    /// <returns>ÒÑÊ¹ÓÃµÄÄÚ´æ´óĞ¡£¨B£©</returns>
+    /// <returns>å·²ä½¿ç”¨çš„å†…å­˜å¤§å°ï¼ˆBï¼‰</returns>
     public static ulong GetUsedPhys()
     {
         MEMORY_INFO mi = GetMemoryStatus();
@@ -109,11 +109,11 @@ public class SystemHelper
     }
     #endregion
 
-    #region »ñµÃµ±Ç°×Ü¼ÆÎïÀíÄÚ´æ´óĞ¡
+    #region è·å¾—å½“å‰æ€»è®¡ç‰©ç†å†…å­˜å¤§å°
     /// <summary>
-    /// »ñµÃµ±Ç°×Ü¼ÆÎïÀíÄÚ´æ´óĞ¡
+    /// è·å¾—å½“å‰æ€»è®¡ç‰©ç†å†…å­˜å¤§å°
     /// </summary>
-    /// <returns&gt;×Ü¼ÆÎïÀíÄÚ´æ´óĞ¡£¨B£©&lt;/returns&gt;
+    /// <returns&gt;æ€»è®¡ç‰©ç†å†…å­˜å¤§å°ï¼ˆBï¼‰&lt;/returns&gt;
     public static ulong GetTotalPhys()
     {
         MEMORY_INFO mi = GetMemoryStatus();
@@ -136,15 +136,15 @@ public class SystemHelper
     {
         try
         {
-            // ³¢ÊÔ·ÃÎÊ½ø³ÌµÄÒ»¸öĞèÒªÈ¨ÏŞµÄÊôĞÔ
+            // å°è¯•è®¿é—®è¿›ç¨‹çš„ä¸€ä¸ªéœ€è¦æƒé™çš„å±æ€§
             ProcessModuleCollection modules = process.Modules;
             return true;
         }
-        catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // ¾Ü¾ø·ÃÎÊ
+        catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // æ‹’ç»è®¿é—®
         {
             return false;
         }
-        catch // ÆäËûÒì³££¬Èç½ø³ÌÒÑÍË³ö
+        catch // å…¶ä»–å¼‚å¸¸ï¼Œå¦‚è¿›ç¨‹å·²é€€å‡º
         {
             return false;
         }
@@ -157,14 +157,14 @@ public class SystemHelper
         Stream stream = assembly.GetManifestResourceStream(file)!;
         using StreamReader reader = new StreamReader(stream);
         JObject jobj = reader.ReadToEnd().ToObject<JObject>()!;
-        JArray array = (JArray)jobj["ÎïÆ·"]!;
+        JArray array = (JArray)jobj["ç‰©å“"]!;
         foreach (JToken item in array)
         {
             if (item != null && item["ID"]!.Value<int>() == id)
             {
                 return new()
                 {
-                    Name = item["ÖĞÎÄÃû³Æ"]!.Value<string>()!,
+                    Name = item["ä¸­æ–‡åç§°"]!.Value<string>()!,
                     netID = id
                 };
             }
@@ -180,14 +180,14 @@ public class SystemHelper
         Stream stream = assembly.GetManifestResourceStream(file)!;
         using StreamReader reader = new StreamReader(stream);
         JsonNode? jobj = JsonNode.Parse(reader.ReadToEnd());
-        JsonArray array = jobj?["ÎïÆ·"]?.AsArray()!;
+        JsonArray array = jobj?["ç‰©å“"]?.AsArray()!;
         foreach (JsonNode? item in array)
         {
-            if (item != null && item["ÖĞÎÄÃû³Æ"]!.GetValue<string>().Contains(name))
+            if (item != null && item["ä¸­æ–‡åç§°"]!.GetValue<string>().Contains(name))
             {
                 list.Add(new()
                 {
-                    Name = item["ÖĞÎÄÃû³Æ"]!.GetValue<string>(),
+                    Name = item["ä¸­æ–‡åç§°"]!.GetValue<string>(),
                     netID = item["ID"]!.GetValue<int>()
                 });
             }

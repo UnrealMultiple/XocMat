@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class KillRank : Command
 {
-    public override string[] Alias => ["»÷É±ÅÅĞĞ"];
-    public override string HelpText => "»÷É±ÅÅĞĞ";
+    public override string[] Alias => ["å‡»æ€æ’è¡Œ"];
+    public override string HelpText => "å‡»æ€æ’è¡Œ";
     public override string[] Permissions => [OneBotPermissions.KillRank];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -23,17 +23,17 @@ public class KillRank : Command
                 foreach (Internal.Socket.Internet.KillNpc? damage in data.Damages.OrderByDescending(x => x.KillTime))
                 {
                     sb.AppendLine($"Boss: {damage.Name}");
-                    sb.AppendLine($"×ÜÑªÁ¿: {damage.MaxLife}");
-                    sb.AppendLine($"¸üĞÂÊ±¼ä: {damage.KillTime:yyyy-MM-dd HH:mm:ss}");
-                    sb.AppendLine($"×´Ì¬: {(damage.IsAlive ? "Î´±»»÷É±" : "ÒÑ±»»÷É±")}");
+                    sb.AppendLine($"æ€»è¡€é‡: {damage.MaxLife}");
+                    sb.AppendLine($"æ›´æ–°æ—¶é—´: {damage.KillTime:yyyy-MM-dd HH:mm:ss}");
+                    sb.AppendLine($"çŠ¶æ€: {(damage.IsAlive ? "æœªè¢«å‡»æ€" : "å·²è¢«å‡»æ€")}");
                     if (!damage.IsAlive)
                     {
-                        sb.AppendLine($"»÷É±ÓÃÊ±: {(damage.KillTime - damage.SpawnTime).TotalSeconds}Ãë");
-                        sb.AppendLine($"¶ªÊ§ÉËº¦: {damage.MaxLife - damage.Strikes.Sum(x => x.Damage)}");
+                        sb.AppendLine($"å‡»æ€ç”¨æ—¶: {(damage.KillTime - damage.SpawnTime).TotalSeconds}ç§’");
+                        sb.AppendLine($"ä¸¢å¤±ä¼¤å®³: {damage.MaxLife - damage.Strikes.Sum(x => x.Damage)}");
                     }
                     foreach (Internal.Socket.Internet.PlayerStrike? strike in damage.Strikes.OrderByDescending(x => x.Damage))
                     {
-                        sb.AppendLine($"{strike.Player}ÉËº¦ {Convert.ToSingle(strike.Damage) / damage.MaxLife * 100:F0}%({strike.Damage})");
+                        sb.AppendLine($"{strike.Player}ä¼¤å®³ {Convert.ToSingle(strike.Damage) / damage.MaxLife * 100:F0}%({strike.Damage})");
                     }
                     sb.AppendLine();
                 }
@@ -41,12 +41,12 @@ public class KillRank : Command
             }
             else
             {
-                await args.Event.Reply("ÔİÎŞ»÷É±Êı¾İ¿ÉÒÔÍ³¼Æ!", true);
+                await args.Event.Reply("æš‚æ— å‡»æ€æ•°æ®å¯ä»¥ç»Ÿè®¡!", true);
             }
         }
         else
         {
-            await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

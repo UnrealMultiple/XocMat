@@ -1,4 +1,4 @@
-using SixLabors.Fonts;
+﻿using SixLabors.Fonts;
 
 namespace Lagrange.XocMat.Utility.Images;
 

@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
@@ -10,8 +10,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class SelfPassword : Command
 {
-    public override string[] Alias => ["ÎÒµÄÃÜÂë"];
-    public override string HelpText => "²éÑ¯×Ô¼ºµÄÃÜÂë";
+    public override string[] Alias => ["æˆ‘çš„å¯†ç "];
+    public override string HelpText => "æŸ¥è¯¢è‡ªå·±çš„å¯†ç ";
     public override string[] Permissions => [OneBotPermissions.SelfPassword];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -23,17 +23,17 @@ public class SelfPassword : Command
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (TerrariaUser u in user)
-                    sb.AppendLine($"ÈËÎï{u.Name}µÄ×¢²áÃÜÂëÎª: {u.Password}");
-                sb.AppendLine("Çë×¢Òâ±£´æ²»Òª±©Â¶¸øËûÈË");
+                    sb.AppendLine($"äººç‰©{u.Name}çš„æ³¨å†Œå¯†ç ä¸º: {u.Password}");
+                sb.AppendLine("è¯·æ³¨æ„ä¿å­˜ä¸è¦æš´éœ²ç»™ä»–äºº");
                 MailHelper.SendMail($"{args.MemberUin}@qq.com",
-                            $"{server.Name}·şÎñÆ÷×¢²áÃÜÂë",
+                            $"{server.Name}æœåŠ¡å™¨æ³¨å†Œå¯†ç ",
                             sb.ToString().Trim());
-                await args.Event.Reply("ÃÜÂë²éÑ¯³É¹¦ÒÑ·¢ËÍÖÁÄãµÄQQÓÊÏä¡£", true);
+                await args.Event.Reply("å¯†ç æŸ¥è¯¢æˆåŠŸå·²å‘é€è‡³ä½ çš„QQé‚®ç®±ã€‚", true);
                 return;
             }
-            await args.Event.Reply($"{server.Name}ÉÏÎ´ÕÒµ½ÄãµÄ×¢²áĞÅÏ¢¡£");
+            await args.Event.Reply($"{server.Name}ä¸Šæœªæ‰¾åˆ°ä½ çš„æ³¨å†Œä¿¡æ¯ã€‚");
             return;
         }
-        await args.Event.Reply("·şÎñÆ÷ÎŞĞ§»òÎ´ÇĞ»»ÖÁÒ»¸öÓĞĞ§·şÎñÆ÷!");
+        await args.Event.Reply("æœåŠ¡å™¨æ— æ•ˆæˆ–æœªåˆ‡æ¢è‡³ä¸€ä¸ªæœ‰æ•ˆæœåŠ¡å™¨!");
     }
 }

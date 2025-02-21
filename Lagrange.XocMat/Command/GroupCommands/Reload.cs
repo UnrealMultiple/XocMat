@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.EventArgs;

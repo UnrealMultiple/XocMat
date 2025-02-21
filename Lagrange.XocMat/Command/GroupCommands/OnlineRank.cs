@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class OnlineRank : Command
 {
-    public override string[] Alias => ["ÔÚÏßÅÅĞĞ"];
-    public override string HelpText => "ÔÚÏßÅÅĞĞ";
+    public override string[] Alias => ["åœ¨çº¿æ’è¡Œ"];
+    public override string HelpText => "åœ¨çº¿æ’è¡Œ";
     public override string[] Permissions => [OneBotPermissions.OnlineRank];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -22,10 +22,10 @@ public class OnlineRank : Command
             {
                 if (api.OnlineRank.Count == 0)
                 {
-                    await args.Event.Reply("µ±Ç°»¹Ã»ÓĞÊı¾İ¼ÇÂ¼", true);
+                    await args.Event.Reply("å½“å‰è¿˜æ²¡æœ‰æ•°æ®è®°å½•", true);
                     return;
                 }
-                StringBuilder sb = new StringBuilder($"[{server.Name}]ÔÚÏßÅÅĞĞ:\n");
+                StringBuilder sb = new StringBuilder($"[{server.Name}]åœ¨çº¿æ’è¡Œ:\n");
                 IOrderedEnumerable<KeyValuePair<string, int>> rank = api.OnlineRank.OrderByDescending(x => x.Value);
                 foreach ((string name, int duration) in rank)
                 {
@@ -33,26 +33,26 @@ public class OnlineRank : Command
                     int hour = (duration - (day * 60 * 60 * 24)) / (60 * 60);
                     int minute = (duration - (day * 60 * 60 * 24) - (hour * 60 * 60)) / 60;
                     int second = duration - (day * 60 * 60 * 24) - (hour * 60 * 60) - (minute * 60);
-                    sb.Append($"[{name}]ÔÚÏßÊ±³¤: ");
+                    sb.Append($"[{name}]åœ¨çº¿æ—¶é•¿: ");
                     if (day > 0)
-                        sb.Append($"{day}Ìì");
+                        sb.Append($"{day}å¤©");
                     if (hour > 0)
-                        sb.Append($"{hour}Ê±");
+                        sb.Append($"{hour}æ—¶");
                     if (minute > 0)
-                        sb.Append($"{minute}·Ö");
-                    sb.Append($"{second}Ãë\n");
+                        sb.Append($"{minute}åˆ†");
+                    sb.Append($"{second}ç§’\n");
                 }
                 body.Text(sb.ToString().Trim());
             }
             else
             {
-                body.Text("ÎŞ·¨Á¬½Óµ½·şÎñÆ÷£¡");
+                body.Text("æ— æ³•è¿æ¥åˆ°æœåŠ¡å™¨ï¼");
             }
             await args.Event.Reply(body);
         }
         else
         {
-            await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

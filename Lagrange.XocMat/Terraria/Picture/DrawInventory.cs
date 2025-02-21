@@ -1,4 +1,4 @@
-
+﻿
 using Lagrange.XocMat.Internal.Socket.Internet;
 using Lagrange.XocMat.Utility.Images;
 using SixLabors.ImageSharp;

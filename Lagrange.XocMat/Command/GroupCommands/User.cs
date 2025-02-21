@@ -10,7 +10,7 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 public class User : Command
 {
     public override string[] Alias => ["user"];
-    public override string HelpText => "user¹ÜÀí";
+    public override string HelpText => "userç®¡ç†";
     public override string[] Permissions => [OneBotPermissions.UserAdmin];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -25,7 +25,7 @@ public class User : Command
                         try
                         {
                             TerrariaUser.Remove(server.Name, args.Parameters[1]);
-                            await args.Event.Reply("ÒÆ³ı³É¹¦!", true);
+                            await args.Event.Reply("ç§»é™¤æˆåŠŸ!", true);
                         }
                         catch (TerrariaUserException ex)
                         {
@@ -33,14 +33,14 @@ public class User : Command
                         }
                         break;
                     default:
-                        await args.Event.Reply("Î´Öª×ÓÃüÁî!");
+                        await args.Event.Reply("æœªçŸ¥å­å‘½ä»¤!");
                         break;
                 }
             }
         }
         else
         {
-            await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+            await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
         }
     }
 }

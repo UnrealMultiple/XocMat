@@ -1,4 +1,4 @@
-﻿using Lagrange.XocMat.Command.CommandArgs;
+using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Exceptions;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;

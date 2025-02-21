@@ -1,4 +1,4 @@
-using Lagrange.Core.Common.Interface.Api;
+锘縰sing Lagrange.Core.Common.Interface.Api;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class UnsetGroupAdmin : Command
 {
-    public override string[] Alias => ["取消管理"];
-    public override string HelpText => "取消管理";
+    public override string[] Alias => ["鍙栨秷绠＄悊"];
+    public override string HelpText => "鍙栨秷绠＄悊";
     public override string[] Permissions => [OneBotPermissions.ChangeGroupOption];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -19,16 +19,16 @@ public class UnsetGroupAdmin : Command
             if (atlist != null)
             {
                 await args.Bot.SetGroupAdmin(args.GroupUin, atlist.Uin, false);
-                await args.Event.Reply($"已取消`{atlist.Uin}`的管理员!");
+                await args.Event.Reply($"宸插彇娑坄{atlist.Uin}`鐨勭鐞嗗憳!");
             }
             else
             {
-                await args.Event.Reply("请选择一位成员！");
+                await args.Event.Reply("璇烽�夋嫨涓�浣嶆垚鍛橈紒");
             }
         }
         else
         {
-            await args.Event.Reply($"语法错误,正确语法:\n{args.CommamdPrefix}{args.Name} [AT]");
+            await args.Event.Reply($"璇硶閿欒,姝ｇ‘璇硶:\n{args.CommamdPrefix}{args.Name} [AT]");
         }
     }
 }

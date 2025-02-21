@@ -1,4 +1,4 @@
-using Lagrange.Core.Common.Interface.Api;
+ï»¿using Lagrange.Core.Common.Interface.Api;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class UnMute : Command
 {
-    public override string[] Alias => ["½â"];
-    public override string HelpText => "½â³ı½ûÑÔ";
+    public override string[] Alias => ["è§£"];
+    public override string HelpText => "è§£é™¤ç¦è¨€";
     public override string[] Permissions => [OneBotPermissions.Mute];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -18,15 +18,15 @@ public class UnMute : Command
             IEnumerable<Core.Message.Entity.MentionEntity> atlist = args.Event.Chain.GetMention();
             if (!atlist.Any())
             {
-                await args.Event.Reply("Î´Ö¸ÁîÄ¿±ê³ÉÔ±!");
+                await args.Event.Reply("æœªæŒ‡ä»¤ç›®æ ‡æˆå‘˜!");
                 return;
             }
             atlist.ForEach(async x => await args.Bot.MuteGroupMember(args.GroupUin, x.Uin, 0));
-            await args.Event.Reply("½â½û³É¹¦£¡");
+            await args.Event.Reply("è§£ç¦æˆåŠŸï¼");
         }
         else
         {
-            await args.Event.Reply($"Óï·¨´íÎó,ÕıÈ·Óï·¨:\n{args.CommamdPrefix}½â [AT] [Ê±³¤]£¡");
+            await args.Event.Reply($"è¯­æ³•é”™è¯¯,æ­£ç¡®è¯­æ³•:\n{args.CommamdPrefix}è§£ [AT] [æ—¶é•¿]ï¼");
         }
     }
 }

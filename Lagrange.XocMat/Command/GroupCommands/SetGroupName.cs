@@ -1,4 +1,4 @@
-using Lagrange.Core.Common.Interface.Api;
+ï»¿using Lagrange.Core.Common.Interface.Api;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class SetGroupName : Command
 {
-    public override string[] Alias => ["ÉèÖÃÈºÃû"];
-    public override string HelpText => "ÉèÖÃÈºÃû";
+    public override string[] Alias => ["è®¾ç½®ç¾¤å"];
+    public override string HelpText => "è®¾ç½®ç¾¤å";
     public override string[] Permissions => [OneBotPermissions.ChangeGroupOption];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -17,15 +17,15 @@ public class SetGroupName : Command
         {
             if (string.IsNullOrEmpty(args.Parameters[0]))
             {
-                await args.Event.Reply("ÈºÃû²»ÄÜÎ´¿Õ£¡");
+                await args.Event.Reply("ç¾¤åä¸èƒ½æœªç©ºï¼");
                 return;
             }
             await args.Bot.RenameGroup(args.GroupUin, args.Parameters[0]);
-            await args.Event.Reply($"ÈºÃû³ÆÒÑĞŞ¸ÄÎª`{args.Parameters[0]}`");
+            await args.Event.Reply($"ç¾¤åç§°å·²ä¿®æ”¹ä¸º`{args.Parameters[0]}`");
         }
         else
         {
-            await args.Event.Reply($"Óï·¨´íÎó,ÕıÈ·Óï·¨:\n{args.CommamdPrefix}ÉèÖÃÈºÃû [Ãû³Æ]");
+            await args.Event.Reply($"è¯­æ³•é”™è¯¯,æ­£ç¡®è¯­æ³•:\n{args.CommamdPrefix}è®¾ç½®ç¾¤å [åç§°]");
         }
     }
 }

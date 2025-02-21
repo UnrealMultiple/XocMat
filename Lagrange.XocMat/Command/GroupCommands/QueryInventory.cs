@@ -8,8 +8,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class QueryInventory : Command
 {
-    public override string[] Alias => ["²é±³°ü"];
-    public override string HelpText => "²éÑ¯±³°ü";
+    public override string[] Alias => ["æŸ¥èƒŒåŒ…"];
+    public override string HelpText => "æŸ¥è¯¢èƒŒåŒ…";
     public override string[] Permissions => [OneBotPermissions.QueryInventory];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -27,18 +27,18 @@ public class QueryInventory : Command
                 }
                 else
                 {
-                    body.Text("ÎŞ·¨»ñÈ¡ÓÃ»§ĞÅÏ¢£¡");
+                    body.Text("æ— æ³•è·å–ç”¨æˆ·ä¿¡æ¯ï¼");
                 }
                 await args.Event.Reply(body);
             }
             else
             {
-                await args.Event.Reply("Î´ÇĞ»»·şÎñÆ÷»ò·şÎñÆ÷ÎŞĞ§!", true);
+                await args.Event.Reply("æœªåˆ‡æ¢æœåŠ¡å™¨æˆ–æœåŠ¡å™¨æ— æ•ˆ!", true);
             }
         }
         else
         {
-            await args.Event.Reply($"Óï·¨´íÎó,ÕıÈ·Óï·¨:\n{args.CommamdPrefix}{args.Name} [ÓÃ»§Ãû]");
+            await args.Event.Reply($"è¯­æ³•é”™è¯¯,æ­£ç¡®è¯­æ³•:\n{args.CommamdPrefix}{args.Name} [ç”¨æˆ·å]");
         }
     }
 }

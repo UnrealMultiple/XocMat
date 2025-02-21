@@ -1,4 +1,4 @@
-using System.Web;
+﻿using System.Web;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -8,7 +8,7 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 public class Wiki : Command
 {
     public override string[] Alias => ["wiki"];
-    public override string HelpText => "��ѯWiki";
+    public override string HelpText => "â–“ÃšÂªÂ»Wiki";
     public override string[] Permissions => [OneBotPermissions.TerrariaWiki];
 
     public override async Task InvokeAsync(GroupCommandArgs args)

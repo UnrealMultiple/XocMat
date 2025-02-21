@@ -1,4 +1,4 @@
-using Lagrange.XocMat.Command.CommandArgs;
+ï»¿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -7,8 +7,8 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class ChangeServer : Command
 {
-    public override string[] Alias => ["ÇĞ»»"];
-    public override string HelpText => "ÇĞ»»·şÎñÆ÷";
+    public override string[] Alias => ["åˆ‡æ¢"];
+    public override string HelpText => "åˆ‡æ¢æœåŠ¡å™¨";
     public override string[] Permissions => [OneBotPermissions.ChangeServer];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
@@ -18,15 +18,15 @@ public class ChangeServer : Command
             Terraria.TerrariaServer? server = XocMatSetting.Instance.GetServer(args.Parameters[0], args.GroupUin);
             if (server == null)
             {
-                await args.Event.Reply("ÄãÇĞ»»µÄ·şÎñÆ÷²»´æÔÚ! Çë¼ì²é·şÎñÆ÷Ãû³ÆÊÇ·ñÕıÈ·£¬´ËÈºÊÇ·ñÅäÖÃ·şÎñÆ÷!");
+                await args.Event.Reply("ä½ åˆ‡æ¢çš„æœåŠ¡å™¨ä¸å­˜åœ¨! è¯·æ£€æŸ¥æœåŠ¡å™¨åç§°æ˜¯å¦æ­£ç¡®ï¼Œæ­¤ç¾¤æ˜¯å¦é…ç½®æœåŠ¡å™¨!");
                 return;
             }
             UserLocation.Instance.Change(args.MemberUin, server);
-            await args.Event.Reply($"ÒÑÇĞ»»ÖÁ`{server.Name}`·şÎñÆ÷", true);
+            await args.Event.Reply($"å·²åˆ‡æ¢è‡³`{server.Name}`æœåŠ¡å™¨", true);
         }
         else
         {
-            await args.Event.Reply($"Óï·¨´íÎó,ÕıÈ·Óï·¨:\n{args.CommamdPrefix}{args.Name} [·şÎñÆ÷Ãû³Æ]");
+            await args.Event.Reply($"è¯­æ³•é”™è¯¯,æ­£ç¡®è¯­æ³•:\n{args.CommamdPrefix}{args.Name} [æœåŠ¡å™¨åç§°]");
         }
     }
 }
