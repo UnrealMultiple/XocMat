@@ -16,12 +16,6 @@ public class Lottery : Command
 
     public override async Task InvokeAsync(ServerCommandArgs args)
     {
-        if (args.Server == null) return;
-        if (args.User == null)
-        {
-            await args.Server.PrivateMsg(args.UserName, "没有你的注册信息！", Color.DarkRed);
-            return;
-        }
         if (!args.Server.EnabledPrize)
         {
             await args.Server.PrivateMsg(args.UserName, "服务器未开启抽奖系统！", Color.DarkRed);

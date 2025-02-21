@@ -24,7 +24,7 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
 
     private static T GetConfig()
     {
-        T t = new T();
+        T t = new();
         string file = t.FullFilename;
         if (File.Exists(file))
         {

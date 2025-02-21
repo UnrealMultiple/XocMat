@@ -8,9 +8,9 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 
 public class DeathRank : Command
 {
-    public override string[] Alias => new[] { "死亡排行" };
+    public override string[] Alias => ["死亡排行"];
     public override string HelpText => "死亡排行";
-    public override string[] Permissions => new[] { OneBotPermissions.DeathRank };
+    public override string[] Permissions => [OneBotPermissions.DeathRank];
 
     public override async Task InvokeAsync(GroupCommandArgs args)
     {
