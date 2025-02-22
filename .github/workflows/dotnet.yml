@@ -55,8 +55,8 @@ jobs:
           
       - name: 更新发布标签
         run: |
-          git tag -f V1.0.0.0
-          git push -f origin V1.0.0.0
+          git tag -f V1.2.0
+          git push -f origin V1.2.0
 
       - name: 下载临时文件
         uses: dawidd6/action-download-artifact@v8
