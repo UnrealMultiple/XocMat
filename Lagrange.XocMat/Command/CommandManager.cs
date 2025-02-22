@@ -110,15 +110,21 @@ public class CommandManager
     }
     private RunCommandParams? Run(string text, uint uin)
     {
+        if(uin == Bot.BotUin)
+            return null;
+        var trigger = false;
         string prefix = string.Empty;
         foreach (string x in XocMatSetting.Instance.CommamdPrefix)
         {
             if (text.StartsWith(x))
             {
                 prefix = x;
+                trigger = true;
                 break;
             }
         }
+        if (!trigger)
+            return null;
         List<string> cmdParam = ParseParameters(text[prefix.Length..]);
         if (cmdParam.Count > 0)
         {
