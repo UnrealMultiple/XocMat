@@ -28,9 +28,7 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
         string file = t.FullFilename;
         if (File.Exists(file))
         {
-            T obj = File.ReadAllText(file).ToObject<T>() ?? t;
-            obj.SaveTo();
-            return obj;
+            return File.ReadAllText(file).ToObject<T>() ?? t;
         }
         t.SetDefault();
         t.SaveTo();
@@ -64,6 +62,7 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
         OperatHandler.OnReload += args =>
         {
             _instance = GetConfig();
+            Save();
             _instance.Reload(args);
             return ValueTask.CompletedTask;
         };

@@ -1,4 +1,6 @@
 ﻿using Lagrange.Core;
+using Lagrange.XocMat.Attributes;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Plugin;
@@ -11,6 +13,16 @@ public abstract class XocMatPlugin : IDisposable
     {
         Logger = logger;
         BotContext = bot;
+        foreach (var type in GetType().Assembly.GetTypes())
+        {
+            if (type.IsDefined(typeof(ConfigSeries), false))
+            {
+                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class '{Name}'");
+                var name = method.Invoke(null, Array.Empty<object>());
+                Logger.LogInformation($"[{Name}] config registered: {name}");
+            }
+           
+        }
     }
     public ILogger Logger { get; }
 
