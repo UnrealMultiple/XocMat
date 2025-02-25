@@ -2,6 +2,7 @@
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -11,7 +12,7 @@ public class ExecuteCommand : Command
     public override string HelpText => "执行命令";
     public override string[] Permissions => [OneBotPermissions.ExecuteCommand];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (args.Parameters.Count < 1)
         {

@@ -31,11 +31,6 @@ public class PluginLoader
     /// </summary>
     public void Load()
     {
-        DirectoryInfo directoryInfo = new(PATH);
-        if (!directoryInfo.Exists)
-            directoryInfo.Create();
-        PluginContext.LoadPlugins(directoryInfo, Logger, CommandManager, BotContext);
-        CommandManager.RegisterCommand(Assembly.GetExecutingAssembly());
         foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
         {
             if (type.IsDefined(typeof(ConfigSeries), false))
@@ -45,6 +40,11 @@ public class PluginLoader
                 Logger.LogInformation($"config registered: {name}");
             }
         }
+        DirectoryInfo directoryInfo = new(PATH);
+        if (!directoryInfo.Exists)
+            directoryInfo.Create();
+        PluginContext.LoadPlugins(directoryInfo, Logger, CommandManager, BotContext);
+        CommandManager.RegisterCommand(Assembly.GetExecutingAssembly());
     }
 
     public void UnLoad()

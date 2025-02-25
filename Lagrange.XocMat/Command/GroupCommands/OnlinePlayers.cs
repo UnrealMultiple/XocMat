@@ -3,6 +3,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -12,7 +13,7 @@ public class OnlinePlayers : Command
     public override string HelpText => "查询在线玩家";
     public override string[] Permissions => [OneBotPermissions.QueryOnlienPlayer];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (XocMatSetting.Instance.Servers.Count == 0)
         {

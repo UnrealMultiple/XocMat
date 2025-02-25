@@ -2,6 +2,7 @@ using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -13,7 +14,7 @@ public class SignRank : Command
 
     public override string[] Permissions => [OneBotPermissions.Sign];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         try
         {

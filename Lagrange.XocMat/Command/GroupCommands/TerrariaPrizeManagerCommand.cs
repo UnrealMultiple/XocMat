@@ -5,6 +5,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Utility;
+using Microsoft.Extensions.Logging;
 
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -17,7 +18,7 @@ public class TerrariaPrizeManagerCommand : Command
 
     public override string[] Permissions => [OneBotPermissions.TerrariaPrizeAdmin];
 
-    public override async Task InvokeAsync(ServerCommandArgs args)
+    public override async Task InvokeAsync(ServerCommandArgs args, ILogger log)
     {
         if (args.Server == null) return;
         StringBuilder sb = new StringBuilder();
@@ -31,7 +32,7 @@ public class TerrariaPrizeManagerCommand : Command
         await args.Server.PrivateMsg(args.UserName, $"泰拉商店列表:\n{sb}", Color.GreenYellow);
     }
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (args.Parameters.Count == 5 && args.Parameters[0].ToLower() == "add")
         {

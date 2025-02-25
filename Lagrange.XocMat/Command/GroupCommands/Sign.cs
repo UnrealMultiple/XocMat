@@ -3,6 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Utility;
+using Microsoft.Extensions.Logging;
 
 
 namespace Lagrange.XocMat.Command.GroupCommands
@@ -15,7 +16,7 @@ namespace Lagrange.XocMat.Command.GroupCommands
 
         public override string[] Permissions => [OneBotPermissions.Sign];
 
-        public override async Task InvokeAsync(GroupCommandArgs args)
+        public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
         {
             try
             {

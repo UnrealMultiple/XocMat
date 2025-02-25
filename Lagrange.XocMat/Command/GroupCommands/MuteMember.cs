@@ -2,6 +2,7 @@
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -10,7 +11,7 @@ public class MuteMember : Command
     public override string[] Alias => ["禁"];
     public override string HelpText => "禁言群成员";
     public override string[] Permissions => [OneBotPermissions.Mute];
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (args.Parameters.Count == 1)
         {

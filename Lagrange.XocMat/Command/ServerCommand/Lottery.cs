@@ -3,6 +3,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.ServerCommand;
 
@@ -14,7 +15,7 @@ public class Lottery : Command
 
     public override string[] Permissions => [OneBotPermissions.TerrariaPrize];
 
-    public override async Task InvokeAsync(ServerCommandArgs args)
+    public override async Task InvokeAsync(ServerCommandArgs args, ILogger log)
     {
         if (!args.Server.EnabledPrize)
         {

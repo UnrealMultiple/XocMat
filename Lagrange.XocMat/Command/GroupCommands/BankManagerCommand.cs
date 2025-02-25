@@ -2,6 +2,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -10,7 +11,7 @@ public class BankManagerCommand : Command
     public override string[] Alias => ["bank"];
     public override string HelpText => "银行管理命令";
     public override string[] Permissions => [OneBotPermissions.CurrencyAdmin, OneBotPermissions.CurrencyUse];
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         IEnumerable<Core.Message.Entity.MentionEntity> at = args.Event.Chain.GetMention();
         if (args.Parameters.Count == 3 && args.Parameters[0].ToLower() == "add")

@@ -4,6 +4,7 @@ using Lagrange.XocMat.Event;
 using Lagrange.XocMat.EventArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands
 {
@@ -15,7 +16,7 @@ namespace Lagrange.XocMat.Command.GroupCommands
 
         public override string[] Permissions => [OneBotPermissions.Reload];
 
-        public override async Task InvokeAsync(GroupCommandArgs args)
+        public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();

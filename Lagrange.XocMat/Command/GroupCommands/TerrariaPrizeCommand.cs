@@ -3,6 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Utility.Images;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -14,7 +15,7 @@ public class TerrariaPrizeCommand : Command
 
     public override string[] Permissions => [OneBotPermissions.TerrariaPrize];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         TableBuilder tableBuilder = new TableBuilder()
             .SetTitle("泰拉奖池")

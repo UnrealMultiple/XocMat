@@ -2,6 +2,7 @@
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -14,7 +15,7 @@ public class TerrariaConfig : Command
 
     public override string[] Permissions => [OneBotPermissions.SetConfig];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (args.Parameters.Count < 2)
         {

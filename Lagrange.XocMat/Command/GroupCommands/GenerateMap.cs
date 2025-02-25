@@ -3,6 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -12,7 +13,7 @@ public class GenerateMap : Command
     public override string HelpText => "生成地图";
     public override string[] Permissions => [OneBotPermissions.GenerateMap];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         ImageType type = ImageType.Jpg;
         if (args.Parameters.Count > 0 && args.Parameters[0] == "-p")

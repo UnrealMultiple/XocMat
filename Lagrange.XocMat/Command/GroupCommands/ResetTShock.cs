@@ -4,6 +4,7 @@ using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -13,7 +14,7 @@ public class ResetTShock : Command
     public override string HelpText => "重置服务器";
     public override string[] Permissions => [OneBotPermissions.StartTShock];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {

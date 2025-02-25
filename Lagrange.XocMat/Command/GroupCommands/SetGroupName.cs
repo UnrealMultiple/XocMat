@@ -2,6 +2,7 @@
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -11,7 +12,7 @@ public class SetGroupName : Command
     public override string HelpText => "设置群名";
     public override string[] Permissions => [OneBotPermissions.ChangeGroupOption];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (args.Parameters.Count == 1)
         {

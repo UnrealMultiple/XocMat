@@ -3,6 +3,7 @@ using Lagrange.XocMat.Exceptions;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Utility;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -11,7 +12,7 @@ public class AccountManagerCommand : Command
     public override string[] Alias => ["account", "accountmanager"];
     public override string HelpText => "账号管理";
     public override string[] Permissions => [OneBotPermissions.Account];
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         void Show(List<string> line)
         {

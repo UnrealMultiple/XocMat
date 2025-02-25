@@ -2,6 +2,7 @@
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -11,7 +12,7 @@ public class AcountInfo : Command
     public override string HelpText => "查询他人信息";
     public override string[] Permissions => [OneBotPermissions.OtherInfo];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         IEnumerable<Core.Message.Entity.MentionEntity> at = args.Event.Chain.GetMention();
         if (at.Any())

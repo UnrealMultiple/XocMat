@@ -1,6 +1,7 @@
 ﻿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -9,7 +10,7 @@ public class SearchCommandPermission : Command
     public override string[] Alias => ["sperm"];
     public override string HelpText => "搜索命令权限";
     public override string[] Permissions => [OneBotPermissions.SearchCommandPerm];
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (args.Parameters.Count == 1)
         {

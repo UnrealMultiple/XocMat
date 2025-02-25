@@ -2,6 +2,7 @@
 using Lagrange.XocMat.Exceptions;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -10,7 +11,7 @@ public class GroupManagerCommand : Command
     public override string[] Alias => ["group"];
     public override string HelpText => "群管理命令";
     public override string[] Permissions => [OneBotPermissions.Group];
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (args.Parameters.Count == 2 && args.Parameters[0].ToLower() == "add")
         {

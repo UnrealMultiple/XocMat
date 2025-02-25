@@ -2,6 +2,7 @@
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Utility;
+using Microsoft.Extensions.Logging;
 
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -14,8 +15,9 @@ public class HelpCommand : Command
 
     public override string[] Permissions => [OneBotPermissions.Help];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
+        log.LogInformation($"{args.Name}被允许");
         void Show(List<string> line)
         {
             if (PaginationTools.TryParsePageNumber(args.Parameters, 0, args.Event, out int page))
@@ -30,13 +32,13 @@ public class HelpCommand : Command
             }
         }
         List<string> commands = XocMatAPI.CommandManager!.Commands
-            .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(GroupCommandArgs)]))
+            .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(GroupCommandArgs), typeof(ILogger)]))
             .Select(x => args.CommamdPrefix + x.Alias.First()).ToList();
         Show(commands);
         await ValueTask.CompletedTask;
     }
 
-    public override async Task InvokeAsync(FriendCommandArgs args)
+    public override async Task InvokeAsync(FriendCommandArgs args, ILogger log)
     {
         void Show(List<string> line)
         {
@@ -52,7 +54,7 @@ public class HelpCommand : Command
             }
         }
         List<string> commands = XocMatAPI.CommandManager!.Commands
-            .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(FriendCommandArgs)]))
+            .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(FriendCommandArgs), typeof(ILogger)]))
             .Select(x => args.CommamdPrefix + x.Alias.First()).ToList();
         Show(commands);
         await ValueTask.CompletedTask;

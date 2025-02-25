@@ -4,6 +4,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -13,7 +14,7 @@ public class SearchUser : Command
     public override string HelpText => "查询注册人";
     public override string[] Permissions => [OneBotPermissions.SearchUser];
 
-    public override async Task InvokeAsync(GroupCommandArgs args)
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         async ValueTask GetRegister(long id)
         {
