@@ -11,8 +11,7 @@ internal static class QrCodeHelper
         List<QrSegment> segments = QrSegment.MakeSegments(text);
         QrCode qrCode = QrCode.EncodeSegments(segments, QrCode.Ecc.Low);
 
-        (string bottomHalfBlock, string topHalfBlock, string emptyBlock, string fullBlock) = compatibilityMode ? (".", "^", " ", "@") : ("Ôûä", "ÔûÇ", " ", "Ôûê");
-
+        var (bottomHalfBlock, topHalfBlock, emptyBlock, fullBlock) = compatibilityMode ? (".", "^", " ", "@") : ("▄", "▀", " ", "█");
         for (int y = 0; y < qrCode.Size + 2; y += 2)
         {
             for (int x = 0; x < qrCode.Size + 2; ++x)
