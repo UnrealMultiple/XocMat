@@ -61,8 +61,6 @@ public class TerrariaServer
     [JsonProperty("服务器版本")]
     public string Version { get; set; } = "1.4.4.9";
 
-
-
     [JsonProperty("所属群")]
     public HashSet<uint> Groups { get; set; } = [];
 

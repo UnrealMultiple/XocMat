@@ -12,7 +12,8 @@ internal class MarkdownHelper
         { "\n", "\\n" },
         { "\r\n", "\\n" },
         { "\r", "\\n" },
-        { "'", "\\'" }
+        { "'", "\\'" },
+        { "|", "\\|" }
     };
 
     public static async Task<byte[]> ToImage(string md)
