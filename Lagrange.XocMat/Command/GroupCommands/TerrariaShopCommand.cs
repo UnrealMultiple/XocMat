@@ -20,11 +20,11 @@ public class TerrariaShopCommand : Command
     {
         TableBuilder tableBuilder = new TableBuilder()
             .SetTitle("泰拉商店")
-            .AddRow("商品ID", "商品名称", "数量", "价格");
+            .AddRow("序号","商品ID", "商品名称", "数量", "价格");
         int id = 1;
         foreach (Internal.Terraria.Shop item in TerrariaShop.Instance.TrShop)
         {
-            tableBuilder.AddRow(item.ID.ToString(), item.Name, item.Num.ToString(), item.Price.ToString());
+            tableBuilder.AddRow(id.ToString(), item.ID.ToString(), item.Name, item.Num.ToString(), item.Price.ToString());
             id++;
         }
         await args.MessageBuilder.Image(await tableBuilder.BuildAsync()).Reply();
