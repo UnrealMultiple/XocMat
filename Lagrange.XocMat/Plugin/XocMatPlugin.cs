@@ -1,33 +1,14 @@
 ﻿using Lagrange.Core;
 using Lagrange.XocMat.Attributes;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Plugin;
 
-public abstract class XocMatPlugin : IDisposable
+public abstract class XocMatPlugin(ILogger logger, BotContext bot) : IDisposable
 {
-    protected List<Command.Command> AssemblyCommands = [];
+    public ILogger Logger { get; } = logger;
 
-    protected XocMatPlugin(ILogger logger, BotContext bot)
-    {
-        Logger = logger;
-        BotContext = bot;
-        foreach (var type in GetType().Assembly.GetTypes())
-        {
-            if (type.IsDefined(typeof(ConfigSeries), false))
-            {
-                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class '{Name}'");
-                var name = method.Invoke(null, Array.Empty<object>());
-                Logger.LogInformation($"[{Name}] config registered: {name}");
-            }
-           
-        }
-    }
-    public ILogger Logger { get; }
-
-    public BotContext BotContext { get; }
-
+    public BotContext BotContext { get; } = bot;
 
     public virtual string Name
     {
@@ -64,46 +45,51 @@ public abstract class XocMatPlugin : IDisposable
         }
     }
 
-    protected virtual void DisableCommand()
-    { 
-        foreach(var command in AssemblyCommands)
-        {
-            XocMatAPI.CommandManager.Commands.Remove(command);
-        }
-    }
-
     public int Order { get; set; } = 1;
 
-    public virtual void Initialize()
-    { 
+    public void OnInitialize()
+    {
         AutoLoad();
+        Initialize();
     }
 
-    protected virtual void Dispose(bool dispose)
-    { 
-        if(dispose)
-            DisableCommand();
-    }
+    protected abstract void Initialize();
+
+    protected abstract void Dispose(bool dispose);
 
     protected virtual void AutoLoad()
     {
-        AssemblyCommands = XocMatAPI.CommandManager.RegisterCommand(GetType().Assembly);
-        foreach(var command in AssemblyCommands)
+        foreach (var type in GetType().Assembly.GetTypes())
         {
-            Logger.LogInformation($"Command {command.Alias.First()} Register Successfully!");
+            if (type.IsDefined(typeof(ConfigSeries), false))
+            {
+                var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class '{Name}'");
+                var name = method.Invoke(null, Array.Empty<object>());
+                Logger.LogInformation($"[{Name}] config registered: {name}");
+            }
+
         }
+        XocMatAPI.CommandManager.RegisterCommand(GetType().Assembly).ForEach(c=> Logger.LogInformation($"Command {c.Alias.First()} Register Successfully!"));
+    }
+
+    public void Dispose()
+    {
+        foreach (var type in GetType().Assembly.GetTypes())
+        {
+            if (type.IsDefined(typeof(ConfigSeries), false))
+            {
+                var method = type.BaseType!.GetMethod("UnLoad") ?? throw new MissingMethodException($"method 'UnLoad()' is missing inside the lazy loaded config class '{Name}'");
+                var name = method.Invoke(null, []);
+                Logger.LogInformation($"[{Name}] Config UnRegistered: {name}");
+            }
+        }
+        XocMatAPI.CommandManager.Commands.RemoveAll(c => c.GetType().Assembly == GetType().Assembly);
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     ~XocMatPlugin()
     {
         Dispose(true);
     }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-
 }

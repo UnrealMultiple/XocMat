@@ -50,22 +50,28 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
         File.WriteAllText(filepath, this.ToJson());
     }
 
+    private static ValueTask OnReload(ReloadEventArgs args)
+    {
+        _instance = GetConfig();
+        Save();
+        _instance.Reload(args);
+        return ValueTask.CompletedTask;
+    }
 
     public static void Save()
     {
         Instance.SaveTo();
     }
 
-    // .cctor is lazy load
     public static string Load()
     {
-        OperatHandler.OnReload += args =>
-        {
-            _instance = GetConfig();
-            Save();
-            _instance.Reload(args);
-            return ValueTask.CompletedTask;
-        };
+        OperatHandler.OnReload += OnReload;
+        return Instance.Filename;
+    }
+
+    public static string UnLoad()
+    {
+        OperatHandler.OnReload -= OnReload;
         return Instance.Filename;
     }
 

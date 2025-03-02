@@ -16,6 +16,6 @@ public class PluginContainer(XocMatPlugin plugin)
     public void Initialize()
     {
         Initialized = true;
-        Plugin.Initialize();
+        Plugin.OnInitialize();
     }
 }
