@@ -26,15 +26,10 @@ jobs:
         with:
           dotnet-version: 9.0.x
           
-      - name: 构建插件
+      - name: 构建XocMat
         run: |
            dotnet publish Lagrange.XocMat/Lagrange.XocMat.csproj --no-self-contained -p:PublishSingleFile=true -p:RuntimeIdentifier=${{ matrix.runtimeIdentifier }} --framework net9.0           
-      #- name: 安装 zip
-      #  run: sudo apt-get install zip
-
-      #- name: 生成压缩包
-      #  run: zip -r Lagrange.XocMat_${{ matrix.runtimeIdentifier }}_9.0.zip Lagrange.XocMat/bin/Release/net9.0/${{ matrix.runtimeIdentifier }}/publish/
-      
+           
       - name: 上传临时文件
         uses: actions/upload-artifact@v4
         with:
@@ -44,7 +39,7 @@ jobs:
   LatestRelease:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: 发布
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: Build
     permissions:
          contents: write
@@ -55,18 +50,19 @@ jobs:
           
       - name: 更新发布标签
         run: |
-          git tag -f V1.2.0
-          git push -f origin V1.2.0
+          git tag -f V1.2.2
+          git push -f origin V1.2.2
 
       - name: 下载临时文件
         uses: dawidd6/action-download-artifact@v9
         with:
           path: bin
           skip_unpack: true
+          
       - name: 发布Release
         uses: ncipollo/release-action@v1
         with:
-          tag: V1.2.0
+          tag: V1.2.2
           name: "最新版本"
           body: ""
           artifacts: |
@@ -78,7 +74,7 @@ jobs:
   ClearTempArtifacts:
     name: 清理临时文件
     if: github.event_name == 'push' && github.ref == 'refs/heads/master' && always()
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs:
       - LatestRelease
     permissions:
