@@ -48,9 +48,15 @@ public class Register : Command
                 Core.Message.MessageBuilder build = args.MessageBuilder;
                 if (api.Status)
                 {
-                    MailHelper.SendMail($"{args.MemberUin}@qq.com",
-                        $"{server.Name}服务器注册密码",
-                        $"您的注册密码是:{pass}<br>请注意保存不要暴露给他人");
+
+                     MailHelper.Builder(XocMatSetting.Instance.MailHost,XocMatSetting.Instance.SenderPwd)
+                        .AddTarget($"{args.MemberUin}@qq.com")
+                        .SetTile($"{server.Name}服务器注册密码")
+                        .SetBody(CommandUtils.GenerateMailBody($"{server.Name}服务器注册密码", args.MemberUin, args.MemberCard, "请查看你的注册密码", pass))
+                        .EnableHtmlBody(true)
+                        .SetSender(XocMatSetting.Instance.SenderMail)
+                        .Send()
+                        .Dispose();
                     build.Text($"注册成功!" +
                         $"\n注册服务器: {server.Name}" +
                         $"\n注册名称: {args.Parameters[0]}" +
@@ -77,4 +83,6 @@ public class Register : Command
             await args.Event.Reply($"语法错误,正确语法:\n{args.CommamdPrefix}{args.Name} [名称]");
         }
     }
+
+
 }

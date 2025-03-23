@@ -22,13 +22,15 @@ public class SelfPassword : Command
             List<TerrariaUser> user = TerrariaUser.GetUserById(args.MemberUin, server.Name);
             if (user.Count > 0)
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (TerrariaUser u in user)
-                    sb.AppendLine($"人物{u.Name}的注册密码为: {u.Password}");
-                sb.AppendLine("请注意保存不要暴露给他人");
-                MailHelper.SendMail($"{args.MemberUin}@qq.com",
-                            $"{server.Name}服务器注册密码",
-                            sb.ToString().Trim());
+                var body = user.Select(u => $"人物{u.Name}的注册密码为: {u.Password}").JoinToString("<br>");
+                MailHelper.Builder(XocMatSetting.Instance.MailHost, XocMatSetting.Instance.SenderPwd)
+                   .AddTarget($"{args.MemberUin}@qq.com")
+                   .SetTile($"{server.Name}服务器注册密码")
+                   .SetBody(CommandUtils.GenerateMailBody($"{server.Name}服务器注册密码查询", args.MemberUin, args.MemberCard, "请查看你的注册密码", body))
+                   .EnableHtmlBody(true)
+                   .SetSender(XocMatSetting.Instance.SenderMail)
+                   .Send()
+                   .Dispose();
                 await args.Event.Reply("密码查询成功已发送至你的QQ邮箱。", true);
                 return;
             }

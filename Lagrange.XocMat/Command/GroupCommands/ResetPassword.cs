@@ -38,10 +38,14 @@ public class ResetPassword : Command
                         }
                         TerrariaUser.ResetPassword(args.MemberUin, server.Name, u.Name, pwd);
                     }
-                    sb.Append("请注意保存不要暴露给他人");
-                    MailHelper.SendMail($"{args.MemberUin}@qq.com",
-                                $"{server.Name}服密码重置",
-                                sb.ToString().Trim());
+                    MailHelper.Builder(XocMatSetting.Instance.MailHost, XocMatSetting.Instance.SenderPwd)
+                        .AddTarget($"{args.MemberUin}@qq.com")
+                        .SetTile($"{server.Name}服密码重置")
+                        .SetBody(CommandUtils.GenerateMailBody($"{server.Name}服务器绑定角色密码重置", args.MemberUin, args.MemberCard, "请查看重置密码", sb.ToString()))
+                        .EnableHtmlBody(true)
+                        .SetSender(XocMatSetting.Instance.SenderMail)
+                        .Send()
+                        .Dispose();
                     await args.Event.Reply("密码重置成功已发送至你的QQ邮箱。", true);
                     return;
                 }
