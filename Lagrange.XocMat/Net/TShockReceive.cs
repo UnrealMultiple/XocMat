@@ -44,7 +44,7 @@ public class TShockReceive
             {
                 if (SocketMessage != null)
                 {
-                    using MemoryStream stream = new MemoryStream(buffer);
+                    using MemoryStream stream = new(buffer);
                     await SocketMessage(new(context, stream));
                     stream.Dispose();
                 }

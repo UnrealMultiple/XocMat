@@ -348,7 +348,7 @@ public class TerrariaServer
             ApiParam.Token = Token;
             using MemoryStream stream = new();
             Serializer.Serialize(stream, ApiParam);
-            WebSocketConnectManager.Send(stream.ToArray(), Client.ID);
+            await WebSocketConnectManager.Send(stream.ToArray(), Client.ID);
             return await XocMatAPI.TerrariaMsgReceive.GetResponse<TResult>(ApiParam.Echo, timeout) ?? new()
             {
                 Status = false,

@@ -7,12 +7,12 @@ namespace Lagrange.XocMat.Utility;
 public static class HttpUtils
 {
     private static readonly HttpClient HttpClient = new();
-    public static async Task<string> HttpGetString(string url, Dictionary<string, string>? args = null)
+    public static async Task<string> GetStringAsync(string url, Dictionary<string, string>? args = null)
     {
-        return Encoding.UTF8.GetString(await HttpGetByte(url, args));
+        return Encoding.UTF8.GetString(await GetByteAsync(url, args));
     }
 
-    public static async Task<byte[]> HttpGetByte(string url, Dictionary<string, string>? args = null)
+    public static async Task<byte[]> GetByteAsync(string url, Dictionary<string, string>? args = null)
     {
         UriBuilder uriBuilder = new UriBuilder(url);
         System.Collections.Specialized.NameValueCollection param = HttpUtility.ParseQueryString(uriBuilder.Query);
@@ -23,14 +23,14 @@ public static class HttpUtils
         return await HttpClient.GetByteArrayAsync(uriBuilder.ToString());
     }
 
-    public static async Task<string> HttpPost(string url, Dictionary<string, string>? args = null)
+    public static async Task<string> PostAsync(string url, Dictionary<string, string>? args = null)
     {
         FormUrlEncodedContent form = new(args ?? []);
         HttpResponseMessage content = await HttpClient.PostAsync(url, form);
         return await content.Content.ReadAsStringAsync();
     }
 
-    public static async Task<string> HttpPostContent(string url, Dictionary<string, string> args)
+    public static async Task<string> PostContentAsync(string url, Dictionary<string, string> args)
     {
         StringContent payload = new(JsonSerializer.Serialize(args));
         HttpResponseMessage content = await HttpClient.PostAsync(url, payload);

@@ -25,7 +25,7 @@ namespace Lagrange.XocMat.Command.GroupCommands
                 DB.Manager.Sign result = DB.Manager.Sign.SingIn(args.MemberUin);
                 DB.Manager.Currency currency = DB.Manager.Currency.Add(args.MemberUin, num);
                 await args.MessageBuilder
-                    .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={args.MemberUin}&spec=640&img_type=png"))
+                    .Image(await HttpUtils.GetByteAsync($"http://q.qlogo.cn/headimg_dl?dst_uin={args.MemberUin}&spec=640&img_type=png"))
                     .Text($"签到成功！\n")
                     .Text($"[签到时长]：{result.Date}\n")
                     .Text($"[获得{XocMatSetting.Instance.Currency}]：{num}\n")

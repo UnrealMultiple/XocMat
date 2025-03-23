@@ -261,7 +261,7 @@ public class TerrariaMsgReceiveHandler
             {
                 if (file.FileUrl != null && setting != null && setting.Groups.Contains(args.Chain.GroupUin!.Value) && setting.WaitFile != null)
                 {
-                    setting.WaitFile.SetResult(await HttpUtils.HttpGetByte(file.FileUrl));
+                    setting.WaitFile.SetResult(await HttpUtils.GetByteAsync(file.FileUrl));
                 }
             }
         }

@@ -29,7 +29,7 @@ internal static class CommandUtils
         Currency? currencyInfo = Currency.Query(userid);
         long currency = currencyInfo != null ? currencyInfo.Num : 0;
         return MessageBuilder.Group(groupid)
-            .Image(await HttpUtils.HttpGetByte($"http://q.qlogo.cn/headimg_dl?dst_uin={uin}&spec=640&img_type=png"))
+            .Image(await HttpUtils.GetByteAsync($"http://q.qlogo.cn/headimg_dl?dst_uin={uin}&spec=640&img_type=png"))
             .Text($"[QQ账号]:{userid}\n")
             .Text($"[签到时长]:{sign}\n")
             .Text($"[{XocMatSetting.Instance.Currency}数量]:{currency}\n")

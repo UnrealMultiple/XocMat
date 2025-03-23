@@ -30,8 +30,8 @@ internal class WebSocketConnectManager
             : null;
     }
 
-    public static void Send(byte[] buffer, string id)
+    public static async Task Send(byte[] buffer, string id)
     {
-        XocMatApp.Instance.Services.GetRequiredService<TShockReceive>().Send(buffer, id);
+        await XocMatApp.Instance.Services.GetRequiredService<TShockReceive>().Send(buffer, id);
     }
 }
