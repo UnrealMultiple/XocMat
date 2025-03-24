@@ -18,12 +18,12 @@ public class AcountInfo : Command
         if (at.Any())
         {
             Account group = Account.GetAccountNullDefault(at.First().Uin);
-            await args.Event.Reply(await CommandUtils.GetAccountInfo(args.GroupUin, at.First().Uin, group.Group.Name));
+            await args.Event.Reply(CommandUtils.GetAccountInfo(args.GroupUin, at.First().Uin, group.Group.Name));
         }
         else if (args.Parameters.Count == 1 && uint.TryParse(args.Parameters[0], out uint id))
         {
             Account group = Account.GetAccountNullDefault(id);
-            await args.Event.Reply(await CommandUtils.GetAccountInfo(args.GroupUin, id, group.Group.Name));
+            await args.Event.Reply(CommandUtils.GetAccountInfo(args.GroupUin, id, group.Group.Name));
         }
         else
         {

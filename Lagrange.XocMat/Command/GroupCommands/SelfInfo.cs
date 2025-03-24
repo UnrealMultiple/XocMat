@@ -13,6 +13,6 @@ public class SelfInfo : Command
 
     public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
-        await args.Event.Reply(await CommandUtils.GetAccountInfo(args.GroupUin, args.MemberUin, args.Account.Group.Name));
+        await args.Event.Reply(CommandUtils.GetAccountInfo(args.GroupUin, args.MemberUin, args.Account.Group.Name));
     }
 }

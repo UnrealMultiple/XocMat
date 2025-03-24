@@ -20,7 +20,7 @@ internal static class CommandUtils
     }
 
 
-    public static async Task<MessageBuilder> GetAccountInfo(uint groupid, uint uin, string groupName)
+    public static MessageBuilder GetAccountInfo(uint groupid, uint uin, string groupName)
     {
         uint userid = uin;
         string serverName = UserLocation.Instance.TryGetServer(userid, groupid, out Terraria.TerrariaServer? server) ? server?.Name ?? "NULL" : "NULL";
