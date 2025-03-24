@@ -3,6 +3,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -18,7 +19,6 @@ public class OnlineRank : Command
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             Internal.Socket.Action.Response.PlayerOnlineRank api = await server.OnlineRank();
-            Core.Message.MessageBuilder body = args.MessageBuilder;
             if (api.Status)
             {
                 if (api.OnlineRank.Count == 0)
@@ -26,30 +26,40 @@ public class OnlineRank : Command
                     await args.Event.Reply("当前还没有数据记录", true);
                     return;
                 }
-                StringBuilder sb = new StringBuilder($"[{server.Name}]在线排行:\n");
+                var builder = new ProfileItemBuilder();
                 IOrderedEnumerable<KeyValuePair<string, int>> rank = api.OnlineRank.OrderByDescending(x => x.Value);
                 foreach ((string name, int duration) in rank)
                 {
+                    var sb = new StringBuilder();
                     int day = duration / (60 * 60 * 24);
                     int hour = (duration - (day * 60 * 60 * 24)) / (60 * 60);
                     int minute = (duration - (day * 60 * 60 * 24) - (hour * 60 * 60)) / 60;
                     int second = duration - (day * 60 * 60 * 24) - (hour * 60 * 60) - (minute * 60);
-                    sb.Append($"[{name}]在线时长: ");
                     if (day > 0)
                         sb.Append($"{day}天");
                     if (hour > 0)
                         sb.Append($"{hour}时");
                     if (minute > 0)
                         sb.Append($"{minute}分");
-                    sb.Append($"{second}秒\n");
+                    sb.Append($"{second}秒");
+                    builder.AddItem(name, sb.ToString());
                 }
-                body.Text(sb.ToString().Trim());
+                var profileCard = new ProfileCard
+                {
+                    AvatarPath = args.MemberUin,
+                    Title = $"{server.Name}服务器在线排行",
+                    ProfileItems = builder.Build()
+                };
+                await args.MessageBuilder
+                    .Image(profileCard.Generate())
+                    .Reply();
+
+
             }
             else
             {
-                body.Text("无法连接到服务器！");
+                await args.Event.Reply("无法连接到服务器！", true);
             }
-            await args.Event.Reply(body);
         }
         else
         {

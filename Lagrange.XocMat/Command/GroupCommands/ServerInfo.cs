@@ -23,15 +23,19 @@ public class ServerInfo : Command
                 await args.Event.Reply("无法连接服务器!", true);
                 return;
             }
-            TableBuilder tableBuilder = new TableBuilder();
-            tableBuilder.SetTitle($"{server.Name}插件列表");
-            tableBuilder.SetTitleBottom(true);
-            tableBuilder.AddRow("插件名称", "插件说明", "插件作者");
+            var tableBuilder = new TableBuilder();
+            tableBuilder.AddHeader("插件名称", "插件说明", "插件作者");
             foreach (Internal.Socket.Internet.PluginInfo plugin in status.Plugins)
             {
                 tableBuilder.AddRow(plugin.Name, plugin.Description, plugin.Author);
             }
-            await args.MessageBuilder.Image(await tableBuilder.BuildAsync()).Reply();
+            var table = new TableGenerate
+            {
+                AvatarPath = args.MemberUin,
+                Title = "插件列表",
+                TableRows = tableBuilder.Build()
+            };
+            await args.MessageBuilder.Image(table.Generate()).Reply();
         }
         else
         {

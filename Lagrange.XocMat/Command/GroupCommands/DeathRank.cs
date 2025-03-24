@@ -1,9 +1,12 @@
 ﻿using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
+using MySqlX.XDevAPI.Common;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -26,13 +29,21 @@ public class DeathRank : Command
                     await args.Event.Reply("当前还没有数据记录", true);
                     return;
                 }
-                StringBuilder sb = new StringBuilder($"[{server.Name}]死亡排行:\n");
+                var builder = new ProfileItemBuilder();
                 IOrderedEnumerable<KeyValuePair<string, int>> rank = api.Rank.OrderByDescending(x => x.Value);
                 foreach ((string name, int count) in rank)
                 {
-                    sb.AppendLine($"[{name}]死亡次数: {count}");
+                    builder.AddItem(name, count.ToString());
                 }
-                body.Text(sb.ToString().Trim());
+                var profileCard = new ProfileCard
+                {
+                    AvatarPath = args.MemberUin,
+                    Title = $"{server.Name}服务器死亡排行",
+                    ProfileItems = builder.Build()
+                };
+                await args.MessageBuilder
+                    .Image(profileCard.Generate())
+                    .Reply();
             }
             else
             {

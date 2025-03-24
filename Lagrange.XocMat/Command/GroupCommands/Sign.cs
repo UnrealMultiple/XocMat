@@ -3,6 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Utility;
+using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
 
@@ -20,16 +21,24 @@ namespace Lagrange.XocMat.Command.GroupCommands
         {
             try
             {
-                Random rand = new Random();
+                var rand = new Random();
                 long num = rand.NextInt64(XocMatSetting.Instance.SignMinCurrency, XocMatSetting.Instance.SignMaxCurrency);
                 DB.Manager.Sign result = DB.Manager.Sign.SingIn(args.MemberUin);
                 DB.Manager.Currency currency = DB.Manager.Currency.Add(args.MemberUin, num);
+                var builder = new ProfileItemBuilder()
+                    .AddItem($"QQ账号", args.MemberUin.ToString())
+                    .AddItem($"QQ昵称", args.MemberCard)
+                    .AddItem("签到时长", result.Date.ToString())
+                    .AddItem($"本次获得{XocMatSetting.Instance.Currency}", num.ToString())
+                    .AddItem($"{XocMatSetting.Instance.Currency}总数", currency.Num.ToString());
+                var profileCard = new ProfileCard
+                {
+                    AvatarPath = args.MemberUin,
+                    Title = "签到提示",
+                    ProfileItems = builder.Build()
+                };
                 await args.MessageBuilder
-                    .Image(await HttpUtils.GetByteAsync($"http://q.qlogo.cn/headimg_dl?dst_uin={args.MemberUin}&spec=640&img_type=png"))
-                    .Text($"签到成功！\n")
-                    .Text($"[签到时长]：{result.Date}\n")
-                    .Text($"[获得{XocMatSetting.Instance.Currency}]：{num}\n")
-                    .Text($"[{XocMatSetting.Instance.Currency}总数]：{currency.Num}")
+                    .Image(profileCard.Generate())
                     .Reply();
             }
             catch (Exception e)

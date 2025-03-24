@@ -1,8 +1,10 @@
-﻿using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -32,13 +34,20 @@ public class TerrariaUserInfo : Command
                 await args.Event.Reply(info.Message, true);
                 return;
             }
-
-            StringBuilder sb = new StringBuilder($"查询`{userName}\n");
-            sb.AppendLine($"ID: {account.ID}");
-            sb.AppendLine($"Group: {account.Group}");
-            sb.AppendLine($"LastLogin: {account.LastLoginTime}");
-            sb.AppendLine($"Registered: {account.RegisterTime}");
-            await args.Event.Reply(sb.ToString().Trim());
+            var builder = new ProfileItemBuilder();
+            builder.AddItem("ID", account.ID.ToString());
+            builder.AddItem("Group", account.Group);
+            builder.AddItem("LastLogin", account.LastLoginTime.ToString());
+            builder.AddItem("Registered", account.RegisterTime.ToString());
+            var profileCard = new ProfileCard
+            {
+                AvatarPath = args.MemberUin,
+                Title = $"[{server.Name}][{userName}]账户信息",
+                ProfileItems = builder.Build()
+            };
+            await args.MessageBuilder
+                .Image(profileCard.Generate())
+                .Reply();
         }
         else
         {

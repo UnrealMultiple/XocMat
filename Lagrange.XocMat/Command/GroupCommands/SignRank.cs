@@ -2,6 +2,7 @@ using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -19,18 +20,21 @@ public class SignRank : Command
         try
         {
             IEnumerable<DB.Manager.Sign> signs = DB.Manager.Sign.GetSigns().OrderByDescending(x => x.Date).Take(10);
-            StringBuilder sb = new StringBuilder("签到排行\n\n");
+            var builder = new TableBuilder();
+            builder.AddHeader("排名", "账号", "时长");
             int i = 1;
             foreach (DB.Manager.Sign? sign in signs)
             {
-                sb.AppendLine($"签到排名: {i}");
-                sb.AppendLine($"账号: {sign.UserId}");
-                sb.AppendLine($"时长: {sign.Date}");
-                sb.AppendLine();
+               builder.AddRow(i.ToString(), sign.UserId.ToString(), sign.Date.ToString());
                 i++;
             }
-
-            await args.Event.Reply(sb.ToString().Trim());
+            var table = new TableGenerate
+            {
+                AvatarPath = args.MemberUin,
+                Title = "签到排行榜",
+                TableRows = builder.Build()
+            };
+            await args.MessageBuilder.Image(table.Generate()).Reply();
         }
         catch (Exception e)
         {

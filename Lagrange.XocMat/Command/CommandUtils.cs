@@ -2,6 +2,8 @@
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Utility;
+using Lagrange.XocMat.Utility.Images;
+using MySqlX.XDevAPI.Common;
 
 namespace Lagrange.XocMat.Command;
 
@@ -28,14 +30,21 @@ internal static class CommandUtils
         long sign = signInfo != null ? signInfo.Date : 0;
         Currency? currencyInfo = Currency.Query(userid);
         long currency = currencyInfo != null ? currencyInfo.Num : 0;
+
+        var builder = new ProfileItemBuilder()
+                    .AddItem($"QQ账号", uin.ToString())
+                    .AddItem($"签到时长", sign.ToString())
+                    .AddItem($"{XocMatSetting.Instance.Currency}数量", currency.ToString())
+                    .AddItem($"拥有权限", groupName)
+                    .AddItem($"当前服务器", serverName);
+        var profileCard = new ProfileCard
+        {
+            AvatarPath = uin,
+            Title = "账户信息",
+            ProfileItems = builder.Build()
+        };
         return MessageBuilder.Group(groupid)
-            .Image(await HttpUtils.GetByteAsync($"http://q.qlogo.cn/headimg_dl?dst_uin={uin}&spec=640&img_type=png"))
-            .Text($"[QQ账号]:{userid}\n")
-            .Text($"[签到时长]:{sign}\n")
-            .Text($"[{XocMatSetting.Instance.Currency}数量]:{currency}\n")
-            .Text($"[拥有权限]:{groupName}\n")
-            .Text($"[绑定角色]:{bindName}\n")
-            .Text($"[所在服务器]:{serverName}");
+            .Image(profileCard.Generate());
     }
 
     public static string GenerateMailBody(string tile, uint uin, string name, string body, string pw)

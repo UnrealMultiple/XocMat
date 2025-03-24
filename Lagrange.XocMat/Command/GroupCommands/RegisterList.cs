@@ -4,6 +4,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -24,12 +25,20 @@ public class RegisterList : Command
                 await args.Event.Reply("注册列表空空如也!");
                 return;
             }
-            StringBuilder sb = new StringBuilder($"[{server.Name}]注册列表\n");
+            var builder = new ProfileItemBuilder();
             foreach (TerrariaUser user in users)
             {
-                sb.AppendLine($"{user.Name} => {user.Id}");
+                builder.AddItem(user.Name, user.Id.ToString());
             }
-            await args.Event.Reply(sb.ToString().Trim());
+            var profileCard = new ProfileCard
+            {
+                AvatarPath = args.MemberUin,
+                Title = $"[{server.Name}]注册列表",
+                ProfileItems = builder.Build()
+            };
+            await args.MessageBuilder
+                .Image(profileCard.Generate())
+                .Reply();
         }
         else
         {
