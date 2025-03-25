@@ -310,8 +310,8 @@ public class TableGenerate
         return finalAvatar;
     }
     
-    
-    
+
+
 
     // 计算布局
     // 修改后的 CalculateLayout 方法
@@ -346,30 +346,32 @@ public class TableGenerate
         // 头像区域高度
         int avatarAreaHeight = avatarHeight + 40;
 
+        // 表格行高动态计算
         int maxRowHeight = CalculateMaxRowHeight(tableFont);
-        int tableHeight = maxRowHeight * TableRows.Count
-            + TableMarginTop
-            + TableMarginBottom
+        int tableHeight = (maxRowHeight * TableRows.Count) 
+            + TableMarginTop 
+            + TableMarginBottom 
             + (TableStyle.ShowBorder ? (int)(TableStyle.BorderThickness * 2) : 0);
-
 
         // 签名高度
         int signatureHeight = !string.IsNullOrEmpty(Signature) ? 
             (int)TextMeasurer.MeasureSize(Signature, new TextOptions(fontFamily.CreateFont(SmallFontSize))).Height + 20 : 0;
 
-        int contentHeight = ContentTopMargin
-           + titleHeight
-           + avatarAreaHeight
-           + tableHeight
-           + signatureHeight
-           + ContentBottomMargin;
+        // 总内容高度
+        int contentHeight = ContentTopMargin 
+            + titleHeight 
+            + avatarAreaHeight 
+            + tableHeight 
+            + signatureHeight 
+            + ContentBottomMargin;
 
-        int backgroundHeight = contentHeight + CardTopMargin + CardBottomMargin;
+        // ======== 最终尺寸 ========
         int cardHeight = contentHeight;
+        int backgroundHeight = cardHeight + CardTopMargin + CardBottomMargin;
         int backgroundWidth = CardWidth + 100; // 增加边距弹性
 
-        return (cardHeight, CardWidth, backgroundWidth, backgroundHeight,
-                (backgroundWidth - CardWidth) / 2, CardTopMargin);
+        return (cardHeight, CardWidth, backgroundWidth, backgroundHeight, 
+               (backgroundWidth - CardWidth) / 2, CardTopMargin);
     }
     
     
