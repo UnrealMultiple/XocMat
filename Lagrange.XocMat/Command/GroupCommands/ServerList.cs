@@ -38,10 +38,6 @@ public class ServerList : Command
             AvatarPath = args.MemberUin,
             Title = "服务器列表",
             TableRows = tableBuilder.Build(),
-            TableStyle = new TableStyle()
-            {
-                EnableTextWrapping = true
-            }
         };
         await args.MessageBuilder.Image(table.Generate()).Reply();
     }

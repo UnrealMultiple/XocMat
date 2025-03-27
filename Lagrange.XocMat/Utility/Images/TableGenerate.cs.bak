@@ -58,7 +58,7 @@ public class TableStyle
     public bool AutoAdjustColumnWidth { get; set; } = true; // 是否自动调整列宽
     public float MinColumnWidthRatio { get; set; } = 0.1f;  // 列最小宽度比例(相对于表格总宽度)
     public float MaxColumnWidthRatio { get; set; } = 1f;  // 列最大宽度比例(相对于表格总宽度)
-    public bool EnableTextWrapping { get; set; } = false;    // 即使自动调整列宽，也允许长文本换行
+    public bool EnableTextWrapping { get; set; } = true;    // 即使自动调整列宽，也允许长文本换行
     public int MaxTextLines { get; set; } = 3;   
 }
 
@@ -105,30 +105,7 @@ public class TableBuilder(TableStyle? style = null)
 {
     private readonly List<TableRow> rows = [];
     private readonly TableStyle style = style ?? new TableStyle();
-    private readonly Color labelColor = style?.LabelTextColor ?? Color.DarkSlateGray;
     private readonly Color valueColor = style?.ValueTextColor ?? Color.Black;
-
-    // 添加标准行（标签-值对）- 两列
-    public TableBuilder AddRow(string label, string value)
-    {
-        var row = new TableRow(
-            new TableCell(label, labelColor) { Alignment = style.DefaultTextAlignment },
-            new TableCell(value, valueColor) { Alignment = style.DefaultTextAlignment }
-        );
-        rows.Add(row);
-        return this;
-    }
-
-    // 添加带自定义颜色的行 - 两列
-    public TableBuilder AddRow(string label, string value, Color labelColor, Color valueColor)
-    {
-        var row = new TableRow(
-            new TableCell(label, labelColor) { Alignment = style.DefaultTextAlignment },
-            new TableCell(value, valueColor) { Alignment = style.DefaultTextAlignment }
-        );
-        rows.Add(row);
-        return this;
-    }
 
     // 添加多列行
     public TableBuilder AddRow(params string[] values)
@@ -139,21 +116,6 @@ public class TableBuilder(TableStyle? style = null)
         foreach (var value in values)
         {
             row.Cells.Add(new TableCell(value, valueColor) { Alignment = style.DefaultTextAlignment });
-        }
-        rows.Add(row);
-        return this;
-    }
-
-    // 添加带自定义颜色的多列行
-    public TableBuilder AddRow(string[] values, Color[] colors)
-    {
-        if (values == null || values.Length == 0) return this;
-
-        var row = new TableRow();
-        for (int i = 0; i < values.Length; i++)
-        {
-            var color = i < colors.Length ? colors[i] : valueColor;
-            row.Cells.Add(new TableCell(values[i], color) { Alignment = style.DefaultTextAlignment });
         }
         rows.Add(row);
         return this;
@@ -189,7 +151,39 @@ public class TableBuilder(TableStyle? style = null)
     }
 }
 
+// 新增结构体保存表格布局计算结果
+public struct TableLayoutResult
+{
+    public int TableWidth { get; set; }
+    public int TotalHeight { get; set; }
+    public int[] ColumnWidths { get; set; }
+    public int[] RowHeights { get; set; }
+}
 
+public static class TextMeasurementHelper
+{
+    public static (float Width, float Height, int Lines) MeasureTextWithWrapping(
+        string text, 
+        Font font, 
+        float wrappingLength,
+        WordBreaking wordBreaking,
+        int maxLines)
+    {
+        var options = new TextOptions(font)
+        {
+            WrappingLength = wrappingLength,
+            WordBreaking = wordBreaking,
+            LayoutMode = LayoutMode.HorizontalTopBottom
+        };
+
+        var textSize = TextMeasurer.MeasureSize(text, options);
+        float lineHeight = TextMeasurer.MeasureSize("A", options).Height; // 单行高度
+        int lines = (int)Math.Ceiling(textSize.Height / lineHeight);
+        lines = Math.Min(lines, maxLines);
+
+        return (textSize.Width, lineHeight * lines, lines);
+    }
+}
 #endregion
 
 public class TableGenerate
@@ -230,6 +224,8 @@ public class TableGenerate
     // 表格设置
     public int TableMarginTop { get; set; } = 30;
     public int TableMarginBottom { get; set; } = 30;
+
+
 
     // 主要生成函数
     public byte[] Generate()
@@ -310,140 +306,168 @@ public class TableGenerate
         return finalAvatar;
     }
     
+    
+    
 
-
-
-    // 计算布局
-    // 修改后的 CalculateLayout 方法
     private (int CardHeight, int CardWidth, int BackgroundWidth, int BackgroundHeight, int CardX, int CardY) CalculateLayout(int avatarHeight)
     {
         var fontFamily = GetFontFamily();
         var titleFont = fontFamily.CreateFont(TitleFontSize, FontStyle.Bold);
         var tableFont = fontFamily.CreateFont(TableFontSize, FontStyle.Regular);
+        var smallFont = fontFamily.CreateFont(SmallFontSize, FontStyle.Regular);
 
-        // ======== 动态宽度计算 ========
-        // 计算标题实际宽度（包含边距）
+        // === 关键修改：复用DrawTable的布局逻辑 ===
+        TableLayoutResult tableLayout = CalculateTableLayout(tableFont);
+        Console.WriteLine("最终高度" + tableLayout.TotalHeight);
+
+        // 动态计算卡片宽度（表格宽度 + 边距）
+        int cardWidth = Math.Clamp(
+            tableLayout.TableWidth + 60, // 60为左右边距
+            TableStyle.MinAutoWidth, 
+            TableStyle.MaxAutoWidth
+        );
+
+        // 计算标题尺寸
         int titleWidth = !string.IsNullOrEmpty(Title) ? 
             (int)TextMeasurer.MeasureSize(Title, new TextOptions(titleFont)).Width + 60 : 0;
-
-        // 计算表格动态宽度
-        int tableContentWidth = CalculateTableWidth(tableFont);
     
-        // 综合计算卡片宽度
-        int dynamicCardWidth = Math.Max(titleWidth, tableContentWidth);
-        dynamicCardWidth = Math.Clamp(
-            dynamicCardWidth, 
-            TableStyle.MinAutoWidth, 
-            TableStyle.MaxAutoWidth - 100 // 保留安全边距
-        );
-        CardWidth = dynamicCardWidth;
+        // 最终卡片宽度取较大值（标题和表格）
+        cardWidth = Math.Max(cardWidth, titleWidth);
 
-        // ======== 动态高度计算 ========
-        // 标题高度（包含上下间距）
-        int titleHeight = !string.IsNullOrEmpty(Title) ? 
-            (int)TextMeasurer.MeasureSize(Title, new TextOptions(titleFont)).Height + 40 : 0;
+        // title高度
+        int titleHeight = !string.IsNullOrEmpty(Title) ?
+            (int)TextMeasurer.MeasureSize(Title, new TextOptions(titleFont)).Height : 0;
 
-        // 头像区域高度
-        int avatarAreaHeight = avatarHeight + 40;
-
-        // 表格行高动态计算
-        int maxRowHeight = CalculateMaxRowHeight(tableFont);
-        int tableHeight = (maxRowHeight * TableRows.Count) 
-            + TableMarginTop 
-            + TableMarginBottom 
-            + (TableStyle.ShowBorder ? (int)(TableStyle.BorderThickness * 2) : 0);
-
-        // 签名高度
+        int avatarAreaHeight = avatarHeight;
         int signatureHeight = !string.IsNullOrEmpty(Signature) ? 
-            (int)TextMeasurer.MeasureSize(Signature, new TextOptions(fontFamily.CreateFont(SmallFontSize))).Height + 20 : 0;
-
-        // 总内容高度
-        int contentHeight = ContentTopMargin 
-            + titleHeight 
-            + avatarAreaHeight 
-            + tableHeight 
-            + signatureHeight 
+            (int)TextMeasurer.MeasureSize(Signature, new TextOptions(smallFont)).Height : 0;
+        int cardHeight = ContentTopMargin // 顶部边距
+            + titleHeight // 标题高度
+            + 20 // 标题和头像间距
+            + avatarAreaHeight // 头像高度
+            + 30 // 头像和表格间距
+            + TableMarginTop // 表格顶部边距
+            + tableLayout.TotalHeight // 表格高度
+            + TableMarginBottom
+            + signatureHeight
             + ContentBottomMargin;
 
-        // ======== 最终尺寸 ========
-        int cardHeight = contentHeight;
+        // 背景尺寸 = 卡片尺寸 + 边距
+        int backgroundWidth = cardWidth + 100; 
         int backgroundHeight = cardHeight + CardTopMargin + CardBottomMargin;
-        int backgroundWidth = CardWidth + 100; // 增加边距弹性
 
-        return (cardHeight, CardWidth, backgroundWidth, backgroundHeight, 
-               (backgroundWidth - CardWidth) / 2, CardTopMargin);
-    }
-    
-    
-
-    // 新增行高计算方法
-    private int CalculateMaxRowHeight(Font tableFont)
-    {
-        int maxHeight = 0;
-        var baseOptions = new TextOptions(tableFont);
-        float sampleTextHeight = TextMeasurer.MeasureSize("测试", baseOptions).Height;
-
-        foreach (var row in TableRows)
-       {
-           int rowHeight = 0;
-           foreach (var cell in row.Cells)
-           {
-               var options = new TextOptions(tableFont)
-               {
-                   // 强制单行模式（不换行时直接限制为单行高度）
-                   WrappingLength = TableStyle.EnableTextWrapping ? 
-                       (float)(CardWidth * 0.8) : 
-                       float.MaxValue,
-                   WordBreaking = WordBreaking.Standard,
-                   LayoutMode = LayoutMode.HorizontalTopBottom
-               };
-               
-               var size = TextMeasurer.MeasureSize(cell.Text, options);
-               // 无论是否换行，强制最多1行（不换行时直接取单行高度）
-               int linesNeeded = TableStyle.EnableTextWrapping ? 
-                   Math.Min((int)Math.Ceiling(size.Height / sampleTextHeight), TableStyle.MaxTextLines) : 
-                   1; // 此处强制为1行
-               
-               int cellHeight = (int)(linesNeeded * sampleTextHeight) 
-                   + TableStyle.CellPaddingTop 
-                   + TableStyle.CellPaddingBottom;
-               
-               rowHeight = Math.Max(rowHeight, cellHeight);
-           }
-           maxHeight = Math.Max(maxHeight, rowHeight);
-       }
-       return maxHeight;
+        return (
+            cardHeight, 
+            cardWidth, 
+            backgroundWidth, 
+            backgroundHeight,
+            (backgroundWidth - cardWidth) / 2, // 卡片居中
+            CardTopMargin
+        );
     }
 
-    // 优化后的表格宽度计算
-    private int CalculateTableWidth(Font tableFont)
+    private TableLayoutResult CalculateTableLayout(Font tableFont)
     {
-        if (TableRows == null || TableRows.Count == 0) return 600;
+        var result = new TableLayoutResult();
+        if (TableRows == null || TableRows.Count == 0) return result;
 
+        // 步骤1：计算列宽（考虑换行后的实际宽度）
+        int maxColumns = TableRows.Max(row => row.Cells.Count);
+        result.ColumnWidths = CalculateColumnWidths(tableFont, maxColumns);
+        result.TableWidth = result.ColumnWidths.Sum();
+
+        // 步骤2：计算行高（精确到换行后的行数）
+        result.RowHeights = new int[TableRows.Count];
+
+        var sampleTextHeight = TextMeasurer.MeasureSize("测", new TextOptions(tableFont)).Height;
+        int baseRowHeight = (int)(sampleTextHeight + TableStyle.CellPaddingTop + TableStyle.CellPaddingBottom);
+        for (int i = 0; i < result.RowHeights.Length; i++)
+        {
+            result.RowHeights[i] = baseRowHeight;
+        }
+        if (TableStyle.EnableTextWrapping)
+        {
+            for (int rowIndex = 0; rowIndex < TableRows.Count; rowIndex++)
+            {
+                TableRow row = TableRows[rowIndex];
+                int maxRowHeight = baseRowHeight;
+
+                for (int cellIndex = 0; cellIndex < row.Cells.Count && cellIndex < maxColumns; cellIndex++)
+                {
+                    var cell = row.Cells[cellIndex];
+                    int availableTextWidth = result.ColumnWidths[cellIndex] - TableStyle.CellPaddingLeft - TableStyle.CellPaddingRight;
+
+                    var textOptions = new TextOptions(tableFont)
+                    {
+                        WrappingLength = availableTextWidth,
+                        WordBreaking = WordBreaking.BreakAll
+                    };
+
+                    var textSize = TextMeasurer.MeasureSize(cell.Text, textOptions);
+                    int linesNeeded = Math.Min((int)Math.Ceiling(textSize.Height / sampleTextHeight), TableStyle.MaxTextLines);
+                    int cellHeight = (int)(linesNeeded * sampleTextHeight + TableStyle.CellPaddingTop + TableStyle.CellPaddingBottom);
+                    maxRowHeight = Math.Max(maxRowHeight, cellHeight);
+                }
+
+                result.RowHeights[rowIndex] = maxRowHeight;
+            }
+        }
+
+        // 总高度 = 所有行高之和 + 边距
+        result.TotalHeight = result.RowHeights.Sum();
+        return result;
+    }
+
+    private int[] CalculateColumnWidths(Font tableFont, int maxColumns)
+    {
+        // 初始化列宽字典
         var columnWidths = new Dictionary<int, int>();
+        for (int i = 0; i < maxColumns; i++) columnWidths[i] = 0;
+
         foreach (var row in TableRows)
         {
-            for (int i = 0; i < row.Cells.Count; i++)
+            for (int colIndex = 0; colIndex < row.Cells.Count; colIndex++)
             {
-                var cell = row.Cells[i];
-                var size = TextMeasurer.MeasureSize(cell.Text, new TextOptions(tableFont));
-                int cellWidth = (int)size.Width
-                    + TableStyle.CellPaddingLeft
-                    + TableStyle.CellPaddingRight
-                    + (TableStyle.ShowBorder ? (int)TableStyle.BorderThickness : 0);
+                var cell = row.Cells[colIndex];
+            
+                // 模拟初始列宽（无换行）
+                var (widthNoWrap, _, _) = TextMeasurementHelper.MeasureTextWithWrapping(
+                    cell.Text, 
+                    tableFont, 
+                    float.MaxValue, 
+                    WordBreaking.Standard, 
+                    TableStyle.MaxTextLines
+                );
+            
+                // 初始列宽 = 文本宽度 + 内边距
+                int initialWidth = (int)widthNoWrap 
+                    + TableStyle.CellPaddingLeft 
+                    + TableStyle.CellPaddingRight;
 
-                columnWidths[i] = Math.Max(
-                    columnWidths.ContainsKey(i) ? columnWidths[i] : 0,
-                    cellWidth
+                columnWidths[colIndex] = Math.Max(columnWidths[colIndex], initialWidth);
+            }
+        }
+
+        // 应用列宽约束（动态调整）
+        int totalWidth = columnWidths.Values.Sum();
+        int maxAllowedWidth = TableStyle.MaxAutoWidth - 100; // 安全边距
+
+        if (totalWidth > maxAllowedWidth)
+        {
+            double scaleFactor = (double)maxAllowedWidth / totalWidth;
+            foreach (int colIndex in columnWidths.Keys.ToList())
+            {
+                columnWidths[colIndex] = (int)(columnWidths[colIndex] * scaleFactor);
+                columnWidths[colIndex] = Math.Clamp(
+                    columnWidths[colIndex],
+                    (int)(maxAllowedWidth * TableStyle.MinColumnWidthRatio),
+                    (int)(maxAllowedWidth * TableStyle.MaxColumnWidthRatio)
                 );
             }
         }
 
-        // 增加最大宽度限制
-        int maxAllowedWidth = TableStyle.MaxAutoWidth - 60;
-        return Math.Min(columnWidths.Values.Sum(), maxAllowedWidth);
+        return [.. columnWidths.Values];
     }
-
     // 准备背景
     private Image<Rgba32> PrepareBackground(int width, int height)
     {
@@ -472,7 +496,11 @@ public class TableGenerate
     private Image<Rgba32> CreateCardLayer(Image<Rgba32> background,
         (int CardHeight, int CardWidth, int BackgroundWidth, int BackgroundHeight, int CardX, int CardY) layout)
     {
-        var cardBackground = new Image<Rgba32>(layout.BackgroundWidth, layout.BackgroundHeight);
+        // 修改为：
+        var cardBackground = new Image<Rgba32>(
+            layout.BackgroundWidth, 
+            layout.BackgroundHeight + 50 // 增加安全边距，防止截断
+        );
         cardBackground.Mutate(x => {
             // 复制背景图像
             x.DrawImage(background, new Point(0, 0), 1f);
