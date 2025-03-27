@@ -5,6 +5,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
 using MySqlX.XDevAPI.Common;
+using Lagrange.XocMat.Extensions;
 
 namespace Lagrange.XocMat.Utility.Images;
 
@@ -190,7 +191,7 @@ public static class TextMeasurementHelper
 public class TableGenerate
 {
     public uint AvatarPath { get; set; }
-    public string BackgroundPath => "Resources/OneBotImage/1.jpg";
+    public string BackgroundPath => Directory.GetFiles("Resources/OneBotImage").Rand();
     public byte CardOpacity { get; set; } = 230;
     public int CardWidth { get; set; } = 1000;
     public float CardCornerRadius { get; set; } = 40;

@@ -4,6 +4,7 @@ using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
+using Lagrange.XocMat.Extensions;
 
 namespace Lagrange.XocMat.Utility.Images;
 
@@ -64,7 +65,7 @@ public class ProfileCard
 {
     // 配置选项
     public uint AvatarPath { get; set; }
-    public string BackgroundPath => "Resources/OneBotImage/1.jpg";
+    public string BackgroundPath => Directory.GetFiles("Resources/OneBotImage").Rand();
     public byte CardOpacity { get; set; } = 230;
     public int CardWidth { get; set; } = 450;
     public float CardCornerRadius { get; set; } = 40;

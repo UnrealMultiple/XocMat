@@ -2,6 +2,8 @@
 
 public static class IEnumerableExtension
 {
+    private static readonly Random _random = new Random();
+
     public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> source, int size)
     {
         if (size <= 0)
@@ -18,6 +20,11 @@ public static class IEnumerableExtension
         }
         if (list.Count > 0)
             yield return list;
+    }
+
+    public static T Rand<T>(this IEnumerable<T> source)
+    {
+        return source.ElementAt(_random.Next(0, source.Count()));
     }
 
     public static string JoinToString<T>(this IEnumerable<T> source, string separator)
