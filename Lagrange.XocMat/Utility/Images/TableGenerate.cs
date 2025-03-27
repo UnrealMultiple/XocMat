@@ -363,68 +363,7 @@ public class TableGenerate
             CardTopMargin
         );
     }
-
-    //private TableLayoutResult CalculateTableLayout(Font tableFont)
-    //{
-    //    var result = new TableLayoutResult();
-    //    if (TableRows == null || TableRows.Count == 0) return result;
-
-    //    // 步骤1：计算列宽（考虑换行后的实际宽度）
-    //    int maxColumns = TableRows.Max(row => row.Cells.Count);
-    //    result.ColumnWidths = CalculateColumnWidths(tableFont, maxColumns);
-    //    result.TableWidth = result.ColumnWidths.Sum();
-
-    //    // 步骤2：计算行高（精确到换行后的行数）
-    //    result.RowHeights = new int[TableRows.Count];
-      
-    //    var sampleTextHeight = TextMeasurer.MeasureSize("测", new TextOptions(tableFont)).Height;
-    //    int baseRowHeight = (int)(sampleTextHeight + TableStyle.CellPaddingTop + TableStyle.CellPaddingBottom);
-    //    for (int i = 0; i < result.RowHeights.Length; i++)
-    //    {
-    //        result.RowHeights[i] = baseRowHeight;
-    //    }
-    //    if (TableStyle.EnableTextWrapping)
-    //    {
-    //        for (int rowIndex = 0; rowIndex < TableRows.Count; rowIndex++)
-    //        {
-    //            TableRow row = TableRows[rowIndex];
-    //            int maxRowHeight = baseRowHeight;
-
-    //            for (int cellIndex = 0; cellIndex < row.Cells.Count && cellIndex < maxColumns; cellIndex++)
-    //            {
-    //                var cell = row.Cells[cellIndex];
-    //                int availableTextWidth = result.ColumnWidths[cellIndex] - TableStyle.CellPaddingLeft - TableStyle.CellPaddingRight;
-
-    //                var textOptions = new TextOptions(tableFont)
-    //                {
-    //                    WrappingLength = availableTextWidth,
-    //                    WordBreaking = WordBreaking.BreakAll
-    //                };
-
-    //                var textSize = TextMeasurer.MeasureSize(cell.Text, textOptions);
-    //                int linesNeeded = Math.Min((int)Math.Ceiling(textSize.Height / sampleTextHeight), TableStyle.MaxTextLines);
-    //                int cellHeight = (int)(linesNeeded * sampleTextHeight + TableStyle.CellPaddingTop + TableStyle.CellPaddingBottom);
-    //                maxRowHeight = Math.Max(maxRowHeight, cellHeight);
-    //            }
-
-    //            result.RowHeights[rowIndex] = maxRowHeight;
-    //        }
-    //    }
-    //    int currentRowY = 0;
-    //    for (int rowIndex = 0; rowIndex < TableRows.Count; rowIndex++)
-    //    {
-    //        TableRow row = TableRows[rowIndex];
-    //        int rowHeight = result.RowHeights[rowIndex];
-
-    //        // 更新行位置
-    //        currentRowY += rowHeight;
-    //    }
-    //    // 总高度 = 所有行高之和 + 边距
-    //    result.TotalHeight = currentRowY + TableMarginTop + TableMarginBottom + result.RowHeights.Length;
-
-    //    return result;
-    //}
-
+        
     private int[] CalculateColumnWidths(Font tableFont, int maxColumns)
     {
         // 初始化列宽字典

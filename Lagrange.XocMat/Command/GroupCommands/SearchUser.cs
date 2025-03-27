@@ -4,6 +4,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -21,26 +22,30 @@ public class SearchUser : Command
             List<TerrariaUser> users = TerrariaUser.GetUsers(id);
             if (users.Count == 0)
             {
-                await args.Event.Reply("未查询到该用户的注册信息!");
+                await args.Event.Reply("未查询到该用户的注册信息!", true);
                 return;
             }
-            StringBuilder sb = new("查询结果:\n");
+            var table = new TableBuilder()
+                .AddHeader("注册名称", "注册账号", "群昵称");
             foreach (TerrariaUser user in users)
             {
-                sb.AppendLine($"注册名称: {user.Name}");
-                sb.AppendLine($"注册账号: {user.Id}");
                 Core.Common.Entity.BotGroupMember? result = (await args.Bot.FetchMembers(args.GroupUin)).FirstOrDefault(x => x.Uin == user.Id);
                 if (result != null)
                 {
-                    sb.AppendLine($"群昵称: {result.MemberName}");
+                    table.AddRow(user.Name, user.Id.ToString(), result.MemberCard ?? result.MemberName);
                 }
                 else
                 {
-                    sb.AppendLine("注册人不在此群中");
+                    table.AddRow(user.Name, user.Id.ToString(), "注册人已消失!");
                 }
-                sb.AppendLine("");
             }
-            await args.Event.Reply(sb.ToString().Trim());
+            var tGenerate = new TableGenerate()
+            {
+                AvatarPath = args.MemberUin,
+                Title = "注册查询",
+                TableRows = table.Build()
+            };
+            await args.MessageBuilder.Image(tGenerate.Generate()).Reply();
         }
         IEnumerable<Core.Message.Entity.MentionEntity> atlist = args.Event.Chain.GetMention();
         if (args.Parameters.Count == 0 && atlist.Any())
