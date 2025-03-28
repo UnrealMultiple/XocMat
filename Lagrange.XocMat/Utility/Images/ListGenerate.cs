@@ -111,7 +111,7 @@ public class ListBuilder
 
     public ListBuilder SetTableMargin(int margin)
     {
-        ListGenerate.TableMargin = margin;
+        ListGenerate.ListMargin = margin;
         return this;
     }
 
@@ -207,11 +207,11 @@ public class ListGenerate
 
     public int SignaturFontSize { get; set; } = 20;
 
-    public int Gap { get; set; } = 20;
+    public int Gap { get; set; } = 40;
 
-    public int TableMargin { get; set; } = 50; // 表格与卡片边距
+    public int ListMargin { get; set; } = 100; // 表格与卡片边距
 
-    public int CardMargin { get; set; } = 50; // 卡片与图片边距
+    public int CardMargin { get; set; } = 140; // 卡片与图片边距
 
     private int ListTopMargin { get; set; } = 400; // 列表上边距
 
@@ -227,7 +227,7 @@ public class ListGenerate
 
     public uint MemberUin { get; set; } = 523321293; // 头像路径
 
-    public int MinListWidth { get; set; } = 800; // 列表最小宽度
+    public int MinListWidth { get; set; } = 1000; // 列表最小宽度
 
     public Color CardBackgroundColor { get; set; } = Color.FromRgba(255, 255, 255, 230);
 
@@ -271,6 +271,7 @@ public class ListGenerate
 
         var textSize = TextMeasurer.MeasureSize("A", new TextOptions(tableFont));
         var (RowHeigth, maxWidth) = ComputeLayout(builder);
+        maxWidth += 2 * ListMargin;
         var maxHeight = RowHeigth.Sum(i => i + 2 * Gap) + ListTopMargin + ListBottomMargin; ;
         var image = background.Crop(maxWidth + 2 * CardMargin, maxHeight + CardTopMargin + CardBottomMargin);
         image.Mutate(d =>
@@ -290,14 +291,14 @@ public class ListGenerate
     private void DrawContentText(IImageProcessingContext d, ListBuilder builder, Font tableFont, int maxWidth, int[] rowHeigth)
     {
         int yOffset = CardTopMargin + ListTopMargin;
-
+        var textSize = TextMeasurer.MeasureSize("A", new TextOptions(tableFont));
         for (int i = 0; i < builder.Item.Count; i++)
         {
             var textOption = new RichTextOptions(tableFont)
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                WrappingLength = maxWidth - 2 * TableMargin,
+                WrappingLength = textSize.Width * LineMaxTextLength,
                 WordBreaking = WordBreaking.BreakAll,
                 Origin = new PointF(CardMargin + maxWidth / 2, yOffset + rowHeigth[i] / 2 + Gap)
             };
@@ -312,14 +313,15 @@ public class ListGenerate
         int yOffset = CardTopMargin + ListTopMargin;
         for (int i = 0; i <= builder.Item.Count; i++)
         {
-            d.DrawLine(ListThicknessColor, 1, new PointF(CardMargin + TableMargin, yOffset), new PointF(CardMargin + TableMargin + maxWidth - 2 * TableMargin, yOffset));
+            d.DrawLine(ListThicknessColor, 1, new PointF(CardMargin + ListMargin, yOffset), new PointF(CardMargin + ListMargin + maxWidth - 2 * ListMargin, yOffset));
             if (i < builder.Item.Count)
             {
                 yOffset += RowHeigth[i] + 2 * Gap;
             }
         }
-        d.DrawLine(ListThicknessColor, 1, new PointF(CardMargin + TableMargin, CardTopMargin + ListTopMargin + maxHeight - ListTopMargin - ListBottomMargin), new PointF(CardMargin + TableMargin + maxWidth - 2 * TableMargin, CardTopMargin + ListTopMargin + maxHeight - ListTopMargin - ListBottomMargin));
+        d.DrawLine(ListThicknessColor, 1, new PointF(CardMargin + ListMargin, CardTopMargin + ListTopMargin + maxHeight - ListTopMargin - ListBottomMargin), new PointF(CardMargin + ListMargin + maxWidth - 2 * ListMargin, CardTopMargin + ListTopMargin + maxHeight - ListTopMargin - ListBottomMargin));
     }
+
 
     private void DrawBackground(IImageProcessingContext d, int maxWidth, int maxHeight)
     {
