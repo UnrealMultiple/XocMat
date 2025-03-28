@@ -25,19 +25,15 @@ public class RegisterList : Command
                 await args.Event.Reply("注册列表空空如也!");
                 return;
             }
-            var builder = new ProfileItemBuilder();
+            var builder = new ProfileItemBuilder()
+                .SetMemberUin(args.MemberUin)
+                .SetTitle($"[{server.Name}]注册列表");
             foreach (TerrariaUser user in users)
             {
                 builder.AddItem(user.Name, user.Id.ToString());
             }
-            var profileCard = new ProfileCard
-            {
-                AvatarPath = args.MemberUin,
-                Title = $"[{server.Name}]注册列表",
-                ProfileItems = builder.Build()
-            };
             await args.MessageBuilder
-                .Image(profileCard.Generate())
+                .Image(builder.Build())
                 .Reply();
         }
         else

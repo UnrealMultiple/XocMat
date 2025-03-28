@@ -34,19 +34,15 @@ public class TerrariaUserInfo : Command
                 await args.Event.Reply(info.Message, true);
                 return;
             }
-            var builder = new ProfileItemBuilder();
-            builder.AddItem("ID", account.ID.ToString());
-            builder.AddItem("Group", account.Group);
-            builder.AddItem("LastLogin", account.LastLoginTime.ToString());
-            builder.AddItem("Registered", account.RegisterTime.ToString());
-            var profileCard = new ProfileCard
-            {
-                AvatarPath = args.MemberUin,
-                Title = $"[{server.Name}][{userName}]账户信息",
-                ProfileItems = builder.Build()
-            };
+            var builder = new ProfileItemBuilder()
+                .SetMemberUin(args.MemberUin)
+                .SetTitle($"[{server.Name}][{userName}]账户信息")
+                .AddItem("ID", account.ID.ToString())
+                .AddItem("Group", account.Group)
+                .AddItem("LastLogin", account.LastLoginTime.ToString())
+                .AddItem("Registered", account.RegisterTime.ToString());
             await args.MessageBuilder
-                .Image(profileCard.Generate())
+                .Image(builder.Build())
                 .Reply();
         }
         else

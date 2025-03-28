@@ -21,9 +21,11 @@ public class ProfileItem(string label, string value)
 // 资料条目构建器
 public class ProfileItemBuilder
 {
-    private readonly List<ProfileItem> items = [];
+    public readonly List<ProfileItem> items = [];
 
-    // 添加基本条目
+    private ProfileCard profileCard = new();
+
+    // 添加基本条目 
     public ProfileItemBuilder AddItem(string label, string value)
     {
         items.Add(new ProfileItem(label, value));
@@ -54,18 +56,167 @@ public class ProfileItemBuilder
         return this;
     }
 
-    // 获取构建好的条目列表
-    public List<ProfileItem> Build()
+    // 设置 MemberUin
+    public ProfileItemBuilder SetMemberUin(uint memberUin)
     {
-        return [.. items];
+        profileCard.MemberUin = memberUin;
+        return this;
+    }
+
+    // 设置 CardOpacity
+    public ProfileItemBuilder SetCardOpacity(byte cardOpacity)
+    {
+        profileCard.CardOpacity = cardOpacity;
+        return this;
+    }
+
+    // 设置 CardWidth
+    public ProfileItemBuilder SetCardWidth(int cardWidth)
+    {
+        profileCard.CardWidth = cardWidth;
+        return this;
+    }
+
+    // 设置 CardCornerRadius
+    public ProfileItemBuilder SetCardCornerRadius(float cardCornerRadius)
+    {
+        profileCard.CardCornerRadius = cardCornerRadius;
+        return this;
+    }
+
+    // 设置 CardTopMargin
+    public ProfileItemBuilder SetCardTopMargin(int cardTopMargin)
+    {
+        profileCard.CardTopMargin = cardTopMargin;
+        return this;
+    }
+
+    // 设置 CardBottomMargin
+    public ProfileItemBuilder SetCardBottomMargin(int cardBottomMargin)
+    {
+        profileCard.CardBottomMargin = cardBottomMargin;
+        return this;
+    }
+
+    // 设置 ContentTopMargin
+    public ProfileItemBuilder SetContentTopMargin(int contentTopMargin)
+    {
+        profileCard.ContentTopMargin = contentTopMargin;
+        return this;
+    }
+
+    // 设置 ContentBottomMargin
+    public ProfileItemBuilder SetContentBottomMargin(int contentBottomMargin)
+    {
+        profileCard.ContentBottomMargin = contentBottomMargin;
+        return this;
+    }
+
+    // 设置 RowSpacing
+    public ProfileItemBuilder SetRowSpacing(int rowSpacing)
+    {
+        profileCard.RowSpacing = rowSpacing;
+        return this;
+    }
+
+    // 设置 Title
+    public ProfileItemBuilder SetTitle(string title)
+    {
+        profileCard.Title = title;
+        return this;
+    }
+
+    // 设置 Signature
+    public ProfileItemBuilder SetSignature(string signature)
+    {
+        profileCard.Signature = signature;
+        return this;
+    }
+
+    // 设置 TitleColor
+    public ProfileItemBuilder SetTitleColor(Color titleColor)
+    {
+        profileCard.TitleColor = titleColor;
+        return this;
+    }
+
+    // 设置 SignatureColor
+    public ProfileItemBuilder SetSignatureColor(Color signatureColor)
+    {
+        profileCard.SignatureColor = signatureColor;
+        return this;
+    }
+
+    // 设置 DefaultLabelColor
+    public ProfileItemBuilder SetDefaultLabelColor(Color defaultLabelColor)
+    {
+        profileCard.DefaultLabelColor = defaultLabelColor;
+        return this;
+    }
+
+    // 设置 DefaultValueColor
+    public ProfileItemBuilder SetDefaultValueColor(Color defaultValueColor)
+    {
+        profileCard.DefaultValueColor = defaultValueColor;
+        return this;
+    }
+
+    // 设置 DefaultValueBackgroundColor
+    public ProfileItemBuilder SetDefaultValueBackgroundColor(Color defaultValueBackgroundColor)
+    {
+        profileCard.DefaultValueBackgroundColor = defaultValueBackgroundColor;
+        return this;
+    }
+
+    // 设置 TitleFontSize
+    public ProfileItemBuilder SetTitleFontSize(float titleFontSize)
+    {
+        profileCard.TitleFontSize = titleFontSize;
+        return this;
+    }
+
+    // 设置 NormalFontSize
+    public ProfileItemBuilder SetNormalFontSize(float normalFontSize)
+    {
+        profileCard.NormalFontSize = normalFontSize;
+        return this;
+    }
+
+    // 设置 SmallFontSize
+    public ProfileItemBuilder SetSmallFontSize(float smallFontSize)
+    {
+        profileCard.SmallFontSize = smallFontSize;
+        return this;
+    }
+
+    // 设置 AvatarSize
+    public ProfileItemBuilder SetAvatarSize(int avatarSize)
+    {
+        profileCard.AvatarSize = avatarSize;
+        return this;
+    }
+
+    // 设置 AvatarBorderSize
+    public ProfileItemBuilder SetAvatarBorderSize(int avatarBorderSize)
+    {
+        profileCard.AvatarBorderSize = avatarBorderSize;
+        return this;
+    }
+
+    public static ProfileCard Create() => new();
+
+    // 获取构建好的条目列表
+    public byte[] Build()
+    {
+        return profileCard.Generate(this);
     }
 }
 
 public class ProfileCard
 {
     // 配置选项
-    public uint AvatarPath { get; set; }
-    public string BackgroundPath => Directory.GetFiles("Resources/OneBotImage").Rand();
+    public uint MemberUin { get; set; }
+    public string BackgroundPath => ImageUtils.GetRandOneBotBackground();
     public byte CardOpacity { get; set; } = 230;
     public int CardWidth { get; set; } = 450;
     public float CardCornerRadius { get; set; } = 40;
@@ -80,12 +231,10 @@ public class ProfileCard
     public int RowSpacing { get; set; } = 50; // 行间距
 
     // 个人资料
-    public List<ProfileItem> ProfileItems { get; set; } = [];
+    //public List<ProfileItem> ProfileItems { get; set; } = [];
     public string Title { get; set; } = "个人资料卡";
     public string Signature { get; set; } = "Generated by Lagrange.XocMat";
 
-    //// 字体设置
-    //public string FontPath { get; set; } = "arial.ttf";
     public Color TitleColor { get; set; } = Color.Black;
     public Color SignatureColor { get; set; } = Color.DarkGray;
 
@@ -104,17 +253,15 @@ public class ProfileCard
     public int AvatarBorderSize { get; set; } = 5;
 
     // 主要生成函数
-    public byte[] Generate()
+    public byte[] Generate(ProfileItemBuilder builder)
     {
         try
         {
-            ValidateFiles();
-
             // 创建头像
-            using var avatar = CreateAvatar();
+            using var avatar = ImageUtils.GetAvatar(MemberUin, AvatarSize);
 
             // 计算尺寸和位置
-            var layout = CalculateLayout(avatar.Height);
+            var layout = CalculateLayout(avatar.Height, builder);
 
             // 准备背景
             using var background = PrepareBackground(layout.BackgroundWidth, layout.BackgroundHeight);
@@ -123,12 +270,9 @@ public class ProfileCard
             using var cardBackground = CreateCardLayer(background, layout);
 
             // 将内容绘制到卡片上
-            DrawContent(cardBackground, avatar, layout);
+            DrawContent(cardBackground, avatar, layout, builder);
 
-            // 保存结果
-            using var ms = new MemoryStream();
-            cardBackground.SaveAsPng(ms);
-            return ms.ToArray();
+            return cardBackground.ToBytesAsync().Result;
         }
         catch (Exception ex)
         {
@@ -137,57 +281,15 @@ public class ProfileCard
         }
     }
 
-    // 验证必要文件是否存在
-    private void ValidateFiles()
-    {
-        if (!File.Exists(BackgroundPath)) throw new FileNotFoundException("背景文件不存在", BackgroundPath);
-    }
-
     // 获取字体
     private FontFamily GetFontFamily()
     {
         return ImageUtils.Instance.FontFamily;
     }
 
-    // 创建头像
-    private Image<Rgba32> CreateAvatar()
-    {
-        // 加载并调整头像大小
-        using Image<Rgba32> originalAvatar = Image.Load<Rgba32>(HttpUtils.GetByteAsync($"http://q.qlogo.cn/headimg_dl?dst_uin={AvatarPath}&spec=640&img_type=png").Result);
-        originalAvatar.Mutate(x => x.Resize(new ResizeOptions
-        {
-            Size = new Size(AvatarSize, AvatarSize),
-            Mode = ResizeMode.Crop
-        }));
-
-        // 创建圆形头像
-        using var circularAvatar = new Image<Rgba32>(AvatarSize, AvatarSize);
-        circularAvatar.Mutate(x => {
-            var circle = new EllipsePolygon(AvatarSize / 2, AvatarSize / 2, AvatarSize / 2);
-            x.Clear(Color.Transparent);
-            x.Fill(Color.White, circle);
-            x.DrawImage(originalAvatar, new Point(0, 0), new GraphicsOptions
-            {
-                ColorBlendingMode = PixelColorBlendingMode.Multiply,
-                AlphaCompositionMode = PixelAlphaCompositionMode.SrcIn
-            });
-        });
-
-        // 创建带边框的头像
-        int finalAvatarSize = AvatarSize + (AvatarBorderSize * 2);
-        var finalAvatar = new Image<Rgba32>(finalAvatarSize, finalAvatarSize);
-        finalAvatar.Mutate(x => {
-            var borderCircle = new EllipsePolygon(finalAvatarSize / 2, finalAvatarSize / 2, finalAvatarSize / 2);
-            x.Fill(Color.White, borderCircle);
-            x.DrawImage(circularAvatar, new Point(AvatarBorderSize, AvatarBorderSize), 1f);
-        });
-
-        return finalAvatar;
-    }
-
     // 计算布局
     private (int CardHeight, int CardWidth, int BackgroundWidth, int BackgroundHeight, int CardX, int CardY)
-        CalculateLayout(int avatarHeight)
+        CalculateLayout(int avatarHeight, ProfileItemBuilder builder)
     {
         var fontFamily = GetFontFamily();
         var titleFont = fontFamily.CreateFont(TitleFontSize, FontStyle.Bold);
@@ -197,7 +299,7 @@ public class ProfileCard
         int titleHeight = !string.IsNullOrEmpty(Title) ?
             (int)TextMeasurer.MeasureSize(Title, new TextOptions(titleFont)).Height + 30 : 0;
         int avatarAreaHeight = avatarHeight + 30; // 头像高度加上额外间距
-        int itemAreaHeight = (ProfileItems.Count * RowSpacing) + 20; // 所有项目的高度
+        int itemAreaHeight = (builder.items.Count * RowSpacing) + 20; // 所有项目的高度
         int signatureHeight = !string.IsNullOrEmpty(Signature) ? 50 : 0; // 签名高度
 
         // 计算卡片内容总高度
@@ -248,63 +350,29 @@ public class ProfileCard
             x.DrawImage(background, new Point(0, 0), 1f);
 
             // 创建圆角矩形卡片
-            DrawRoundedRectangle(
-                x,
+            x.DrawRoundedRectangle(
                 layout.CardX,
                 layout.CardY,
                 layout.CardWidth,
                 layout.CardHeight,
-                CardCornerRadius,
+                60,
                 new Rgba32(255, 255, 255, CardOpacity));
         });
 
         return cardBackground;
     }
 
-    // 绘制圆角矩形
-    private void DrawRoundedRectangle(IImageProcessingContext context, float x, float y, float width, float height, float cornerRadius, Rgba32 color)
-    {
-        if (cornerRadius <= 0)
-        {
-            // 如果没有圆角，就直接绘制矩形
-            context.Fill(color, new RectangleF(x, y, width, height));
-            return;
-        }
-
-        // 限制圆角大小
-        var corners = Math.Min(cornerRadius, Math.Min(width, height) / 2);
-
-        // 绘制四个角
-        var leftTopCorner = new EllipsePolygon(x + corners, y + corners, corners);
-        var rightTopCorner = new EllipsePolygon(x + width - corners, y + corners, corners);
-        var rightBottomCorner = new EllipsePolygon(x + width - corners, y + height - corners, corners);
-        var leftBottomCorner = new EllipsePolygon(x + corners, y + height - corners, corners);
-
-        context.Fill(color, leftTopCorner);
-        context.Fill(color, rightTopCorner);
-        context.Fill(color, rightBottomCorner);
-        context.Fill(color, leftBottomCorner);
-
-        // 绘制四条边
-        context.Fill(color, new RectangleF(x + corners, y, width - corners * 2, corners));  // 上边
-        context.Fill(color, new RectangleF(x + width - corners, y + corners, corners, height - corners * 2));  // 右边
-        context.Fill(color, new RectangleF(x + corners, y + height - corners, width - corners * 2, corners));  // 下边
-        context.Fill(color, new RectangleF(x, y + corners, corners, height - corners * 2));  // 左边
-
-        // 绘制中间区域
-        context.Fill(color, new RectangleF(x + corners, y + corners, width - corners * 2, height - corners * 2));
-    }
-
     // 绘制内容
     private void DrawContent(Image<Rgba32> canvas, Image<Rgba32> avatar,
-        (int CardHeight, int CardWidth, int BackgroundWidth, int BackgroundHeight, int CardX, int CardY) layout)
+        (int CardHeight, int CardWidth, int BackgroundWidth, int BackgroundHeight, int CardX, int CardY) layout, ProfileItemBuilder builder)
     {
         var fontFamily = GetFontFamily();
         var titleFont = fontFamily.CreateFont(TitleFontSize, FontStyle.Bold);
         var normalFont = fontFamily.CreateFont(NormalFontSize, FontStyle.Regular);
         var smallFont = fontFamily.CreateFont(SmallFontSize, FontStyle.Regular);
 
-        canvas.Mutate(x => {
+        canvas.Mutate(x => 
+        {
             int currentY = layout.CardY + ContentTopMargin;
 
             // 添加标题
@@ -317,7 +385,7 @@ public class ProfileCard
             currentY = DrawAvatar(x, avatar, currentY, layout.BackgroundWidth);
 
             // 添加信息项
-            currentY = DrawProfileItems(x, normalFont, currentY, layout.CardX, layout.CardWidth);
+            currentY = DrawProfileItems(x, normalFont, currentY, layout.CardX, layout.CardWidth, builder);
 
             // 添加签名
             if (!string.IsNullOrEmpty(Signature))
@@ -352,12 +420,12 @@ public class ProfileCard
     }
 
     // 绘制资料项
-    private int DrawProfileItems(IImageProcessingContext context, Font normalFont, int currentY, int cardX, int cardWidth)
+    private int DrawProfileItems(IImageProcessingContext context, Font normalFont, int currentY, int cardX, int cardWidth, ProfileItemBuilder builder)
     {
         int leftMargin = cardX + 40;
         int rightMargin = cardX + cardWidth - 40;
 
-        foreach (var item in ProfileItems)
+        foreach (var item in builder.items)
         {
             // 获取颜色，如果没有自定义颜色则使用默认颜色
             var labelColor = item.LabelColor;

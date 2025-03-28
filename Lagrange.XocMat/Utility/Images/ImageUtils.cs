@@ -1,4 +1,5 @@
-﻿using Lagrange.XocMat.Internal.Socket.Internet;
+﻿using Lagrange.XocMat.Extensions;
+using Lagrange.XocMat.Internal.Socket.Internet;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -17,6 +18,21 @@ internal class ImageUtils
         var fc = new FontCollection();
         FontFamily = fc.Add("Resources/Font/simhei.ttf");
     }
+
+    public static FontFamily GetFontFamily()
+    { 
+        return Instance.FontFamily;
+    }
+
+    public static Image<Rgba32> GetAvatar(uint uin, int size)
+    {
+        var buffer = HttpUtils.GetByteAsync($"http://q.qlogo.cn/headimg_dl?dst_uin={uin}&spec=640&img_type=png").Result;
+        using var image = Image.Load<Rgba32>(buffer);
+        var avatar = image.CutCircles(size);
+        return avatar;
+    }
+
+    public static string GetRandOneBotBackground() => Directory.GetFiles("Resources/OneBotImage").Rand();
 
     public void DrawImage(Image target, Image source, int X, int Y)
     {

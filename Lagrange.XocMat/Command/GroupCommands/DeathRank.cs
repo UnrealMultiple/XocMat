@@ -29,20 +29,16 @@ public class DeathRank : Command
                     await args.Event.Reply("当前还没有数据记录", true);
                     return;
                 }
-                var builder = new ProfileItemBuilder();
+                var builder = new ProfileItemBuilder()
+                    .SetMemberUin(args.MemberUin)
+                    .SetTitle("死亡排行");
                 IOrderedEnumerable<KeyValuePair<string, int>> rank = api.Rank.OrderByDescending(x => x.Value);
                 foreach ((string name, int count) in rank)
                 {
                     builder.AddItem(name, count.ToString());
                 }
-                var profileCard = new ProfileCard
-                {
-                    AvatarPath = args.MemberUin,
-                    Title = $"{server.Name}服务器死亡排行",
-                    ProfileItems = builder.Build()
-                };
                 await args.MessageBuilder
-                    .Image(profileCard.Generate())
+                    .Image(builder.Build())
                     .Reply();
             }
             else

@@ -26,7 +26,9 @@ public class OnlineRank : Command
                     await args.Event.Reply("当前还没有数据记录", true);
                     return;
                 }
-                var builder = new ProfileItemBuilder();
+                var builder = new ProfileItemBuilder()
+                    .SetTitle($"[{server.Name}]在线排行")
+                    .SetMemberUin(args.MemberUin);
                 IOrderedEnumerable<KeyValuePair<string, int>> rank = api.OnlineRank.OrderByDescending(x => x.Value);
                 foreach ((string name, int duration) in rank)
                 {
@@ -44,14 +46,8 @@ public class OnlineRank : Command
                     sb.Append($"{second}秒");
                     builder.AddItem(name, sb.ToString());
                 }
-                var profileCard = new ProfileCard
-                {
-                    AvatarPath = args.MemberUin,
-                    Title = $"{server.Name}服务器在线排行",
-                    ProfileItems = builder.Build()
-                };
                 await args.MessageBuilder
-                    .Image(profileCard.Generate())
+                    .Image(builder.Build())
                     .Reply();
 
 

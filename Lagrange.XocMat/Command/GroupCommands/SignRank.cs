@@ -20,21 +20,18 @@ public class SignRank : Command
         try
         {
             IEnumerable<DB.Manager.Sign> signs = DB.Manager.Sign.GetSigns().OrderByDescending(x => x.Date).Take(10);
-            var builder = new TableBuilder();
-            builder.AddHeader("排名", "账号", "时长");
+            var builder = TableBuilder.Create()
+                .SetHeader("排名", "账号", "时长")
+                .SetTitle("签到排行")
+                .SetMemberUin(args.MemberUin);
             int i = 1;
             foreach (DB.Manager.Sign? sign in signs)
             {
                builder.AddRow(i.ToString(), sign.UserId.ToString(), sign.Date.ToString());
                 i++;
             }
-            var table = new TableGenerate
-            {
-                AvatarPath = args.MemberUin,
-                Title = "签到排行榜",
-                TableRows = builder.Build()
-            };
-            await args.MessageBuilder.Image(table.Generate()).Reply();
+
+            await args.MessageBuilder.Image(builder.Builder()).Reply();
         }
         catch (Exception e)
         {

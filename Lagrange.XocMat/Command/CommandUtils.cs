@@ -32,19 +32,15 @@ internal static class CommandUtils
         long currency = currencyInfo != null ? currencyInfo.Num : 0;
 
         var builder = new ProfileItemBuilder()
-                    .AddItem($"QQ账号", uin.ToString())
-                    .AddItem($"签到时长", sign.ToString())
-                    .AddItem($"{XocMatSetting.Instance.Currency}数量", currency.ToString())
-                    .AddItem($"拥有权限", groupName)
-                    .AddItem($"当前服务器", serverName);
-        var profileCard = new ProfileCard
-        {
-            AvatarPath = uin,
-            Title = "账户信息",
-            ProfileItems = builder.Build()
-        };
+            .SetTitle("账户信息")
+            .SetMemberUin(userid)
+            .AddItem($"QQ账号", uin.ToString())
+            .AddItem($"签到时长", sign.ToString())
+            .AddItem($"{XocMatSetting.Instance.Currency}数量", currency.ToString())
+            .AddItem($"拥有权限", groupName)
+            .AddItem($"当前服务器", serverName);
         return MessageBuilder.Group(groupid)
-            .Image(profileCard.Generate());
+            .Image(builder.Build());
     }
 
     public static string GenerateMailBody(string tile, uint uin, string name, string body, string pw)

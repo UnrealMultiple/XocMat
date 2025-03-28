@@ -25,8 +25,10 @@ public class SearchUser : Command
                 await args.Event.Reply("未查询到该用户的注册信息!", true);
                 return;
             }
-            var table = new TableBuilder()
-                .AddHeader("注册名称", "注册账号", "群昵称");
+            var table = TableBuilder.Create()
+                .SetHeader("注册名称", "注册账号", "群昵称")
+                .SetTitle("注册查询")
+                .SetMemberUin(args.MemberUin);
             foreach (TerrariaUser user in users)
             {
                 Core.Common.Entity.BotGroupMember? result = (await args.Bot.FetchMembers(args.GroupUin)).FirstOrDefault(x => x.Uin == user.Id);
@@ -39,13 +41,7 @@ public class SearchUser : Command
                     table.AddRow(user.Name, user.Id.ToString(), "注册人已消失!");
                 }
             }
-            var tGenerate = new TableGenerate()
-            {
-                AvatarPath = args.MemberUin,
-                Title = "注册查询",
-                TableRows = table.Build()
-            };
-            await args.MessageBuilder.Image(tGenerate.Generate()).Reply();
+            await args.MessageBuilder.Image(table.Builder()).Reply();
         }
         IEnumerable<Core.Message.Entity.MentionEntity> atlist = args.Event.Chain.GetMention();
         if (args.Parameters.Count == 0 && atlist.Any())

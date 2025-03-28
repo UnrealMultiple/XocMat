@@ -26,19 +26,15 @@ namespace Lagrange.XocMat.Command.GroupCommands
                 DB.Manager.Sign result = DB.Manager.Sign.SingIn(args.MemberUin);
                 DB.Manager.Currency currency = DB.Manager.Currency.Add(args.MemberUin, num);
                 var builder = new ProfileItemBuilder()
+                    .SetTitle("签到提示")
+                    .SetMemberUin(args.MemberUin)
                     .AddItem($"QQ账号", args.MemberUin.ToString())
                     .AddItem($"QQ昵称", args.MemberCard)
                     .AddItem("签到时长", result.Date.ToString())
                     .AddItem($"本次获得{XocMatSetting.Instance.Currency}", num.ToString())
                     .AddItem($"{XocMatSetting.Instance.Currency}总数", currency.Num.ToString());
-                var profileCard = new ProfileCard
-                {
-                    AvatarPath = args.MemberUin,
-                    Title = "签到提示",
-                    ProfileItems = builder.Build()
-                };
                 await args.MessageBuilder
-                    .Image(profileCard.Generate())
+                    .Image(builder.Build())
                     .Reply();
             }
             catch (Exception e)

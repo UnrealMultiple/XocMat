@@ -21,8 +21,10 @@ public class ServerList : Command
             await args.Event.Reply("此群未配置任何服务器!", true);
             return;
         }
-        var tableBuilder = new TableBuilder();
-        tableBuilder.AddHeader("服务器名称", "服务器IP", "服务器端口", "服务器版本", "服务器介绍", "运行状态", "世界名称", "世界种子", "世界大小");
+        var tableBuilder = TableBuilder.Create()
+            .SetHeader("服务器名称", "服务器IP", "服务器端口", "服务器版本", "服务器介绍", "运行状态", "世界名称", "世界种子", "世界大小")
+            .SetTitle("服务器列表")
+            .SetMemberUin(args.MemberUin);
         foreach (Terraria.TerrariaServer? server in groupServers)
         {
             Internal.Socket.Action.Response.ServerStatus status = await server.ServerStatus();
@@ -32,13 +34,6 @@ public class ServerList : Command
                 !status.Status ? "无法获取" : status.WorldSeed,
                 !status.Status ? "无法获取" : $"{status.WorldWidth}x{status.WorldHeight}");
         }
-
-        var table = new TableGenerate
-        {
-            AvatarPath = args.MemberUin,
-            Title = "服务器列表",
-            TableRows = tableBuilder.Build(),
-        };
-        await args.MessageBuilder.Image(table.Generate()).Reply();
+        await args.MessageBuilder.Image(tableBuilder.Builder()).Reply();
     }
 }
