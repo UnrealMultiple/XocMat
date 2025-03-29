@@ -9,7 +9,7 @@ namespace Lagrange.XocMat.Command.GroupCommands;
 public class Wiki : Command
 {
     public override string[] Alias => ["wiki"];
-    public override string HelpText => "â–“ÃšÂªÂ»Wiki";
+    public override string HelpText => "Terraria Wiki";
     public override string[] Permissions => [OneBotPermissions.TerrariaWiki];
 
     public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
