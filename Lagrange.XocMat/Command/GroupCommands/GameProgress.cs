@@ -17,7 +17,7 @@ public class GameProgress : Command
     {
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
-            Internal.Socket.Action.Response.GameProgress api = await server.QueryServerProgress();
+            Terraria.Protocol.Action.Response.GameProgress api = await server.QueryServerProgress();
             Core.Message.MessageBuilder body = args.MessageBuilder;
             if (api.Status)
             {

@@ -30,7 +30,7 @@ public class SearchCommandPermission : Command
         }
         else
         {
-            await args.Event.Reply($"语法错误，正确语法:{args.CommamdPrefix}scmdperm [指令名]");
+            await args.Event.Reply($"语法错误，正确语法:{args.CommandPrefix}scmdperm [指令名]");
         }
     }
 }

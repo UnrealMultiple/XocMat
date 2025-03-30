@@ -3,6 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Terraria.Picture;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -19,7 +20,7 @@ public class QueryInventory : Command
         {
             if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
             {
-                Internal.Socket.Action.Response.PlayerInventory api = await server.PlayerInventory(args.Parameters[0]);
+                PlayerInventory api = await server.PlayerInventory(args.Parameters[0]);
                 Core.Message.MessageBuilder body = args.MessageBuilder;
                 if (api.Status)
                 {
@@ -39,7 +40,7 @@ public class QueryInventory : Command
         }
         else
         {
-            await args.Event.Reply($"语法错误,正确语法:\n{args.CommamdPrefix}{args.Name} [用户名]");
+            await args.Event.Reply($"语法错误,正确语法:\n{args.CommandPrefix}{args.Name} [用户名]");
         }
     }
 }

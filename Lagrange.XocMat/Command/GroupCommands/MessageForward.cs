@@ -43,7 +43,7 @@ public class MessageForward : Command
         }
         else
         {
-            await args.Event.Reply($"语法错误,正确语法:\n{args.CommamdPrefix}{args.Name} [开启|关闭]!", true);
+            await args.Event.Reply($"语法错误,正确语法:\n{args.CommandPrefix}{args.Name} [开启|关闭]!", true);
         }
     }
 }

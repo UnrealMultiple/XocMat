@@ -24,7 +24,7 @@ namespace Lagrange.XocMat.Extensions
     {
         public static string NextString(this Random rand, int length)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             for (int i = 0; i < length; i++)
             {
                 switch (rand.Next(0, 3))
@@ -33,6 +33,7 @@ namespace Lagrange.XocMat.Extensions
                         sb.Append((char)rand.Next('a', 'z' + 1));
                         break;
                     case 1:
+
                         sb.Append((char)rand.Next('A', 'Z' + 1));
                         break;
                     case 2:

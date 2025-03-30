@@ -1,5 +1,5 @@
 ﻿using Lagrange.XocMat.Extensions;
-using Lagrange.XocMat.Internal.Socket.Internet;
+using Lagrange.XocMat.Terraria.Protocol.Internet;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;

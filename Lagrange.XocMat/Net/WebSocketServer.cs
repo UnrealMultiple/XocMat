@@ -11,7 +11,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
 
     public event Action<string>? OnConnect;
 
-    public event Action<string, byte[]>? OnMessage;
+    public event Func<string, byte[], Task>? OnMessage;
 
     public event Action<string>? OnClose;
 
@@ -23,7 +23,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
     {
         _listener.Prefixes.Add($"http://*:{XocMatSetting.Instance.SocketProt}/");
         _listener.Start();
-        logger.LogInformation($"Websocket Start prot:{XocMatSetting.Instance.SocketProt}");
+        logger.LogInformation("Websocket Start prot:{Prot}", XocMatSetting.Instance.SocketProt);
         try
         {
             while (true)
@@ -34,14 +34,11 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         }
         catch (Exception e) when (e is not OperationCanceledException)
         {
-            logger.LogError("WebSocket Error " + e.Message);
+            logger.LogError("WebSocket Error {Message}", e.Message);
         }
     }
 
-    public ConnectionContext? GetConnect(string id)
-    {
-        return !_connections.TryGetValue(id, out ConnectionContext? connection) ? null : connection;
-    }
+    public ConnectionContext? GetConnect(string id) => _connections.TryGetValue(id, out var context) ? context : null;
 
     private async Task HandleHttpListenerContext(HttpListenerContext context1, CancellationToken token)
     {
@@ -116,7 +113,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
             bool isCanceled = e is OperationCanceledException;
 
             WebSocketCloseStatus status = WebSocketCloseStatus.NormalClosure;
-            CancellationToken t = default(CancellationToken);
+            CancellationToken t = default;
             if (!isCanceled)
             {
                 status = WebSocketCloseStatus.InternalServerError;
@@ -133,7 +130,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         }
     }
 
-    public async ValueTask DisconnectAsync(string identifier, WebSocketCloseStatus status, CancellationToken token)
+    public async ValueTask DisconnectAsync(string identifier, WebSocketCloseStatus status, CancellationToken token = default)
     {
         if (!_connections.TryRemove(identifier, out ConnectionContext? connection)) return;
 
@@ -146,7 +143,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         }
         catch (Exception e) when (e is not OperationCanceledException)
         {
-            logger.LogError("WebSocket Server Close Error " + e.Message);
+            logger.LogError("WebSocket Server Close Error {Message}", e.Message);
         }
         finally
         {
@@ -155,7 +152,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         }
     }
 
-    public async ValueTask SendBytesAsync(byte[] payload, string identifier, CancellationToken token)
+    public async ValueTask SendBytesAsync(byte[] payload, string identifier, CancellationToken token = default)
     {
         if (!_connections.TryGetValue(identifier, out ConnectionContext? connection)) return;
 

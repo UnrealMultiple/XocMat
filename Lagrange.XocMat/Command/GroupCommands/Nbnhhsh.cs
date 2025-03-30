@@ -32,7 +32,7 @@ public class Nbnhhsh : Command
         }
         else
         {
-            await args.Event.Reply($"语法错误，正确语法:{args.CommamdPrefix}缩写 [文本]");
+            await args.Event.Reply($"语法错误，正确语法:{args.CommandPrefix}缩写 [文本]");
         }
     }
 }

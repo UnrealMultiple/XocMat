@@ -40,8 +40,7 @@ public class XocMatApp
         Services.GetRequiredService<CommandManager>();
         Services.GetRequiredService<PluginLoader>();
         Services.GetRequiredService<WebSocketServer>();
-        Services.GetRequiredService<TShockReceive>();
-        Services.GetRequiredService<TerrariaMsgReceiveHandler>();
+        Services.GetRequiredService<SocketAdapter>();
         _host.Run();
     }
 }

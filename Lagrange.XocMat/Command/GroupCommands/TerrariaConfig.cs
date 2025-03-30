@@ -19,7 +19,7 @@ public class TerrariaConfig : Command
     {
         if (args.Parameters.Count < 2)
         {
-            await args.Event.Reply($"语法错误,正确语法；{args.CommamdPrefix}{args.Name} [选项] [值]");
+            await args.Event.Reply($"语法错误,正确语法；{args.CommandPrefix}{args.Name} [选项] [值]");
             return;
         }
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)

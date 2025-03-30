@@ -177,12 +177,12 @@ public class BankManagerCommand : Command
         else
         {
             await args.Event.Reply("语法错误，正确语法:\n" +
-                $"{args.CommamdPrefix}bank add <qq> <数量>\n" +
-                $"{args.CommamdPrefix}bank add <数量> at\n" +
-                $"{args.CommamdPrefix}bank del <qq> <数量>\n" +
-                $"{args.CommamdPrefix}bank del <数量> at\n" +
-                $"{args.CommamdPrefix}bank pay <qq> 数量\n" +
-                $"{args.CommamdPrefix}bank pay <数量> at");
+                $"{args.CommandPrefix}bank add <qq> <数量>\n" +
+                $"{args.CommandPrefix}bank add <数量> at\n" +
+                $"{args.CommandPrefix}bank del <qq> <数量>\n" +
+                $"{args.CommandPrefix}bank del <数量> at\n" +
+                $"{args.CommandPrefix}bank pay <qq> 数量\n" +
+                $"{args.CommandPrefix}bank pay <数量> at");
         }
     }
 }

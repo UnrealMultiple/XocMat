@@ -30,7 +30,7 @@ public class HelpCommand : Command
             .SetMemberUin(args.MemberUin);
         foreach (var command in commands)
         {
-            builder.AddCell(args.CommamdPrefix + command.Alias.First(), command.HelpText);
+            builder.AddCell(args.CommandPrefix + command.Alias.First(), command.HelpText);
         }
         await args.MessageBuilder.Image(builder.Build()).Reply();
     }
@@ -61,7 +61,7 @@ public class HelpCommand : Command
             .SetMemberUin((uint)args.Account.UserId);
         foreach (var command in commands)
         {
-            builder.AddCell(args.CommamdPrefix + command.Alias.First(), command.HelpText);
+            builder.AddCell(args.CommandPrefix + command.Alias.First(), command.HelpText);
         }
         await args.MessageBuilder.Image(builder.Build()).Reply();
     }

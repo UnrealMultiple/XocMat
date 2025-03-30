@@ -1,10 +1,6 @@
 using System.Net;
 using System.Net.Mail;
-using System.Net.Mime;
 using System.Text;
-using Lagrange.Core.Internal.Packets.Message;
-using Lagrange.XocMat.Configuration;
-using MySqlX.XDevAPI;
 
 namespace Lagrange.XocMat.Utility;
 

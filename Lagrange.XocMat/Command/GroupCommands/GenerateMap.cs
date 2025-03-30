@@ -3,6 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -20,7 +21,7 @@ public class GenerateMap : Command
             type = ImageType.Png;
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
-            Internal.Socket.Action.Response.MapImage api = await server.MapImage(type);
+            MapImage api = await server.MapImage(type);
             if (api.Status)
             {
                 string tempDir = Path.Combine(Environment.CurrentDirectory, "TempImage");

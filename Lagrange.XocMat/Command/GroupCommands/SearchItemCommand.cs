@@ -1,6 +1,7 @@
 ﻿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Internet;
 using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Logging;
 
@@ -18,7 +19,7 @@ public class SearchItemCommand : Command
     {
         if (args.Parameters.Count > 0)
         {
-            List<Internal.Socket.Internet.Item> items = SystemHelper.GetItemByIdOrName(args.Parameters[0]);
+            List<Item> items = SystemHelper.GetItemByIdOrName(args.Parameters[0]);
             await args.Event.Reply(items.Count == 0 ? "未查询到指定物品" : $"查询结果:\n{string.Join(",", items.Select(x => $"{x.Name}({x.netID})"))}");
         }
     }

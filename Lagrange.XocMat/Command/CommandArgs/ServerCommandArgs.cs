@@ -1,8 +1,8 @@
 ﻿using Lagrange.Core;
-using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
-using Lagrange.XocMat.Internal.Socket.Action.Response;
+using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Terraria;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using System.Drawing;
 
 namespace Lagrange.XocMat.Command.CommandArgs;
@@ -23,4 +23,10 @@ public class ServerCommandArgs(BotContext bot, TerrariaServer server, TerrariaUs
     {
         return await Server.PrivateMsg(UserName, msg, color);
     }
+
+    public override string ToPreviewString() => $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] [ServerCommand({User.Id})({UserName})] [{CommandPrefix}{Name}] [Parameters]: {Parameters.JoinToString(",")}";
+
+    public override string ToPerviewErrorString(Exception e) => $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] [ServerCommand({User.Id})({UserName})] [{CommandPrefix}{Name}] [ErrorText]: {e}";
+
+    public override string ToSkippingString() => $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] [ServerCommand({User.Id})({UserName})] [试图越级使用命令]: {CommandPrefix}{Name}";
 }

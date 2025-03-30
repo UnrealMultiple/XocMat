@@ -9,6 +9,4 @@ public class GroupMessageForwardArgs : System.EventArgs
     public string Context { get; init; } = string.Empty;
 
     public bool Handler { get; set; }
-
-
 }

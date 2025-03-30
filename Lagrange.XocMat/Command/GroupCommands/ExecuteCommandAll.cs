@@ -24,7 +24,7 @@ public class ExecuteCommandAll : Command
         foreach (Terraria.TerrariaServer server in XocMatSetting.Instance.Servers)
         {
             string cmd = "/" + string.Join(" ", args.Parameters);
-            Internal.Socket.Action.Response.ServerCommand api = await server.Command(cmd);
+            Terraria.Protocol.Action.Response.ServerCommand api = await server.Command(cmd);
             sb.AppendLine($"[{server.Name}]命令执行结果:");
             sb.AppendLine(api.Status ? string.Join("\n", api.Params) : "无法连接到服务器！");
         }

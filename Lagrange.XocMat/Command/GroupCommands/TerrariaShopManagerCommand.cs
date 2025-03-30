@@ -3,6 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Internal.Terraria;
+using Lagrange.XocMat.Terraria.Protocol.Internet;
 using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Logging;
 
@@ -35,7 +36,7 @@ public class TerrariaShopManagerCommand : Command
                 await args.Event.Reply("请输入一个正确数量", true);
                 return;
             }
-            Internal.Socket.Internet.Item? item = SystemHelper.GetItemById(id);
+            Item? item = SystemHelper.GetItemById(id);
             if (item != null)
             {
                 TerrariaShop.Instance.TrShop.Add(new Shop(item.Name, id, cost, num));
@@ -67,8 +68,8 @@ public class TerrariaShopManagerCommand : Command
         else
         {
             await args.Event.Reply($"语法错误,正确语法:\n" +
-                $"{args.CommamdPrefix}{args.Name} add [物品id] [价格] [数量]\n" +
-                $"{args.CommamdPrefix}{args.Name} del [商品序号]");
+                $"{args.CommandPrefix}{args.Name} add [物品id] [价格] [数量]\n" +
+                $"{args.CommandPrefix}{args.Name} del [商品序号]");
         }
     }
 }

@@ -8,7 +8,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Extensions;
-using Lagrange.XocMat.Internal.Socket.PlayerMessage;
+using Lagrange.XocMat.Terraria.Protocol.PlayerMessage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -145,23 +145,23 @@ public class CommandManager
         GroupCommandArgs commandArgs = new(bot, comm.Name, args, comm.Prefix, comm.CmdParams, comm.CommandLine, comm.Account);
         if (comm.Command.Permissions.Length == 0 || comm.Command.Permissions.Any(comm.Account.HasPermission))
         {
-            if (!await OperatHandler.GroupCommand(commandArgs))
+            if (!await OperatHandler.Command(commandArgs))
             {
                 try
                 {
                     var log = XocMatApp.Instance.Services.GetRequiredService(typeof(ILogger<>).MakeGenericType(comm.Command.GetType())) as ILogger ?? Logger;
                     await comm.Command.InvokeAsync(commandArgs, log);
-                    Logger.LogInformation($"Group Command:{args.Chain.GroupUin} {args.Chain.GroupMemberInfo!.MemberName}({args.Chain.GroupMemberInfo!.Uin}) 使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Cyan);
+                    Logger.LogInformation("{Logger}", commandArgs.ToPreviewString());
                 }
                 catch (Exception e)
                 {
-                    await args.Reply("命令执行失败，请查看日志",true); 
-                    Logger.LogError(e, $"Group Command:{args.Chain.GroupUin} {args.Chain.GroupMemberInfo!.MemberName}({args.Chain.GroupMemberInfo!.Uin}) 使用命令: {comm.Prefix}{comm.Name} 时发生错误");
+                    await args.Reply("命令执行失败，请查看日志", true);
+                    Logger.LogError("{Error}", commandArgs.ToPerviewErrorString(e));
                 }
             }
             return;
         }
-        Logger.LogInformation($"Group Command: {args.Chain.GroupUin} {args.Chain.GroupMemberInfo!.MemberName}({args.Chain.GroupMemberInfo.Uin}) 试图使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Yellow);
+        Logger.LogInformation("{Skipping}", commandArgs.ToSkippingString());
         await args.Reply("你无权使用此命令！");
     }
 
@@ -173,23 +173,23 @@ public class CommandManager
         FriendCommandArgs commandArgs = new FriendCommandArgs(bot, comm.Name, args, comm.Prefix, comm.CmdParams, comm.CommandLine, comm.Account);
         if (comm.Command.Permissions.Any(comm.Account.HasPermission))
         {
-            if (!await OperatHandler.FriendCommand(commandArgs))
+            if (!await OperatHandler.Command(commandArgs))
             {
                 try
                 {
                     var log = XocMatApp.Instance.Services.GetRequiredService(typeof(ILogger<>).MakeGenericType(comm.Command.GetType())) as ILogger ?? Logger;
                     await comm.Command.InvokeAsync(commandArgs, log);
-                    Logger.LogInformation($"Friend Command: {args.Chain.FriendInfo!.Nickname}({args.Chain.FriendUin}) 使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Cyan);
+                    Logger.LogInformation("{Logger}", commandArgs.ToPreviewString());
                 }
                 catch(Exception e)
                 {
                     await args.Reply("命令执行失败，请查看日志", true);
-                    Logger.LogError(e, $"Friend Command: {args.Chain.FriendInfo!.Nickname}({args.Chain.FriendUin}) 使用命令: {comm.Prefix}{comm.Name} 时发生错误");
+                    Logger.LogInformation("{Error}", commandArgs.ToPerviewErrorString(e));
                 }
             }
             return;
         }
-        Logger.LogInformation($"Friend Command: {args.Chain.FriendInfo!.Nickname}({args.Chain.FriendUin}) 试图使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Yellow);
+        Logger.LogInformation("{Skipping}", commandArgs.ToSkippingString());
         await args.Reply("你无权使用此命令！");
     }
 
@@ -208,23 +208,23 @@ public class CommandManager
 
         if (comm.Command.Permissions.Any(comm.Account.HasPermission))
         {
-            if (!await OperatHandler.ServerUserCommand(commandArgs))
+            if (!await OperatHandler.Command(commandArgs))
             {
                 try
                 {
                     var log = XocMatApp.Instance.Services.GetRequiredService(typeof(ILogger<>).MakeGenericType(comm.Command.GetType())) as ILogger ?? Logger;
                     await comm.Command.InvokeAsync(commandArgs, log);
-                    Logger.LogInformation($"Server Command:{user.Name} ({user.Id}) 使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Cyan);
+                    Logger.LogInformation("{Logger}", commandArgs.ToPreviewString());
                 }
                 catch(Exception e)
                 {
                     await server.PrivateMsg(args.Name, "命令执行失败，请查看日志", Color.GreenYellow);
-                    Logger.LogError(e, $"Server Command:{user.Name} ({user.Id}) 使用命令: {comm.Prefix}{comm.Name} 时发生错误");
+                    Logger.LogInformation("{Error}", commandArgs.ToPerviewErrorString(e));
                 }
             }
             return;
         }
-        Logger.LogInformation($"Server Command: {user.Name}  ( {user.Id}) 试图使用命令: {comm.Prefix}{comm.Name}", ConsoleColor.Yellow);
+        Logger.LogInformation("{Skipping}", commandArgs.ToSkippingString());
         await server.PrivateMsg(args.Name, "你无权使用此命令！", Color.DarkRed);
     }
 

@@ -1,13 +1,18 @@
-﻿using Lagrange.XocMat.Internal.Socket;
+﻿using Lagrange.XocMat.Terraria.Protocol;
 
 namespace Lagrange.XocMat.EventArgs.Sockets;
 
 public class ServerMsgArgs
 {
-    public required BaseMessage BaseMessage { get; set; }
+    public BaseMessage BaseMessage { get; set; }
 
-    public required MemoryStream Stream { get; set; }
+    public string Identity { get; set; }
 
-    public required string id { get; set; }
+    public ServerMsgArgs(BaseMessage baseMessage, string identity)
+    {
+        BaseMessage = baseMessage;
+        Identity = identity;
+        if (baseMessage.TerrariaServer != null) baseMessage.TerrariaServer.ConnectIdentity = identity;
+    }
 
 }

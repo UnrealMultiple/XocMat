@@ -27,7 +27,7 @@ public class ChangeServer : Command
         }
         else
         {
-            await args.Event.Reply($"语法错误,正确语法:\n{args.CommamdPrefix}{args.Name} [服务器名称]");
+            await args.Event.Reply($"语法错误,正确语法:\n{args.CommandPrefix}{args.Name} [服务器名称]");
         }
     }
 }

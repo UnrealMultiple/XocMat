@@ -23,7 +23,7 @@ public class AccountManagerCommand : Command
                     MaxLinesPerPage = 6,
                     NothingToDisplayString = "当前没有账户",
                     HeaderFormat = "账户列表 ({0}/{1})：",
-                    FooterFormat = $"输入 {args.CommamdPrefix}account list {{0}} 查看更多"
+                    FooterFormat = $"输入 {args.CommandPrefix}account list {{0}} 查看更多"
                 });
             }
         }
@@ -138,13 +138,13 @@ public class AccountManagerCommand : Command
         {
             await args.MessageBuilder
                 .Text("语法错误，正确的语法:\n")
-                .Text($"{args.CommamdPrefix}account add <组> at\n")
-                .Text($"{args.CommamdPrefix}account del <组> at\n")
-                .Text($"{args.CommamdPrefix}account add <QQ> <组>\n")
-                .Text($"{args.CommamdPrefix}account del <QQ> <组>\n")
-                .Text($"{args.CommamdPrefix}account group <组> at\n")
-                .Text($"{args.CommamdPrefix}account group <QQ> <组>\n")
-                .Text($"{args.CommamdPrefix}account list")
+                .Text($"{args.CommandPrefix}account add <组> at\n")
+                .Text($"{args.CommandPrefix}account del <组> at\n")
+                .Text($"{args.CommandPrefix}account add <QQ> <组>\n")
+                .Text($"{args.CommandPrefix}account del <QQ> <组>\n")
+                .Text($"{args.CommandPrefix}account group <组> at\n")
+                .Text($"{args.CommandPrefix}account group <QQ> <组>\n")
+                .Text($"{args.CommandPrefix}account list")
                 .Reply();
         }
     }

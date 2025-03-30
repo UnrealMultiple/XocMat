@@ -35,7 +35,7 @@ public class ShopBuy : Command
                 Currency? curr = Currency.Query(args.User.Id);
                 if (curr != null && curr.Num >= shop.Price)
                 {
-                    Internal.Socket.Action.Response.ServerCommand res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
+                    Terraria.Protocol.Action.Response.ServerCommand res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
                     if (res.Status)
                     {
                         Currency.Del(args.User.Id, shop.Price);
@@ -63,7 +63,7 @@ public class ShopBuy : Command
                 Currency? curr = Currency.Query(args.User.Id);
                 if (curr != null && curr.Num >= shop.Price)
                 {
-                    Internal.Socket.Action.Response.ServerCommand res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
+                    Terraria.Protocol.Action.Response.ServerCommand res = await args.Server.Command($"/g {shop.ID} {args.UserName} {shop.Num}");
                     if (res.Status)
                     {
                         Currency.Del(args.User.Id, shop.Price);

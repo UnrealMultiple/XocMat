@@ -4,6 +4,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Logging;
 
@@ -30,7 +31,7 @@ public class ResetPassword : Command
                     {
                         string pwd = Guid.NewGuid().ToString()[..8];
                         sb.Append($"人物 {u.Name}的密码重置为: {pwd}<br>");
-                        Internal.Socket.Action.Response.BaseActionResponse res = await server.ResetPlayerPwd(u.Name, pwd);
+                        BaseActionResponse res = await server.ResetPlayerPwd(u.Name, pwd);
                         if (!res.Status)
                         {
                             await args.Event.Reply("无法连接到服务器更改密码!");

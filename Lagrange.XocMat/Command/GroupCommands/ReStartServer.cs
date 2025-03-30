@@ -3,6 +3,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -17,7 +18,7 @@ public class ReStartServer : Command
     {
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
-            Internal.Socket.Action.Response.BaseActionResponse api = await server.ReStartServer(args.CommamdLine);
+            BaseActionResponse api = await server.ReStartServer(args.CommamdLine);
             MessageBuilder build = MessageBuilder.Group(args.GroupUin);
             if (api.Status)
             {

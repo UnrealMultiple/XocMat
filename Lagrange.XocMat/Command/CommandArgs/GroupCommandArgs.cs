@@ -3,6 +3,7 @@ using Lagrange.Core.Common.Entity;
 using Lagrange.Core.Event.EventArg;
 using Lagrange.Core.Message;
 using Lagrange.XocMat.DB.Manager;
+using Lagrange.XocMat.Extensions;
 
 namespace Lagrange.XocMat.Command.CommandArgs;
 
@@ -33,4 +34,10 @@ public class GroupCommandArgs : BaseCommandArgs
     public string MemberCard => Event.Chain.GroupMemberInfo!.MemberCard ?? "";
 
     public string MemberSpecialTitle => Event.Chain.GroupMemberInfo!.SpecialTitle ?? "";
+
+    public override string ToPreviewString() => $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] [GroupCommand({GroupUin})({MemberUin})] [{CommandPrefix}{Name}] [Parameters]: {Parameters.JoinToString(",")}";
+
+    public override string ToPerviewErrorString(Exception e) => $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] [GroupCommand({GroupUin})({MemberUin})] [{CommandPrefix}{Name}] [ErrorText]: {e}";
+
+    public override string ToSkippingString() => $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] [GroupCommand({GroupUin})({MemberUin})] [试图越级使用命令]: {CommandPrefix}{Name}";
 }

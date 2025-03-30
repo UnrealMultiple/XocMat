@@ -2,6 +2,7 @@
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
@@ -27,7 +28,7 @@ public class ServerList : Command
             .SetMemberUin(args.MemberUin);
         foreach (Terraria.TerrariaServer? server in groupServers)
         {
-            Internal.Socket.Action.Response.ServerStatus status = await server.ServerStatus();
+            ServerStatus status = await server.ServerStatus();
             tableBuilder.AddRow(server.Name, server.IP, server.NatProt.ToString(), server.Version, server.Describe,
                 !status.Status ? "无法连接" : $"已运行:{status.RunTime:dd\\.hh\\:mm\\:ss}",
                 !status.Status ? "无法获取" : status.WorldName,

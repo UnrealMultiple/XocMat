@@ -3,6 +3,7 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.EventArgs;
+using Lagrange.XocMat.Extensions;
 
 namespace Lagrange.XocMat.Event;
 
@@ -12,19 +13,19 @@ public static class OperatHandler
 
     public static event EventCallBack<PermissionEventArgs, UserPermissionType>? OnUserPermission;
 
+    public static event EventCallBack<BaseCommandArgs, ValueTask>? OnCommand;
+
     public static event EventCallBack<GroupCommandArgs, ValueTask>? OnGroupCommand;
 
     public static event EventCallBack<FriendCommandArgs, ValueTask>? OnFriendCommand;
 
-    public static event EventCallBack<TempCommandArgs, ValueTask>? OnTempCommand;
+    public static event EventCallBack<ServerCommandArgs, ValueTask>? OnServerCommand;
 
     public static event EventCallBack<ReloadEventArgs, ValueTask>? OnReload;
 
     public static event EventCallBack<GroupMessageForwardArgs, ValueTask>? OnGroupMessageForward;
 
-    public static event EventCallBack<ServerCommandArgs, ValueTask>? OnServerCommand;
-
-    public static UserPermissionType UserPermission(Account account, string prem)
+    internal static UserPermissionType UserPermission(Account account, string prem)
     {
         if (account.UserId == XocMatSetting.Instance.OwnerId)
             return UserPermissionType.Granted;
@@ -34,7 +35,7 @@ public static class OperatHandler
         return OnUserPermission(args);
     }
 
-    public static async ValueTask<bool> MessageForward(GroupMessageForwardArgs args)
+    internal static async ValueTask<bool> MessageForward(GroupMessageForwardArgs args)
     {
         if (OnGroupMessageForward == null)
             return false;
@@ -42,7 +43,7 @@ public static class OperatHandler
         return args.Handler;
     }
 
-    public static async ValueTask<bool> GroupCommand(GroupCommandArgs args)
+    private static async ValueTask<bool> GroupCommand(GroupCommandArgs args)
     {
         if (OnGroupCommand == null)
             return false;
@@ -50,7 +51,7 @@ public static class OperatHandler
         return args.Handler;
     }
 
-    public static async ValueTask<bool> FriendCommand(FriendCommandArgs args)
+    private static async ValueTask<bool> FriendCommand(FriendCommandArgs args)
     {
         if (OnFriendCommand == null)
             return false;
@@ -58,21 +59,26 @@ public static class OperatHandler
         return args.Handler;
     }
 
-    public static async ValueTask<bool> TempCommand(TempCommandArgs args)
+    internal static async ValueTask<bool> Command<T>(T args) where T : BaseCommandArgs
     {
-        if (OnTempCommand == null)
-            return false;
-        await OnTempCommand(args);
-        return args.Handler;
+        if (OnCommand != null) await OnCommand(args);
+        return args switch
+        {
+            GroupCommandArgs group => await GroupCommand(group),
+            FriendCommandArgs friend => await FriendCommand(friend),
+            ServerCommandArgs server => await ServerUserCommand(server),
+            _ => args.Handler
+        };
     }
 
-    public static async ValueTask Reload(ReloadEventArgs args)
+
+    internal static async ValueTask Reload(ReloadEventArgs args)
     {
         if (OnReload != null)
             await OnReload(args);
     }
 
-    internal static async ValueTask<bool> ServerUserCommand(ServerCommandArgs args)
+    private static async ValueTask<bool> ServerUserCommand(ServerCommandArgs args)
     {
         if (OnServerCommand == null)
             return false;

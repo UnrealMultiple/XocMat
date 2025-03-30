@@ -13,28 +13,10 @@ public class XocMatSetting : JsonConfigBase<XocMatSetting>
     [JsonProperty("权限所有者")]
     public long OwnerId { get; set; } = 523321293;
 
-    [JsonProperty("数据库类型")]
-    public string DbType { get; set; } = "sqlite";
-
     [JsonProperty("Sqlite路径")]
     public string DbPath { get; set; } = "Lagrange.XocMat.sqlite";
 
-    [JsonProperty("数据库地址")]
-    public string DbHost { get; init; } = "127.0.0.1";
-
-    [JsonProperty("数据库端口")]
-    public int DbPort { get; init; } = 3306;
-
-    [JsonProperty("数据库名称")]
-    public string DbName { get; init; } = "Mirai";
-
-    [JsonProperty("数据库用户名")]
-    public string DbUserName { get; init; } = "Mirai";
-
-    [JsonProperty("数据库密码")]
-    public string DbPassword { get; init; } = "";
-
-    [JsonProperty("Bot用户默认权限组")]
+    [JsonProperty("用户默认权限组")]
     public string DefaultPermGroup { get; init; } = "default";
 
     [JsonProperty("邮箱STMP地址")]
@@ -46,7 +28,7 @@ public class XocMatSetting : JsonConfigBase<XocMatSetting>
     [JsonProperty("STMP授权码")]
     public string SenderPwd { get; init; } = "";
 
-    [JsonProperty("TShockSocket通信端口")]
+    [JsonProperty("通信端口")]
     public int SocketProt { get; init; } = 6000;
 
     [JsonProperty("获得货币最大数")]

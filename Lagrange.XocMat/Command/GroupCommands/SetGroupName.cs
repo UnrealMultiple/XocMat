@@ -26,7 +26,7 @@ public class SetGroupName : Command
         }
         else
         {
-            await args.Event.Reply($"语法错误,正确语法:\n{args.CommamdPrefix}设置群名 [名称]");
+            await args.Event.Reply($"语法错误,正确语法:\n{args.CommandPrefix}设置群名 [名称]");
         }
     }
 }

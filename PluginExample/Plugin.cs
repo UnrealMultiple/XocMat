@@ -14,7 +14,7 @@ public class Plugin(ILogger logger, BotContext bot) : XocMatPlugin(logger, bot)
         BotContext.Invoker.OnGroupMessageReceived += Invoker_OnGroupMessageReceived;
 
         //订阅指令事件
-        Lagrange.XocMat.Event.OperatHandler.OnGroupCommand += OperatHandler_OnGroupCommand;
+        Lagrange.XocMat.Event.OperatHandler.OnCommand += OperatHandler_OnGroupCommand;
     }
 
     //释放资源
@@ -26,11 +26,11 @@ public class Plugin(ILogger logger, BotContext bot) : XocMatPlugin(logger, bot)
         Lagrange.XocMat.Event.OperatHandler.OnGroupCommand -= OperatHandler_OnGroupCommand;
     }
 
-    private async ValueTask OperatHandler_OnGroupCommand(Lagrange.XocMat.Command.CommandArgs.GroupCommandArgs args)
+    private async ValueTask OperatHandler_OnGroupCommand(Lagrange.XocMat.Command.CommandArgs.BaseCommandArgs args)
     {
         if(ExampleConfig.Instance.DisabledCommands.Contains(args.Name))
         {
-            await args.Event.Reply("该指令已经被拦截。", true);
+            //await args.Event.Reply("该指令已经被拦截。", true);
             args.Handler = true;
         }
     }

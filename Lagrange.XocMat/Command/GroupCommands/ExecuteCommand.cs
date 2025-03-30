@@ -22,7 +22,7 @@ public class ExecuteCommand : Command
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
             string cmd = "/" + string.Join(" ", args.Parameters);
-            Internal.Socket.Action.Response.ServerCommand api = await server.Command(cmd);
+            Terraria.Protocol.Action.Response.ServerCommand api = await server.Command(cmd);
             Core.Message.MessageBuilder body = args.MessageBuilder;
             if (api.Status)
             {

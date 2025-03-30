@@ -4,6 +4,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Internet;
 using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Logging;
 
@@ -56,7 +57,7 @@ public class TerrariaPrizeManagerCommand : Command
                 await args.Event.Reply("请输入一个正确概率", true);
                 return;
             }
-            Internal.Socket.Internet.Item? item = SystemHelper.GetItemById(id);
+            Item? item = SystemHelper.GetItemById(id);
             if (item == null)
             {
                 await args.Event.Reply("没有找到此物品", true);
@@ -86,8 +87,8 @@ public class TerrariaPrizeManagerCommand : Command
         else
         {
             await args.Event.Reply($"语法错误,正确语法:\n" +
-                $"{args.CommamdPrefix}{args.Name} add [物品id] [最大数] [最小数] [概率]\n" +
-                $"{args.CommamdPrefix}{args.Name} del [奖品序号]");
+                $"{args.CommandPrefix}{args.Name} add [物品id] [最大数] [最小数] [概率]\n" +
+                $"{args.CommandPrefix}{args.Name} del [奖品序号]");
         }
     }
 }

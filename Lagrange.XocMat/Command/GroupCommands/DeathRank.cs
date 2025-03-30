@@ -4,9 +4,9 @@ using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
-using MySqlX.XDevAPI.Common;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 
@@ -20,7 +20,7 @@ public class DeathRank : Command
     {
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
-            Internal.Socket.Action.Response.DeadRank api = await server.DeadRank();
+            DeadRank api = await server.DeadRank();
             Core.Message.MessageBuilder body = args.MessageBuilder;
             if (api.Status)
             {

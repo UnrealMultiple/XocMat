@@ -77,11 +77,11 @@ public class GroupManagerCommand : Command
         {
             await args.MessageBuilder
                 .Text("语法错误，正确语法:\n")
-                .Text($"{args.CommamdPrefix}group add <组>\n")
-                .Text($"{args.CommamdPrefix}group del <组>\n")
-                .Text($"{args.CommamdPrefix}group addperm <组> <权限>\n")
-                .Text($"{args.CommamdPrefix}group delperm <组> <权限>\n")
-                .Text($"{args.CommamdPrefix}group parent <组> <父组>")
+                .Text($"{args.CommandPrefix}group add <组>\n")
+                .Text($"{args.CommandPrefix}group del <组>\n")
+                .Text($"{args.CommandPrefix}group addperm <组> <权限>\n")
+                .Text($"{args.CommandPrefix}group delperm <组> <权限>\n")
+                .Text($"{args.CommandPrefix}group parent <组> <父组>")
                 .Reply();
         }
     }

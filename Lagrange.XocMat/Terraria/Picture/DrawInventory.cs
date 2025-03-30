@@ -1,5 +1,4 @@
-﻿
-using Lagrange.XocMat.Internal.Socket.Internet;
+﻿using Lagrange.XocMat.Terraria.Protocol.Internet;
 using Lagrange.XocMat.Utility.Images;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;

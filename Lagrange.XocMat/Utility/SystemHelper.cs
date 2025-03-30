@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json.Nodes;
 using Lagrange.XocMat.Extensions;
+using Lagrange.XocMat.Terraria.Protocol.Internet;
 using Newtonsoft.Json.Linq;
 
 namespace Lagrange.XocMat.Utility;
@@ -150,7 +151,7 @@ public class SystemHelper
         }
     }
 
-    public static Internal.Socket.Internet.Item? GetItemById(int id)
+    public static Item? GetItemById(int id)
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
         string file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
@@ -172,9 +173,9 @@ public class SystemHelper
         return null;
     }
 
-    public static List<Internal.Socket.Internet.Item> GetItemByName(string name)
+    public static List<Item> GetItemByName(string name)
     {
-        List<Internal.Socket.Internet.Item> list = [];
+        List<Item> list = [];
         Assembly assembly = Assembly.GetExecutingAssembly();
         string file = "Lagrange.XocMat.Resources.Json.TerrariaID.json";
         Stream stream = assembly.GetManifestResourceStream(file)!;
@@ -195,12 +196,12 @@ public class SystemHelper
         return list;
     }
 
-    public static List<Internal.Socket.Internet.Item> GetItemByIdOrName(string ji)
+    public static List<Item> GetItemByIdOrName(string ji)
     {
-        List<Internal.Socket.Internet.Item> list = [];
+        List<Item> list = [];
         if (int.TryParse(ji, out int i))
         {
-            Internal.Socket.Internet.Item? item = GetItemById(i);
+            Item? item = GetItemById(i);
             if (item != null)
                 list.Add(item);
         }

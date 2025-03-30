@@ -23,7 +23,7 @@ public class LoginService(IConfiguration configuration, ILogger<LoginService> lo
 
     public async Task StartAsync(CancellationToken token)
     {
-        _logger.LogInformation("Protocol Version: {}", _lagrange.AppInfo.CurrentVersion);
+        _logger.LogInformation("Protocol Version: {Version}", _lagrange.AppInfo.CurrentVersion);
 
         _lagrange.Invoker.OnBotLogEvent += BotLogHandler;
 
@@ -52,7 +52,7 @@ public class LoginService(IConfiguration configuration, ILogger<LoginService> lo
         string keystoreJson = JsonSerializer.Serialize(_lagrange.UpdateKeystore());
         File.WriteAllText(configuration["ConfigPath:Keystore"] ?? "keystore.json", keystoreJson);
 
-        _logger.LogInformation("Bot Uin: {}", _lagrange.BotUin);
+        _logger.LogInformation("Bot Uin: {Uin}", _lagrange.BotUin);
 
     }
 
@@ -66,7 +66,7 @@ public class LoginService(IConfiguration configuration, ILogger<LoginService> lo
             LagrangeLogLevel.Warning => MicrosoftLogLevel.Warning,
             LagrangeLogLevel.Fatal => MicrosoftLogLevel.Error,
             _ => MicrosoftLogLevel.Error
-        }, "{}", e.ToString());
+        }, "{Logging}", e.ToString());
     }
 
     public Task StopAsync(CancellationToken token)

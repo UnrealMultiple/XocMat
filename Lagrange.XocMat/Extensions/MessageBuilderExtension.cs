@@ -1,27 +1,20 @@
 ﻿using Lagrange.Core.Message;
 using Lagrange.Core.Message.Entity;
-using Lagrange.XocMat.Utility;
 
 namespace Lagrange.XocMat.Extensions;
 
 public static class MessageBuilderExtension
 {
-    public static MessageBuilder MarkdownImage(this MessageBuilder builder, string content)
+    public static MessageBuilder MultiMsg(this MessageBuilder builder, MessageChain chains)
     {
-        try
-        {
-            byte[] buffer = MarkdownHelper.ToImage(content).Result;
-            return builder.Image(buffer);
-        }
-        catch (Exception ex)
-        {
-            return builder.Text(ex.Message);
-        }
+        var m = new MultiMsgEntity([chains]);
+        builder.Add(m);
+        return builder;
     }
 
-    public static MessageBuilder MultiMsg(this MessageBuilder builder, List<MessageChain> chains)
+    public static MessageBuilder MultiMsg(this MessageBuilder builder, params MessageChain[] chains)
     {
-        MultiMsgEntity m = new MultiMsgEntity(chains);
+        var m = new MultiMsgEntity(chains.ToList());
         builder.Add(m);
         return builder;
     }

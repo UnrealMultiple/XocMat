@@ -3,6 +3,7 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
@@ -18,7 +19,7 @@ public class OnlineRank : Command
     {
         if (UserLocation.Instance.TryGetServer(args.MemberUin, args.GroupUin, out Terraria.TerrariaServer? server) && server != null)
         {
-            Internal.Socket.Action.Response.PlayerOnlineRank api = await server.OnlineRank();
+            PlayerOnlineRank api = await server.OnlineRank();
             if (api.Status)
             {
                 if (api.OnlineRank.Count == 0)

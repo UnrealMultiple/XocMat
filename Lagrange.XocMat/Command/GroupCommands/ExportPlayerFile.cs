@@ -5,6 +5,8 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
+using Lagrange.XocMat.Terraria.Protocol.Internet;
 using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
@@ -25,7 +27,7 @@ public class ExportPlayerFile : Command
                 List<string> names = [];
                 if (args.Parameters[0] != "all")
                     names.Add(args.Parameters[0]);
-                Internal.Socket.Action.Response.ExportPlayer files = await server.ExportPlayer(names);
+                ExportPlayer files = await server.ExportPlayer(names);
                 if (!files.PlayerFiles.Any(x => x.Active))
                 {
                     await args.Event.Reply("没有可以导出的存档!", true);
@@ -35,7 +37,7 @@ public class ExportPlayerFile : Command
                 string zipName = $"[{server.Name}]人物存档[{DateTime.Now:yyyy_MM_dd_HH_mm_ss}].zip";
                 using MemoryStream ms = new MemoryStream();
                 using ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create);
-                foreach (Internal.Socket.Internet.PlayerFile file in files.PlayerFiles)
+                foreach (PlayerFile file in files.PlayerFiles)
                 {
                     if (!file.Active)
                     {
@@ -58,7 +60,7 @@ public class ExportPlayerFile : Command
             }
             else
             {
-                await args.Event.Reply($"语法错误 正确语法:\n{args.CommamdPrefix}{args.Name} [名称 or all]", true);
+                await args.Event.Reply($"语法错误 正确语法:\n{args.CommandPrefix}{args.Name} [名称 or all]", true);
             }
         }
         else

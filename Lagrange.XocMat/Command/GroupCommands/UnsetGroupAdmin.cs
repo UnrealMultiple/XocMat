@@ -29,7 +29,7 @@ public class UnsetGroupAdmin : Command
         }
         else
         {
-            await args.Event.Reply($"语法错误,正确语法:\n{args.CommamdPrefix}{args.Name} [AT]");
+            await args.Event.Reply($"语法错误,正确语法:\n{args.CommandPrefix}{args.Name} [AT]");
         }
     }
 }

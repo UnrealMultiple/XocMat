@@ -4,6 +4,8 @@ using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
+using Lagrange.XocMat.Terraria.Protocol.Action.Response;
+using Lagrange.XocMat.Terraria.Protocol.Internet;
 using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 
@@ -27,8 +29,8 @@ public class TerrariaUserInfo : Command
         if (args.Parameters.Count == 1)
         {
             string userName = args.Parameters[0];
-            Internal.Socket.Action.Response.QueryAccount info = await server.QueryAccount(userName);
-            Internal.Socket.Internet.Account? account = info.Accounts.Find(x => x.Name == userName);
+            QueryAccount info = await server.QueryAccount(userName);
+            Account? account = info.Accounts.Find(x => x.Name == userName);
             if (!info.Status || account == null)
             {
                 await args.Event.Reply(info.Message, true);
@@ -47,7 +49,7 @@ public class TerrariaUserInfo : Command
         }
         else
         {
-            await args.Event.Reply($"语法错误，正确语法:\n{args.CommamdPrefix}{args.Name} [名称]");
+            await args.Event.Reply($"语法错误，正确语法:\n{args.CommandPrefix}{args.Name} [名称]");
             return;
         }
     }
