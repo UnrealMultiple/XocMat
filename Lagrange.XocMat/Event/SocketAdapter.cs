@@ -204,7 +204,7 @@ public class SocketAdapter
         }
         catch (Exception ex)
         {
-            Logger.LogError("[{Time}] [Protocol Deserialize Error]: 协议解析错误", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            Logger.LogError("[{Time}] [Protocol Deserialize Error]: 协议解析错误 {Error}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), ex);
         }
 
     }
