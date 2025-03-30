@@ -23,7 +23,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
     {
         _listener.Prefixes.Add($"http://*:{XocMatSetting.Instance.SocketProt}/");
         _listener.Start();
-        logger.LogInformation("Websocket Start prot:{Prot}", XocMatSetting.Instance.SocketProt);
+        logger.LogInformation("[{Time}][WebsockServer] Start Server Prot:{Prot}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), XocMatSetting.Instance.SocketProt);
         try
         {
             while (true)
@@ -34,7 +34,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         }
         catch (Exception e) when (e is not OperationCanceledException)
         {
-            logger.LogError("WebSocket Error {Message}", e.Message);
+            logger.LogError("[{Time}] [WebsockServer] Server Start Error: {Message}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), e.Message);
         }
     }
 
@@ -143,7 +143,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         }
         catch (Exception e) when (e is not OperationCanceledException)
         {
-            logger.LogError("WebSocket Server Close Error {Message}", e.Message);
+            logger.LogError("[{Time}] [WebsockServer] Server Close Connect Error {Message}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), e.Message);
         }
         finally
         {

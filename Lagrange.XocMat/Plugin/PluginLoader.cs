@@ -37,7 +37,7 @@ public class PluginLoader
             {
                 MethodInfo method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class");
                 object? name = method.Invoke(null, []);
-                Logger.LogInformation($"config registered: {name}");
+                Logger.LogInformation("[{Time}] [PluginLoader] Config Registered Successfully: {name}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), name);
             }
         }
         DirectoryInfo directoryInfo = new(PATH);

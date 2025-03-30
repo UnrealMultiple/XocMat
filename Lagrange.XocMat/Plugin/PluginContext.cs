@@ -48,7 +48,7 @@ public class PluginContext(string name) : AssemblyLoadContext(name, true)
         Plugins.OrderBy(p => p.Plugin.Order)
             .ForEach(p =>
             {
-                logger.LogInformation($"Plugin {p.Plugin.Name} V{p.Plugin.Version} by({p.Plugin.Author}) Initiate.");
+                logger.LogInformation("[{Time}] [PluginLoader] Plugin {PluginName} V{PluginVersion} by({PluginAuthor}) Initiate.", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), p.Plugin.Name, p.Plugin.Version, p.Plugin.Author);
                 p.Initialize();
             });
     }

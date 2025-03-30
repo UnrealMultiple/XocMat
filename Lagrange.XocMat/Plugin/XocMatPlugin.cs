@@ -1,4 +1,5 @@
-﻿using Lagrange.Core;
+﻿using System.Xml.Linq;
+using Lagrange.Core;
 using Lagrange.XocMat.Attributes;
 using Microsoft.Extensions.Logging;
 
@@ -65,11 +66,11 @@ public abstract class XocMatPlugin(ILogger logger, BotContext bot) : IDisposable
             {
                 var method = type.BaseType!.GetMethod("Load") ?? throw new MissingMethodException($"method 'Load()' is missing inside the lazy loaded config class '{Name}'");
                 var name = method.Invoke(null, Array.Empty<object>());
-                Logger.LogInformation($"[{Name}] config registered: {name}");
+                Logger.LogInformation("[{Time}] [PluginLoader] Config Registered Successfully: {name}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), name);
             }
 
         }
-        XocMatAPI.CommandManager.RegisterCommand(GetType().Assembly).ForEach(c=> Logger.LogInformation($"Command {c.Alias.First()} Register Successfully!"));
+        XocMatAPI.CommandManager.RegisterCommand(GetType().Assembly).ForEach(c => Logger.LogInformation("[{Time}] [PluginLoader] Command Registered Successfully: {name}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), c.Alias.First()));
     }
 
     public void Dispose()
@@ -80,7 +81,7 @@ public abstract class XocMatPlugin(ILogger logger, BotContext bot) : IDisposable
             {
                 var method = type.BaseType!.GetMethod("UnLoad") ?? throw new MissingMethodException($"method 'UnLoad()' is missing inside the lazy loaded config class '{Name}'");
                 var name = method.Invoke(null, []);
-                Logger.LogInformation($"[{Name}] Config UnRegistered: {name}");
+                Logger.LogInformation("[{Time}] [PluginLoader] Config Unregistered Successfully: {name}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), name);
             }
         }
         XocMatAPI.CommandManager.Commands.RemoveAll(c => c.GetType().Assembly == GetType().Assembly);
