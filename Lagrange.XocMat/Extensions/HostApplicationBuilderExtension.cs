@@ -84,6 +84,7 @@ public static class HostApplicationBuilderExtension
             .AddSingleton<CommandManager>()
             .AddSingleton<PluginLoader>()
             .AddSingleton<LoggerFactory>()
+            .AddSingleton<TimingUtils>()
             .AddSingleton<MusicSigner>();
         return builder;
     }

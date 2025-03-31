@@ -1,4 +1,5 @@
 ﻿using System.Web;
+using Lagrange.Core.Common.Interface.Api;
 using Lagrange.Core.Message.Entity;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;

@@ -41,6 +41,7 @@ public class XocMatApp
         Services.GetRequiredService<PluginLoader>();
         Services.GetRequiredService<WebSocketServer>();
         Services.GetRequiredService<SocketAdapter>();
+        Services.GetRequiredService<TimingUtils>();
         _host.Run();
     }
 }
