@@ -50,7 +50,7 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
         File.WriteAllText(filepath, this.ToJson());
     }
 
-    private static ValueTask OnReload(ReloadEventArgs args)
+    protected virtual ValueTask OnReload(ReloadEventArgs args)
     {
         _instance = GetConfig();
         Save();
@@ -65,13 +65,13 @@ public abstract class JsonConfigBase<T> where T : JsonConfigBase<T>, new()
 
     public static string Load()
     {
-        OperatHandler.OnReload += OnReload;
+        OperatHandler.OnReload += Instance.OnReload;
         return Instance.Filename;
     }
 
     public static string UnLoad()
     {
-        OperatHandler.OnReload -= OnReload;
+        OperatHandler.OnReload -= Instance.OnReload;
         return Instance.Filename;
     }
 

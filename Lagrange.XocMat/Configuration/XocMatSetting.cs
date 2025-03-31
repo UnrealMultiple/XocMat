@@ -1,4 +1,6 @@
 ﻿using Lagrange.XocMat.Attributes;
+using Lagrange.XocMat.EventArgs;
+using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Terraria;
 using Newtonsoft.Json;
 
@@ -56,5 +58,15 @@ public class XocMatSetting : JsonConfigBase<XocMatSetting>
     public TerrariaServer? GetServer(string name, uint groupid)
     {
         return Servers.Find(x => x.Name == name && x.Groups.Contains(groupid));
+    }
+
+    protected override async ValueTask OnReload(ReloadEventArgs args)
+    {
+        var identitys = Servers.ToDictionary(s => s.Name, s => s.ConnectIdentity);
+        await base.OnReload(args);
+        foreach (var server in Instance.Servers)
+        {
+            server.ConnectIdentity = identitys.GetValueOrDefault(server.Name, string.Empty);
+        }
     }
 }

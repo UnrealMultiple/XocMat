@@ -46,7 +46,6 @@ public class SocketAdapter
 
     private readonly Dictionary<PostMessageType, EventCallBack<ServerMsgArgs, ValueTask>> _action;
 
-
     public CommandManager CommandManager { get; }
 
     public ILogger<SocketAdapter> Logger { get; }
