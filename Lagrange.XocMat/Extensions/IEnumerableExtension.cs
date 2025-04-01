@@ -8,7 +8,7 @@ public static class IEnumerableExtension
     {
         if (size <= 0)
             throw new ArgumentException("The size must be greater than 0!");
-        List<T> list = new List<T>(size);
+        var list = new List<T>(size);
         foreach (T? item in source)
         {
             list.Add(item);
@@ -30,5 +30,10 @@ public static class IEnumerableExtension
     public static string JoinToString<T>(this IEnumerable<T> source, string separator)
     {
         return string.Join(separator, source);
+    }
+
+    public static string JoinToString<T>(this IEnumerable<T> source, string separator, Func<T, string> func)
+    {
+        return source.Select(func).JoinToString(separator);
     }
 }

@@ -9,17 +9,17 @@ namespace Lagrange.XocMat.Net;
 public class WebSocketServer(ILogger<WebSocketServer> logger)
 {
 
-    public event Action<string>? OnConnect;
+    public event Func<string, Task>? OnConnect;
 
     public event Func<string, byte[], Task>? OnMessage;
 
-    public event Action<string>? OnClose;
+    public event Func<string, Task>? OnClose;
 
     private readonly HttpListener _listener = new();
 
     private readonly ConcurrentDictionary<string, ConnectionContext> _connections = [];
 
-    public async ValueTask Start(CancellationToken token)
+    public async Task Start(CancellationToken token)
     {
         _listener.Prefixes.Add($"http://*:{XocMatSetting.Instance.SocketProt}/");
         _listener.Start();
@@ -166,6 +166,13 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
         {
             connection.SendSemaphoreSlim.Release();
         }
+    }
+
+    public async Task StopAsync(CancellationToken token = default)
+    { 
+        var tasks = _connections.Values.Select(t => t.Tcs.Task).ToArray();
+        await Task.WhenAll(tasks);
+        _listener.Stop();
     }
 
 

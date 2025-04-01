@@ -26,8 +26,7 @@ public class CommandManager
     {
         Bot = bot;
         Logger = logger;
-        Bot.Invoker.OnGroupMessageReceived += async (bot, e) => await GroupCommandAdapter(bot, e);
-        Bot.Invoker.OnFriendMessageReceived += async (bot, e) => await FriendCommandAdapter(bot, e);
+        
 
     }
 
@@ -137,7 +136,7 @@ public class CommandManager
         return null;
     }
 
-    internal async ValueTask GroupCommandAdapter(BotContext bot, GroupMessageEvent args)
+    internal async void GroupCommandAdapter(BotContext bot, GroupMessageEvent args)
     {
         RunCommandParams? comm = Run(args.Chain.GetText(), args.Chain.GroupMemberInfo!.Uin);
         if (comm == null)
@@ -165,7 +164,7 @@ public class CommandManager
         await args.Reply("你无权使用此命令！");
     }
 
-    private async Task FriendCommandAdapter(BotContext bot, FriendMessageEvent args)
+    internal async void FriendCommandAdapter(BotContext bot, FriendMessageEvent args)
     {
         RunCommandParams? comm = Run(args.Chain.GetText(), args.Chain.FriendUin);
         if (comm == null)

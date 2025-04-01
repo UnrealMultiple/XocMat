@@ -14,7 +14,7 @@ public static class MessageBuilderExtension
 
     public static MessageBuilder MultiMsg(this MessageBuilder builder, params MessageChain[] chains)
     {
-        var m = new MultiMsgEntity(chains.ToList());
+        var m = new MultiMsgEntity([.. chains]);
         builder.Add(m);
         return builder;
     }

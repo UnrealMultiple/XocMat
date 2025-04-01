@@ -68,9 +68,8 @@ public class SocketAdapter
             { PostMessageType.Connect, ConnectHandler },
             { PostMessageType.HeartBeat, HeartBeatHandler },
         };
-        wsServer.OnMessage += Adapter;
-        bot.Invoker.OnGroupMessageReceived += GroupMessageForwardAdapter;
     }
+
 
     private async ValueTask PlayerMessageHandler(ServerMsgArgs args)
     {

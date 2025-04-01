@@ -7,14 +7,12 @@ using Lagrange.XocMat.Net;
 using Lagrange.XocMat.Plugin;
 using Lagrange.XocMat.Utility;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 
 namespace Lagrange.XocMat;
 
-public class XocMatAPI : BackgroundService
+public class XocMatAPI : IHostedService
 {
     public static BotContext BotContext { get; private set; } = null!;
 
@@ -24,20 +22,34 @@ public class XocMatAPI : BackgroundService
 
     public static string SAVE_PATH => Path.Combine(PATH, "Config");
 
-    public static SocketAdapter TerrariaMsgReceive => XocMatApp.Instance.Services.GetRequiredService<SocketAdapter>();
+    public static SocketAdapter SocketAdapter { get; private set; } = null!;
 
-    public static CommandManager CommandManager => XocMatApp.Instance.Services.GetRequiredService<CommandManager>();
+    public static CommandManager CommandManager { get; private set; } = null!;
 
-    public static WebSocketServer WsServer => XocMatApp.Instance.Services.GetRequiredService<WebSocketServer>();
+    public static WebSocketServer WsServer { get; private set; } = null!;
 
-    public static PluginLoader PluginLoader => XocMatApp.Instance.Services.GetRequiredService<PluginLoader>();
+    public static PluginLoader PluginLoader { get; private set; } = null!;
 
-    public XocMatAPI(BotContext botContext, ILogger<XocMatAPI> logger)
+    public XocMatAPI(BotContext botContext, PluginLoader pluginLoader, CommandManager cmdManager, WebSocketServer wsServer, SocketAdapter socketAdapter)
     {
         BotContext = botContext;
+        PluginLoader = pluginLoader;
+        WsServer = wsServer;
+        CommandManager = cmdManager;
+        SocketAdapter = socketAdapter;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        PluginLoader.UnLoad();
+        BotContext.Invoker.OnGroupMessageReceived -= CommandManager.GroupCommandAdapter;
+        BotContext.Invoker.OnFriendMessageReceived -= CommandManager.FriendCommandAdapter;
+        BotContext.Invoker.OnGroupMessageReceived -= SocketAdapter.GroupMessageForwardAdapter;
+        WsServer.OnMessage -= SocketAdapter.Adapter;
+        await WsServer.StopAsync(cancellationToken);
+    }
+
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         if (!Directory.Exists(SAVE_PATH)) Directory.CreateDirectory(SAVE_PATH);
         string sql = Path.Combine(PATH, XocMatSetting.Instance.DbPath);
@@ -46,6 +58,11 @@ public class XocMatAPI : BackgroundService
             Directory.CreateDirectory(path);
             DB = new SqliteConnection(string.Format("Data Source={0}", sql));
         }
-        await WsServer.Start(stoppingToken);
+        PluginLoader.Load();
+        BotContext.Invoker.OnGroupMessageReceived += CommandManager.GroupCommandAdapter;
+        BotContext.Invoker.OnFriendMessageReceived += CommandManager.FriendCommandAdapter;
+        BotContext.Invoker.OnGroupMessageReceived += SocketAdapter.GroupMessageForwardAdapter;
+        WsServer.OnMessage += SocketAdapter.Adapter;
+        await WsServer.Start(cancellationToken);
     }
 }

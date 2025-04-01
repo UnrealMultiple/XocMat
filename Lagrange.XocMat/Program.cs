@@ -35,8 +35,6 @@ internal abstract class Program
             Console.ReadLine();
         }
 
-        XocMatApp.Instance
-            .Builder()
-            .Start();
+        XocMatApp.Instance.Start();
     }
 }

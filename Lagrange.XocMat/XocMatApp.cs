@@ -20,7 +20,7 @@ public class XocMatApp
 
     public static readonly XocMatApp Instance = new();
 
-    public XocMatApp Builder()
+    public void Start()
     {
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(HostApplicationBuilder.Configuration)
@@ -29,19 +29,8 @@ public class XocMatApp
         HostApplicationBuilder.Logging.AddSerilog(Log.Logger);
         _host = HostApplicationBuilder.ConfigureLagrangeCore()
             .ConfigureOneBot()
-            .Build();
-        return this;
-    }
-
-
-    public void Start()
-    {
-        Services.GetRequiredService<MusicSigner>();
-        Services.GetRequiredService<CommandManager>();
-        Services.GetRequiredService<PluginLoader>();
-        Services.GetRequiredService<WebSocketServer>();
-        Services.GetRequiredService<SocketAdapter>();
-        Services.GetRequiredService<TimingUtils>();
+            .Build()
+            .InitializeMusicSigner();
         _host.Run();
     }
 }

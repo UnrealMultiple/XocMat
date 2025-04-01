@@ -70,7 +70,9 @@ public static class HostApplicationBuilderExtension
                 services.GetRequiredService<BotKeystore>(),
                 services.GetRequiredService<BotAppInfo>()
             ))
-            .AddHostedService<LoginService>();
+            .AddHostedService<LoginService>()
+            .AddHostedService<XocMatAPI>()
+            .AddHostedService<TimingUtils>();
 
         return builder;
     }
@@ -78,7 +80,6 @@ public static class HostApplicationBuilderExtension
     public static HostApplicationBuilder ConfigureOneBot(this HostApplicationBuilder builder)
     {
         builder.Services.AddOptions()
-            .AddHostedService<XocMatAPI>()
             .AddSingleton<WebSocketServer>()
             .AddSingleton<SocketAdapter>()
             .AddSingleton<CommandManager>()

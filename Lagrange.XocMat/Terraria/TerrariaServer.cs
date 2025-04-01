@@ -352,7 +352,7 @@ public class TerrariaServer
             using MemoryStream stream = new();
             Serializer.Serialize(stream, ApiParam);
             await XocMatAPI.WsServer.SendBytesAsync(stream.ToArray(), ConnectIdentity);
-            return await XocMatAPI.TerrariaMsgReceive.GetResponse<TResult>(ApiParam.Echo, timeout) ?? new()
+            return await XocMatAPI.SocketAdapter.GetResponse<TResult>(ApiParam.Echo, timeout) ?? new()
             {
                 Status = false,
                 ServerName = Name,

@@ -7,21 +7,26 @@ public static class MessageChainExtension
 {
     public static IEnumerable<MentionEntity> GetMention(this MessageChain chain)
     {
-        return chain.Where(c => c is MentionEntity).Select(c => (MentionEntity)c);
+        return chain.GetMsg<MentionEntity>();
     }
 
     public static IEnumerable<ImageEntity> GetImage(this MessageChain chain)
     {
-        return chain.Where(c => c is ImageEntity).Select(c => (ImageEntity)c);
+        return chain.GetMsg<ImageEntity>();
     }
 
     public static string GetText(this MessageChain chain)
     {
-        return string.Join("", chain.Where(c => c is TextEntity).Select(c => ((TextEntity)c).Text));
+        return chain.GetMsg<TextEntity>().JoinToString("", t => t.Text);
     }
 
     public static FileEntity? GetFile(this MessageChain chain)
     {
-        return (FileEntity?)chain.Where(c => c is FileEntity).FirstOrDefault();
+        return chain.GetMsg<FileEntity>().FirstOrDefault();
+    }
+
+    public static IEnumerable<T> GetMsg<T>(this MessageChain chain) where T : IMessageEntity
+    {
+        return chain.Where(c => c is T).Select(c => (T)c);
     }
 }

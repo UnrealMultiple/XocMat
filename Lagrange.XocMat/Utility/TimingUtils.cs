@@ -1,22 +1,27 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Utility;
 
-public class TimingUtils
+public class TimingUtils : IHostedService
 {
-    private Timer timer;
+    private readonly Timer Timer;
+
+    internal static PriorityQueue<Action, long> scheduled = new();
+    internal static long TimerCount { get; set; }
+
     public TimingUtils(ILogger<TimingUtils> logger)
     {
-        timer = new Timer(PostUpdate, null, 0, 1000);
+        Timer = new Timer(PostUpdate, null, 0, 1000);
         logger.LogInformation("OneBot Timer Start!");
     }
 
     private void PostUpdate(object? state)
     {
-        ++Timer;
+        ++TimerCount;
         while (scheduled.TryPeek(out var action, out var time))
         {
-            if (time > Timer)
+            if (time > TimerCount)
             {
                 break;
             }
@@ -24,9 +29,6 @@ public class TimingUtils
             scheduled.Dequeue();
         }
     }
-
-    internal static PriorityQueue<Action, long> scheduled = new();
-    public static long Timer { get; internal set; }
 
     public static void Schedule(int interval, Action action)
     {
@@ -39,8 +41,18 @@ public class TimingUtils
         Delayed(interval, Wrapper);
     }
 
-    public static void Delayed(int delay, Action action)
+    internal static void Delayed(int delay, Action action)
     {
-        scheduled.Enqueue(action, delay + Timer);
+        scheduled.Enqueue(action, delay + TimerCount);
+    }
+
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await Timer.DisposeAsync();
     }
 }
