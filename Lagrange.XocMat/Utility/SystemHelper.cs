@@ -122,35 +122,6 @@ public class SystemHelper
     }
     #endregion
 
-    public static void KillChrome()
-    {
-        foreach (Process process in Process.GetProcesses())
-        {
-            if (process.ProcessName.Contains("chrome") && CanAccessProcess(process))
-            {
-                process.Kill();
-            }
-        }
-    }
-
-    public static bool CanAccessProcess(Process process)
-    {
-        try
-        {
-            // 尝试访问进程的一个需要权限的属性
-            ProcessModuleCollection modules = process.Modules;
-            return true;
-        }
-        catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // 拒绝访问
-        {
-            return false;
-        }
-        catch // 其他异常，如进程已退出
-        {
-            return false;
-        }
-    }
-
     public static Item? GetItemById(int id)
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
