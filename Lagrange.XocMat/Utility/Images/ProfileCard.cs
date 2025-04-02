@@ -203,7 +203,7 @@ public class ProfileItemBuilder
         return this;
     }
 
-    public static ProfileCard Create() => new();
+    public static ProfileItemBuilder Create() => new();
 
     // 获取构建好的条目列表
     public byte[] Build()

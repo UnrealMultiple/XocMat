@@ -11,125 +11,23 @@ public class BankManagerCommand : Command
     public override string[] Alias => ["bank"];
     public override string HelpText => "银行管理命令";
     public override string[] Permissions => [OneBotPermissions.CurrencyAdmin, OneBotPermissions.CurrencyUse];
-    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
+
+    private static readonly Dictionary<string, Func<GroupCommandArgs, ILogger, Task>> _action = new()
     {
-        IEnumerable<Core.Message.Entity.MentionEntity> at = args.Event.Chain.GetMention();
-        if (args.Parameters.Count == 3 && args.Parameters[0].ToLower() == "add")
+        { "add", Add },
+        { "del", Del },
+        { "pay", Pay },
+    };
+
+    private static async Task Pay(GroupCommandArgs args, ILogger logger)
+    {
+        if (!VerifyParameters(args, "pay", out var uin, out var num))
         {
-            if (!args.Account.HasPermission(OneBotPermissions.CurrencyAdmin))
-            {
-                await args.Event.Reply("你没有权限执行此命令!");
-                return;
-            }
-            if (!long.TryParse(args.Parameters[1], out long qq))
-            {
-                await args.Event.Reply("错误得QQ账号，无法转换为数值!");
-                return;
-            }
-
-            if (!long.TryParse(args.Parameters[2], out long num))
-            {
-                await args.Event.Reply("错误得数量，无法转换为数值!");
-                return;
-            }
-            try
-            {
-                DB.Manager.Currency result = DB.Manager.Currency.Add(qq, num);
-                await args.Event.Reply($"成功为 {qq} 添加{num}个{XocMatSetting.Instance.Currency}!");
-            }
-            catch (Exception ex)
-            {
-                await args.Event.Reply(ex.Message);
-            }
-
+            await args.Event.Reply("语法错误，请检查参数是否有误!", true);
         }
-        else if (args.Parameters.Count == 2 && args.Parameters[0].ToLower() == "add" && at.Count() == 1)
+        else
         {
-            if (!args.Account.HasPermission(OneBotPermissions.CurrencyAdmin))
-            {
-                await args.Event.Reply("你没有权限执行此命令!");
-                return;
-            }
-            if (!long.TryParse(args.Parameters[1], out long num))
-            {
-                await args.Event.Reply("错误得数量，无法转换为数值!");
-                return;
-            }
-            try
-            {
-                DB.Manager.Currency result = DB.Manager.Currency.Add(at.First().Uin, num);
-                await args.Event.Reply($"成功为 {at.First().Name} 添加{num}个{XocMatSetting.Instance.Currency}!");
-            }
-            catch (Exception ex)
-            {
-                await args.Event.Reply(ex.Message);
-            }
-        }
-        else if (args.Parameters.Count == 3 && args.Parameters[0].ToLower() == "del")
-        {
-            if (!args.Account.HasPermission(OneBotPermissions.CurrencyAdmin))
-            {
-                await args.Event.Reply("你没有权限执行此命令!");
-                return;
-            }
-            if (!long.TryParse(args.Parameters[1], out long qq))
-            {
-                await args.Event.Reply("错误得QQ账号，无法转换为数值!");
-                return;
-            }
-
-            if (!long.TryParse(args.Parameters[2], out long num))
-            {
-                await args.Event.Reply("错误得数量，无法转换为数值!");
-                return;
-            }
-            try
-            {
-                DB.Manager.Currency? result = DB.Manager.Currency.Del(qq, num);
-                await args.Event.Reply($"成功删除 {qq} 的 {num}个{XocMatSetting.Instance.Currency}!");
-            }
-            catch (Exception ex)
-            {
-                await args.Event.Reply(ex.Message);
-            }
-
-        }
-        else if (args.Parameters.Count == 2 && args.Parameters[0].ToLower() == "del" && at.Count() == 1)
-        {
-            if (!args.Account.HasPermission(OneBotPermissions.CurrencyAdmin))
-            {
-                await args.Event.Reply("你没有权限执行此命令!");
-                return;
-            }
-            if (!long.TryParse(args.Parameters[1], out long num))
-            {
-                await args.Event.Reply("错误得数量，无法转换为数值!");
-                return;
-            }
-            try
-            {
-                DB.Manager.Currency? result = DB.Manager.Currency.Del(at.First().Uin, num);
-                await args.Event.Reply($"成功扣除 {at.First().Name} 的 {num}个{XocMatSetting.Instance.Currency}!");
-            }
-            catch (Exception ex)
-            {
-                await args.Event.Reply(ex.Message);
-            }
-        }
-        else if (args.Parameters.Count == 3 && args.Parameters[0].ToLower() == "pay")
-        {
-            if (!long.TryParse(args.Parameters[1], out long qq))
-            {
-                await args.Event.Reply("错误得QQ账号，无法转换为数值!");
-                return;
-            }
-
-            if (!long.TryParse(args.Parameters[2], out long num))
-            {
-                await args.Event.Reply("错误得数量，无法转换为数值!");
-                return;
-            }
-            DB.Manager.Currency? usercurr = DB.Manager.Currency.Query(args.MemberUin);
+            var usercurr = DB.Manager.Currency.Query(args.MemberUin);
             if (usercurr == null || usercurr.Num < num)
             {
                 await args.Event.Reply($"你没有足够的{XocMatSetting.Instance.Currency}付给他人!");
@@ -139,8 +37,8 @@ public class BankManagerCommand : Command
                 try
                 {
                     DB.Manager.Currency.Del(args.MemberUin, num);
-                    DB.Manager.Currency.Add(qq, num);
-                    await args.Event.Reply($"成功付给 {qq}  {num}个{XocMatSetting.Instance.Currency}!");
+                    DB.Manager.Currency.Add(uin, num);
+                    await args.Event.Reply($"成功付给 {uin}  {num}个{XocMatSetting.Instance.Currency}!");
                 }
                 catch (Exception ex)
                 {
@@ -148,41 +46,105 @@ public class BankManagerCommand : Command
                 }
             }
         }
-        else if (args.Parameters.Count == 2 && args.Parameters[0].ToLower() == "pay" && at.Count() == 1)
+    }
+
+    private static async Task Del(GroupCommandArgs args, ILogger logger)
+    {
+        if (!args.Account.HasPermission(OneBotPermissions.CurrencyAdmin))
         {
-            if (!long.TryParse(args.Parameters[1], out long num))
+            await args.Event.Reply("你没有权限执行此命令!", true);
+            return;
+        }
+        if (!VerifyParameters(args, "del", out var uin, out var num))
+        {
+            await args.Event.Reply("语法错误，请检查参数是否有误!", true);
+        }
+        else
+        {
+            try
             {
-                await args.Event.Reply("错误得数量，无法转换为数值!");
-                return;
+                DB.Manager.Currency.Del(uin, num);
+                await args.Event.Reply($"成功删除 {uin} 的 {num}个{XocMatSetting.Instance.Currency}!", true);
             }
-            DB.Manager.Currency? usercurr = DB.Manager.Currency.Query(args.MemberUin);
-            if (usercurr == null || usercurr.Num < num)
+            catch (Exception ex)
             {
-                await args.Event.Reply($"你没有足够的{XocMatSetting.Instance.Currency}付给他人!");
+                await args.Event.Reply(ex.Message);
             }
-            else
+        }
+    }
+
+    private static async Task Add(GroupCommandArgs args, ILogger logger)
+    {
+        if (!args.Account.HasPermission(OneBotPermissions.CurrencyAdmin))
+        {
+            await args.Event.Reply("你没有权限执行此命令!", true);
+            return;
+        }
+        if (!VerifyParameters(args, "add", out var uin, out var num))
+        {
+            await args.Event.Reply("语法错误，请检查参数是否有误!", true);
+        }
+        else
+        {
+            try
             {
-                try
-                {
-                    DB.Manager.Currency.Del(args.MemberUin, num);
-                    DB.Manager.Currency.Add(at.First().Uin, num);
-                    await args.Event.Reply($"成功付给 {at.First().Name}  {num}个{XocMatSetting.Instance.Currency}!");
-                }
-                catch (Exception ex)
-                {
-                    await args.Event.Reply(ex.Message);
-                }
+                DB.Manager.Currency.Add(uin, num);
+                await args.Event.Reply($"成功为 {uin} 添加{num}个{XocMatSetting.Instance.Currency}!", true);
+            }
+            catch (Exception ex)
+            {
+                await args.Event.Reply(ex.Message);
+            }
+        }
+    }
+
+    private static bool VerifyParameters(GroupCommandArgs args, string subcmd , out uint uin, out int num)
+    {
+        var atList = args.Event.Chain.GetMention();
+        uin = args.MemberUin;
+        num = 0;
+        if (args.Parameters.Count < 2)
+        {
+            return false;
+        }
+        if (args.Parameters.Count == 2 && args.Parameters[0].Equals(subcmd, StringComparison.CurrentCultureIgnoreCase) && atList.Any())
+        {
+            uin = atList.First().Uin;
+            if (!int.TryParse(args.Parameters[1], out num))
+            {
+                return false;
+            }
+        }
+        else if (args.Parameters.Count == 3 && args.Parameters[0].ToLower() == subcmd)
+        {
+            
+            if (!int.TryParse(args.Parameters[2], out num) || !uint.TryParse(args.Parameters[1], out uin))
+            {
+                return false;
             }
         }
         else
         {
+            return false;
+        }
+        return true;
+    }
+
+    public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
+    {
+        if (args.Parameters.Count > 0 && _action.TryGetValue(args.Parameters[0], out var action))
+        {
+            await action(args, log);
+        }
+        else
+        {
             await args.Event.Reply("语法错误，正确语法:\n" +
-                $"{args.CommandPrefix}bank add <qq> <数量>\n" +
-                $"{args.CommandPrefix}bank add <数量> at\n" +
-                $"{args.CommandPrefix}bank del <qq> <数量>\n" +
-                $"{args.CommandPrefix}bank del <数量> at\n" +
-                $"{args.CommandPrefix}bank pay <qq> 数量\n" +
-                $"{args.CommandPrefix}bank pay <数量> at");
+                $"{args.CommandPrefix}bank add [qq] [数量]\n" +
+                $"{args.CommandPrefix}bank add [数量] at\n" +
+                $"{args.CommandPrefix}bank del [qq] [数量]\n" +
+                $"{args.CommandPrefix}bank del [数量] at\n" +
+                $"{args.CommandPrefix}bank pay [qq] 数量\n" +
+                $"{args.CommandPrefix}bank pay [数量] at");
         }
     }
 }

@@ -186,6 +186,8 @@ public class Group : RecordBase<Group>
         return false;
     }
 
+    public static List<Group> GetGroups() => [.. context.Records];
+
 
     public static void AddGroup(string groupName, string perms = "")
     {
