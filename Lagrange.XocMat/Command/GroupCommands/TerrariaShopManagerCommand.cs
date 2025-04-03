@@ -36,7 +36,7 @@ public class TerrariaShopManagerCommand : Command
                 await args.Event.Reply("请输入一个正确数量", true);
                 return;
             }
-            Item? item = SystemHelper.GetItemById(id);
+            Item? item = TerrariaHelper.GetItemById(id);
             if (item != null)
             {
                 TerrariaShop.Instance.TrShop.Add(new Shop(item.Name, id, cost, num));

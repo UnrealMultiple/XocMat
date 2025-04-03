@@ -57,7 +57,7 @@ public class TerrariaPrizeManagerCommand : Command
                 await args.Event.Reply("请输入一个正确概率", true);
                 return;
             }
-            Item? item = SystemHelper.GetItemById(id);
+            Item? item = TerrariaHelper.GetItemById(id);
             if (item == null)
             {
                 await args.Event.Reply("没有找到此物品", true);

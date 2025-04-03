@@ -19,7 +19,7 @@ public class SearchItemCommand : Command
     {
         if (args.Parameters.Count > 0)
         {
-            List<Item> items = SystemHelper.GetItemByIdOrName(args.Parameters[0]);
+            List<Item> items = TerrariaHelper.GetItemByIdOrName(args.Parameters[0]);
             await args.Event.Reply(items.Count == 0 ? "未查询到指定物品" : $"查询结果:\n{string.Join(",", items.Select(x => $"{x.Name}({x.netID})"))}");
         }
     }

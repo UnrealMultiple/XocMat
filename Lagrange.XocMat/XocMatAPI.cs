@@ -30,6 +30,8 @@ public class XocMatAPI : IHostedService
 
     public static PluginLoader PluginLoader { get; private set; } = null!;
 
+    public static SystemMonitor SystemMonitor { get; private set; } = null!;
+
     public XocMatAPI(BotContext botContext, PluginLoader pluginLoader, CommandManager cmdManager, WebSocketServer wsServer, SocketAdapter socketAdapter)
     {
         BotContext = botContext;
@@ -42,6 +44,7 @@ public class XocMatAPI : IHostedService
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         PluginLoader.UnLoad();
+        SystemMonitor.Dispose();
         BotContext.Invoker.OnGroupMessageReceived -= CommandManager.GroupCommandAdapter;
         BotContext.Invoker.OnFriendMessageReceived -= CommandManager.FriendCommandAdapter;
         BotContext.Invoker.OnGroupMessageReceived -= SocketAdapter.GroupMessageForwardAdapter;
@@ -59,6 +62,7 @@ public class XocMatAPI : IHostedService
             DB = new SqliteConnection(string.Format("Data Source={0}", sql));
         }
         PluginLoader.Load();
+        SystemMonitor = new SystemMonitor();
         BotContext.Invoker.OnGroupMessageReceived += CommandManager.GroupCommandAdapter;
         BotContext.Invoker.OnFriendMessageReceived += CommandManager.FriendCommandAdapter;
         BotContext.Invoker.OnGroupMessageReceived += SocketAdapter.GroupMessageForwardAdapter;
