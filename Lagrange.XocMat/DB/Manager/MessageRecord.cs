@@ -66,13 +66,13 @@ public class MessageRecord : RecordBase<MessageRecord>
 
     internal static void Insert(MessageRecord record)
     {
-        if (Contexts.Records.Count() > XocMatSetting.Instance.MaxCacheMessage)
+        var currentCount = Contexts.Records.Count();
+        if (currentCount > XocMatSetting.Instance.MaxCacheMessage)
         {
-            var item = Contexts.Records.OrderBy(x => x.Time).FirstOrDefault();
-            if (item is not null)
-            {
-                Contexts.Delete(item);
-            }
+            Contexts.Records
+                .OrderBy(x => x.MessageIdLong)
+                .Take(Math.Min(XocMatSetting.Instance.MaxCacheMessage, XocMatSetting.Instance.DeleteCacheMessage))
+                .Delete();
         }
         Contexts.Insert(record);
     }

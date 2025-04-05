@@ -14,8 +14,11 @@ public class XocMatSetting : JsonConfigBase<XocMatSetting>
     [JsonProperty("权限所有者")]
     public long OwnerId { get; set; } = 523321293;
 
-    [JsonProperty("最大缓存消息数量")]
-    public int MaxCacheMessage { get; init; } = 1000;
+    [JsonProperty("缓存消息数量")]
+    public int MaxCacheMessage { get; init; } = 10000;
+
+    [JsonProperty("删除缓存数量")]
+    public int DeleteCacheMessage { get; init; } = 1000;
 
     [JsonProperty("Sqlite路径")]
     public string DbPath { get; set; } = "Lagrange.XocMat.sqlite";
