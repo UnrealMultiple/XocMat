@@ -57,7 +57,7 @@ public class MessageRecord : RecordBase<MessageRecord>
 
     private static Context Contexts => Db.Context<MessageRecord>("MessageRecord");
 
-    public static MessageRecord? Query(ulong messageid)
+    public static MessageChain? Query(ulong messageid)
     {
         return Contexts.Records.FirstOrDefault(x => (ulong)x.MessageIdLong == messageid);
     }
@@ -99,8 +99,9 @@ public class MessageRecord : RecordBase<MessageRecord>
         Entities = MessagePackSerializer.Serialize<List<IMessageEntity>>(chain, OPTIONS)
     };
 
-    public static implicit operator MessageChain(MessageRecord record)
+    public static implicit operator MessageChain(MessageRecord? record)
     {
+        if(record is null) return new MessageChain(0);
         var chain = record.Type switch
         {
             MessageType.Group => new MessageChain(
