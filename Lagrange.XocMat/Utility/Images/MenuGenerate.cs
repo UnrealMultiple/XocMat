@@ -1,9 +1,9 @@
-﻿using SixLabors.Fonts;
+﻿using Lagrange.XocMat.Extensions;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp;
-using Lagrange.XocMat.Extensions;
 
 namespace Lagrange.XocMat.Utility.Images;
 
@@ -251,7 +251,7 @@ public class MenuGenerate
 
         image.Mutate(ctx =>
         {
-            
+
             //绘制背景卡片，增加边距，并确保不盖住头像
             //int cardMargin = CardTopPadding;
             //int cardTopMargin = TopMargin + AvatarTop + AvatarSize + AvatarBottom;
@@ -280,12 +280,12 @@ public class MenuGenerate
 
     private void DrawMenuCell(IImageProcessingContext ctx, MenuCell cell, ref int currentX, ref int currentY, ref int currentLineHeight, ref int cellCountInLine, Font font, Font smallFont)
     {
-        var textOptions = new TextOptions(font) 
+        var textOptions = new TextOptions(font)
         {
             WrappingLength = CellWidth
         };
         var textSize = TextMeasurer.MeasureSize(cell.Text, textOptions);
-        var smallTextOptions = new TextOptions(smallFont) 
+        var smallTextOptions = new TextOptions(smallFont)
         {
             WrappingLength = CellWidth
         };

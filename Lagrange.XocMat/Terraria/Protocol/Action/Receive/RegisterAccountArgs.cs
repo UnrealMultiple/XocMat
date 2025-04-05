@@ -1,5 +1,4 @@
-﻿using Lagrange.XocMat.Terraria.Protocol.Action;
-using ProtoBuf;
+﻿using ProtoBuf;
 
 namespace Lagrange.XocMat.Terraria.Protocol.Action.Receive;
 

@@ -98,7 +98,7 @@ public class BankManagerCommand : Command
         }
     }
 
-    private static bool VerifyParameters(GroupCommandArgs args, string subcmd , out uint uin, out int num)
+    private static bool VerifyParameters(GroupCommandArgs args, string subcmd, out uint uin, out int num)
     {
         var atList = args.Event.Chain.GetMention();
         uin = args.MemberUin;
@@ -117,7 +117,7 @@ public class BankManagerCommand : Command
         }
         else if (args.Parameters.Count == 3 && args.Parameters[0].ToLower() == subcmd)
         {
-            
+
             if (!int.TryParse(args.Parameters[2], out num) || !uint.TryParse(args.Parameters[1], out uin))
             {
                 return false;

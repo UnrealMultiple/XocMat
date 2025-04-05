@@ -1,10 +1,4 @@
-﻿using Lagrange.XocMat.Command;
-using Lagrange.XocMat.Event;
-using Lagrange.XocMat.Extensions;
-using Lagrange.XocMat.Net;
-using Lagrange.XocMat.Plugin;
-using Lagrange.XocMat.Utility;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Lagrange.XocMat.Extensions;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 

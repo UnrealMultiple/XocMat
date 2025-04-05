@@ -26,7 +26,7 @@ public class TerrariaPrizeCommand : Command
         {
             tableBuilder.AddRow(id.ToString(), item.Name, item.Max.ToString(), item.Min.ToString(), item.Probability.ToString());
             id++;
-        }   
+        }
         await args.MessageBuilder.Image(tableBuilder.Builder()).Reply();
     }
 }

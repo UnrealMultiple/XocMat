@@ -14,21 +14,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Lagrange.XocMat.Command;
 
-public class CommandManager
+public class CommandManager(BotContext bot, ILogger<CommandManager> logger)
 {
-    public ILogger<CommandManager> Logger { get; }
+    public ILogger<CommandManager> Logger { get; } = logger;
 
-    public BotContext Bot { get; }
+    public BotContext Bot { get; } = bot;
 
     internal readonly List<Command> Commands = [];
-
-    public CommandManager(BotContext bot, ILogger<CommandManager> logger)
-    {
-        Bot = bot;
-        Logger = logger;
-        
-
-    }
 
     private void AddCommand(Command command)
     {
@@ -110,14 +102,14 @@ public class CommandManager
     }
     private RunCommandParams? Run(string text, uint uin)
     {
-        if(uin == Bot.BotUin)
+        if (uin == Bot.BotUin)
             return null;
         string? prefix = null;
-        if(XocMatSetting.Instance.CommamdPrefix.Count == 0)
+        if (XocMatSetting.Instance.CommamdPrefix.Count == 0)
             prefix = "";
         else
             prefix = XocMatSetting.Instance.CommamdPrefix.FirstOrDefault(text.StartsWith);
-        if(prefix == null)
+        if (prefix == null)
             return null;
         List<string> cmdParam = ParseParameters(text[prefix.Length..]);
         if (cmdParam.Count > 0)
@@ -180,7 +172,7 @@ public class CommandManager
                     await comm.Command.InvokeAsync(commandArgs, log);
                     Logger.LogInformation("{Logger}", commandArgs.ToPreviewString());
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     await args.Reply("命令执行失败，请查看日志", true);
                     Logger.LogInformation("{Error}", commandArgs.ToPerviewErrorString(e));
@@ -215,7 +207,7 @@ public class CommandManager
                     await comm.Command.InvokeAsync(commandArgs, log);
                     Logger.LogInformation("{Logger}", commandArgs.ToPreviewString());
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     await server.PrivateMsg(args.Name, "命令执行失败，请查看日志", Color.GreenYellow);
                     Logger.LogInformation("{Error}", commandArgs.ToPerviewErrorString(e));

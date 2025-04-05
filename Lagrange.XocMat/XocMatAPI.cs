@@ -2,6 +2,7 @@
 using Lagrange.Core;
 using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Net;
 using Lagrange.XocMat.Plugin;
@@ -45,9 +46,7 @@ public class XocMatAPI : IHostedService
     {
         PluginLoader.UnLoad();
         SystemMonitor.Dispose();
-        BotContext.Invoker.OnGroupMessageReceived -= CommandManager.GroupCommandAdapter;
         BotContext.Invoker.OnFriendMessageReceived -= CommandManager.FriendCommandAdapter;
-        BotContext.Invoker.OnGroupMessageReceived -= SocketAdapter.GroupMessageForwardAdapter;
         WsServer.OnMessage -= SocketAdapter.Adapter;
         await WsServer.StopAsync(cancellationToken);
     }
@@ -63,9 +62,13 @@ public class XocMatAPI : IHostedService
         }
         PluginLoader.Load();
         SystemMonitor = new SystemMonitor();
-        BotContext.Invoker.OnGroupMessageReceived += CommandManager.GroupCommandAdapter;
         BotContext.Invoker.OnFriendMessageReceived += CommandManager.FriendCommandAdapter;
-        BotContext.Invoker.OnGroupMessageReceived += SocketAdapter.GroupMessageForwardAdapter;
+        BotContext.Invoker.OnGroupMessageReceived += (bot, e) =>
+        {
+            CommandManager.GroupCommandAdapter(bot, e);
+            SocketAdapter.GroupMessageForwardAdapter(bot, e);
+            MessageRecord.Insert(e.Chain);
+        };
         WsServer.OnMessage += SocketAdapter.Adapter;
         await WsServer.Start(cancellationToken);
     }

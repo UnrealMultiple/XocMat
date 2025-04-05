@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Lagrange.XocMat.Enumerates;
-using Lagrange.XocMat.Net;
 using Lagrange.XocMat.Terraria.Protocol.Action;
 using Lagrange.XocMat.Terraria.Protocol.Action.Receive;
 using Lagrange.XocMat.Terraria.Protocol.Action.Response;

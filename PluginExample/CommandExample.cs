@@ -1,5 +1,9 @@
-﻿using Lagrange.XocMat.Command;
+﻿using Lagrange.Core.Common.Interface.Api;
+using Lagrange.Core.Message;
+using Lagrange.Core.Message.Entity;
+using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Command.CommandArgs;
+using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Extensions;
 using Microsoft.Extensions.Logging;
 
@@ -22,13 +26,25 @@ public class CommandExample : Command
     //好友指令回复
     public override async Task InvokeAsync(FriendCommandArgs args, ILogger log)
     {
+        
+        
         await args.Event.Reply(GeneratePassWord());
     }
 
     //群聊指令回复
     public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
-        await args.Event.Reply(GeneratePassWord());
+        var msg = args.Event.Chain.GetMsg<ForwardEntity>();
+        Console.WriteLine(msg.Count());
+        if (msg.FirstOrDefault() is ForwardEntity forwardEntity)
+        {
+            Console.WriteLine("进来");
+            var message = MessageRecord.Query(forwardEntity.MessageId);
+            if (message != null)
+            {
+                await args.Bot.SendMessage(message);
+            }
+        }
     }
 
     //服务器指令回复（TShock服务器指令）

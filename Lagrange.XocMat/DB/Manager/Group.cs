@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using Lagrange.XocMat.Configuration;
+using Lagrange.XocMat.Entity.Database;
 using Lagrange.XocMat.Exceptions;
 using Lagrange.XocMat.Extensions;
-using Lagrange.XocMat.Internal.Database;
 using LinqToDB;
 using LinqToDB.Mapping;
 

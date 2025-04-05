@@ -130,7 +130,7 @@ public class AccountManagerCommand : Command
             }
         }
         else
-        { 
+        {
             await args.Event.Reply("语法错误，请检查后使用!", true);
         }
     }
@@ -138,7 +138,7 @@ public class AccountManagerCommand : Command
     public override async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         if (args.Parameters.Count > 0 && _action.TryGetValue(args.Parameters[0], out var action))
-        { 
+        {
             await action(args, log);
         }
         else

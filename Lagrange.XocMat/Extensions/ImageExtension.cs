@@ -52,7 +52,8 @@ public static class ImageExtension
 
         // 创建圆形头像
         using var circular = new Image<Rgba32>(diameter, diameter);
-        circular.Mutate(x => {
+        circular.Mutate(x =>
+        {
             var circle = new EllipsePolygon(diameter / 2, diameter / 2, diameter / 2);
             x.Clear(Color.Transparent);
             x.Fill(Color.White, circle);
@@ -66,7 +67,8 @@ public static class ImageExtension
         // 创建带边框的头像
         int finalSize = diameter + (BorderSize * 2);
         var final = new Image<Rgba32>(finalSize, finalSize);
-        final.Mutate(x => {
+        final.Mutate(x =>
+        {
             var borderCircle = new EllipsePolygon(finalSize / 2, finalSize / 2, finalSize / 2);
             x.Fill(Color.White, borderCircle);
             x.DrawImage(circular, new Point(BorderSize, BorderSize), 1f);

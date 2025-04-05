@@ -1,7 +1,8 @@
 ﻿using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
+using Lagrange.XocMat.Internal;
 
-namespace Lagrange.XocMat.Internal.Database;
+namespace Lagrange.XocMat.Entity.Database;
 
 public class DefaultGroup : Group
 {

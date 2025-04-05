@@ -1,10 +1,10 @@
-﻿using SixLabors.Fonts;
-using SixLabors.ImageSharp.Drawing.Processing;
+﻿using Lagrange.XocMat.Extensions;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp;
-using Lagrange.XocMat.Extensions;
 
 namespace Lagrange.XocMat.Utility.Images;
 
@@ -345,7 +345,8 @@ public class ProfileCard
         (int CardHeight, int CardWidth, int BackgroundWidth, int BackgroundHeight, int CardX, int CardY) layout)
     {
         var cardBackground = new Image<Rgba32>(layout.BackgroundWidth, layout.BackgroundHeight);
-        cardBackground.Mutate(x => {
+        cardBackground.Mutate(x =>
+        {
             // 复制背景图像
             x.DrawImage(background, new Point(0, 0), 1f);
 
@@ -371,7 +372,7 @@ public class ProfileCard
         var normalFont = fontFamily.CreateFont(NormalFontSize, FontStyle.Regular);
         var smallFont = fontFamily.CreateFont(SmallFontSize, FontStyle.Regular);
 
-        canvas.Mutate(x => 
+        canvas.Mutate(x =>
         {
             int currentY = layout.CardY + ContentTopMargin;
 

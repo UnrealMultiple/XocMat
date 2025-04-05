@@ -2,7 +2,6 @@
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
-using Lagrange.XocMat.Utility;
 using Lagrange.XocMat.Utility.Images;
 using Microsoft.Extensions.Logging;
 

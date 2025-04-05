@@ -20,7 +20,7 @@ internal class ImageUtils
     }
 
     public static FontFamily GetFontFamily()
-    { 
+    {
         return Instance.FontFamily;
     }
 

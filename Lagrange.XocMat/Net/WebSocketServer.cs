@@ -169,7 +169,7 @@ public class WebSocketServer(ILogger<WebSocketServer> logger)
     }
 
     public async Task StopAsync(CancellationToken token = default)
-    { 
+    {
         var tasks = _connections.Values.Select(t => t.Tcs.Task).ToArray();
         await Task.WhenAll(tasks);
         _listener.Stop();

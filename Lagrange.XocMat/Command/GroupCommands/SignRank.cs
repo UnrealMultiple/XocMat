@@ -1,4 +1,3 @@
-using System.Text;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
@@ -27,7 +26,7 @@ public class SignRank : Command
             int i = 1;
             foreach (DB.Manager.Sign? sign in signs)
             {
-               builder.AddRow(i.ToString(), sign.UserId.ToString(), sign.Date.ToString());
+                builder.AddRow(i.ToString(), sign.UserId.ToString(), sign.Date.ToString());
                 i++;
             }
 

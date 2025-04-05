@@ -1,9 +1,9 @@
-﻿using SixLabors.Fonts;
-using SixLabors.ImageSharp.PixelFormats;
+﻿using Lagrange.XocMat.Extensions;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
-using Lagrange.XocMat.Extensions;
-using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Lagrange.XocMat.Utility.Images;
 

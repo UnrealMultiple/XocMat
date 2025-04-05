@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
 
 namespace Lagrange.XocMat.Utility;
 
@@ -80,10 +80,10 @@ public sealed class SystemMonitor : IDisposable
     // Windows实现
     [StructLayout(LayoutKind.Sequential)]
     struct FILETIME { public uint dwLowDateTime; public uint dwHighDateTime; }
-    
+
     [DllImport("kernel32.dll")]
     static extern bool GetSystemTimes(out FILETIME idle, out FILETIME kernel, out FILETIME user);
-    
+
     private static CpuUsageData GetWindowsCpuData()
     {
         GetSystemTimes(out var idle, out var kernel, out var user);
@@ -110,7 +110,7 @@ public sealed class SystemMonitor : IDisposable
     // macOS实现
     [DllImport("libSystem.dylib")]
     static extern int sysctlbyname(string name, IntPtr ptr, ref uint size, IntPtr newp, uint newlen);
-    
+
     private static CpuUsageData GetMacCpuData()
     {
         const string name = "kern.cp_time";
@@ -160,11 +160,11 @@ public sealed class SystemMonitor : IDisposable
         public ulong ullAvailExtendedVirtual;
         public MEMORYSTATUSEX() => dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>();
     }
-    
+
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
-    
+
     private void InitWindowsMemory()
     {
         var memStatus = new MEMORYSTATUSEX();
@@ -207,8 +207,8 @@ public sealed class SystemMonitor : IDisposable
             else
             {
                 // 如果没有MemAvailable，则使用MemFree + Buffers + Cached
-                AvailablePhysicalMemory = (GetMemValue(lines, "MemFree") + 
-                                         GetMemValue(lines, "Buffers") + 
+                AvailablePhysicalMemory = (GetMemValue(lines, "MemFree") +
+                                         GetMemValue(lines, "Buffers") +
                                          GetMemValue(lines, "Cached")) * 1024;
             }
         }
@@ -218,7 +218,7 @@ public sealed class SystemMonitor : IDisposable
     // macOS内存实现
     [DllImport("libSystem.dylib")]
     static extern int sysctlbyname(string name, out long value, ref IntPtr size, IntPtr newp, uint newlen);
-    
+
     private void InitMacMemory()
     {
         try
@@ -227,7 +227,7 @@ public sealed class SystemMonitor : IDisposable
             IntPtr len = (IntPtr)sizeof(long);
             if (sysctlbyname("hw.memsize", out long total, ref len, IntPtr.Zero, 0) == 0)
                 TotalPhysicalMemory = total;
-            
+
             // 初始化可用内存
             UpdateMacMemory();
         }
@@ -242,9 +242,9 @@ public sealed class SystemMonitor : IDisposable
             using var process = Process.Start(psi);
             var output = process?.StandardOutput.ReadToEnd();
             process?.WaitForExit();
-            
+
             if (string.IsNullOrEmpty(output)) return;
-            
+
             var lines = output.Split('\n');
             var free = GetMacMemValue(lines, "Pages free");
             var speculative = GetMacMemValue(lines, "Pages speculative");
@@ -258,10 +258,10 @@ public sealed class SystemMonitor : IDisposable
     {
         var line = lines.FirstOrDefault(l => l.StartsWith(key));
         if (line == null) return 0;
-        
+
         var parts = line.Split([' '], StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length < 2) return 0;
-        
+
         return long.TryParse(parts[1], out var value) ? value : 0;
     }
 
@@ -269,10 +269,10 @@ public sealed class SystemMonitor : IDisposable
     {
         var line = lines.FirstOrDefault(l => l.Contains(key));
         if (line == null) return 0;
-        
+
         var parts = line.Split(':');
         if (parts.Length < 2) return 0;
-        
+
         var valueStr = parts[1].Trim().Split('.')[0];
         return long.TryParse(valueStr, out var value) ? value : 0;
     }
@@ -360,15 +360,15 @@ public sealed class SystemMonitor : IDisposable
 
     [DllImport("psapi.dll")]
     static extern bool EmptyWorkingSet(IntPtr hProcess);
-    
+
     [DllImport("kernel32.dll")]
     static extern bool SetProcessWorkingSetSize(IntPtr process, int min, int max);
-    
+
     private void CleanWindowsMemory()
     {
         if (!SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1))
             throw new Win32Exception(Marshal.GetLastWin32Error());
-        
+
         foreach (var p in Process.GetProcesses())
         {
             try { if (p.Handle != IntPtr.Zero) EmptyWorkingSet(p.Handle); }
@@ -397,12 +397,12 @@ public sealed class SystemMonitor : IDisposable
 
     [DllImport("libSystem.dylib")]
     static extern int malloc_zone_pressure_relief(int zone, int percent);
-    
+
     private void CleanMacMemory()
     {
         if (malloc_zone_pressure_relief(-1, 100) != 0)
             throw new Exception("内存压缩失败");
-        
+
         using var process = Process.Start(new ProcessStartInfo("purge") { UseShellExecute = true });
         process?.WaitForExit(1000);
     }
@@ -418,7 +418,7 @@ public sealed class SystemMonitor : IDisposable
 
     private string GetErrorMessage(Exception ex)
     {
-        if (ex is Win32Exception winEx && winEx.NativeErrorCode == 5) 
+        if (ex is Win32Exception winEx && winEx.NativeErrorCode == 5)
             return "需要管理员权限";
         return ex.Message;
     }

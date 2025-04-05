@@ -1,6 +1,6 @@
 ﻿using Lagrange.XocMat.DB.Manager;
 
-namespace Lagrange.XocMat.Internal.Database;
+namespace Lagrange.XocMat.Entity.Database;
 
 public class SuperAdminGroup : Group
 {

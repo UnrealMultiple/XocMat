@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Enumerates;
-using Lagrange.XocMat.Terraria;
 using Lagrange.XocMat.Terraria.Protocol.Action;
 using Lagrange.XocMat.Terraria.Protocol.PlayerMessage;
 using Lagrange.XocMat.Terraria.Protocol.ServerMessage;

@@ -50,14 +50,14 @@ public class Register : Command
                 if (api.Status)
                 {
 
-                     MailHelper.Builder(XocMatSetting.Instance.MailHost,XocMatSetting.Instance.SenderPwd)
-                        .AddTarget($"{args.MemberUin}@qq.com")
-                        .SetTile($"{server.Name}服务器注册密码")
-                        .SetBody(CommandUtils.GenerateMailBody($"{server.Name}服务器注册密码", args.MemberUin, args.MemberCard, "请查看你的注册密码", pass))
-                        .EnableHtmlBody(true)
-                        .SetSender(XocMatSetting.Instance.SenderMail)
-                        .Send()
-                        .Dispose();
+                    MailHelper.Builder(XocMatSetting.Instance.MailHost, XocMatSetting.Instance.SenderPwd)
+                       .AddTarget($"{args.MemberUin}@qq.com")
+                       .SetTile($"{server.Name}服务器注册密码")
+                       .SetBody(CommandUtils.GenerateMailBody($"{server.Name}服务器注册密码", args.MemberUin, args.MemberCard, "请查看你的注册密码", pass))
+                       .EnableHtmlBody(true)
+                       .SetSender(XocMatSetting.Instance.SenderMail)
+                       .Send()
+                       .Dispose();
                     build.Text($"注册成功!" +
                         $"\n注册服务器: {server.Name}" +
                         $"\n注册名称: {args.Parameters[0]}" +

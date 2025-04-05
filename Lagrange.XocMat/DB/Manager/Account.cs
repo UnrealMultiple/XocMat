@@ -1,7 +1,7 @@
-﻿using Lagrange.XocMat.Enumerates;
+﻿using Lagrange.XocMat.Entity.Database;
+using Lagrange.XocMat.Enumerates;
 using Lagrange.XocMat.Event;
 using Lagrange.XocMat.Exceptions;
-using Lagrange.XocMat.Internal.Database;
 using LinqToDB;
 using LinqToDB.Mapping;
 

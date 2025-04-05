@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Lagrange.XocMat.Command.CommandArgs;
+﻿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Utility.Images;
