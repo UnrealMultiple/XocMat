@@ -3,7 +3,7 @@ using MessagePack.Formatters;
 using System.Buffers;
 using System.IO;
 
-namespace Lagrange.XocMat.DB.Manager;
+namespace Lagrange.XocMat.Entity;
 
 public class StreamFormatter : IMessagePackFormatter<Stream?>
 {
