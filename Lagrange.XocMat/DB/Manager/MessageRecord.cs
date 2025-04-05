@@ -9,14 +9,16 @@ using static Lagrange.Core.Message.MessageChain;
 
 namespace Lagrange.XocMat.DB.Manager;
 
+
 [Table("MessageRecord")]
 public class MessageRecord : RecordBase<MessageRecord>
 {
     public static readonly MessagePackSerializerOptions OPTIONS = MessagePackSerializerOptions.Standard
-        .WithResolver(CompositeResolver.Create(
-            ContractlessStandardResolver.Instance,
-            new MessageEntityResolver()
-        ));
+    .WithResolver(CompositeResolver.Create(
+            ContractlessStandardResolverAllowPrivate.Instance, // 支持私有成员
+            StandardResolver.Instance,                         // 标准解析器
+            new MessageEntityResolver()                        // 自定义解析器
+    ));
 
     [PrimaryKey]
     public int Id { get; set; }
@@ -52,8 +54,8 @@ public class MessageRecord : RecordBase<MessageRecord>
 
     public ulong ToUin { get => (ulong)ToUinLong; set => ToUinLong = (long)value; }
 
-    [Column("Entities", DataType = DataType.Blob)]
-    public byte[] Entities { get; set; } = Array.Empty<byte>();
+    [Column("Entities", DataType = DataType.VarBinary)]
+    public byte[] Entities { get; set; } = [];
 
     private static Context Contexts => Db.Context<MessageRecord>("MessageRecord");
 
@@ -101,7 +103,7 @@ public class MessageRecord : RecordBase<MessageRecord>
 
     public static implicit operator MessageChain(MessageRecord? record)
     {
-        if(record is null) return new MessageChain(0);
+        if (record is null) return new MessageChain(0, string.Empty, string.Empty);
         var chain = record.Type switch
         {
             MessageType.Group => new MessageChain(
@@ -116,8 +118,8 @@ public class MessageRecord : RecordBase<MessageRecord>
                 string.Empty,
                 string.Empty,
                 (uint)record.ToUin,
-            (uint)record.Sequence,
-            (uint)record.ClientSequence,
+                (uint)record.Sequence,
+                (uint)record.ClientSequence,
                 record.MessageId
             ),
             _ => throw new NotImplementedException(),

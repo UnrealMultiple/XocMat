@@ -34,7 +34,7 @@ public class MessageEntityFormatter : IMessagePackFormatter<IMessageEntity?>
         { 17, typeof(SpecialPokeEntity) },
         { 18, typeof(TextEntity) },
         { 19, typeof(VideoEntity) },
-        { 20, typeof(XmlEntity) },
+        { 20, typeof(XmlEntity) }
     };
 
     private static readonly Dictionary<Type, byte> TYPE_ID = ID_TYPE.ToDictionary(m => m.Value, m => m.Key);
