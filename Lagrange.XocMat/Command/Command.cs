@@ -13,6 +13,17 @@ public abstract class Command
 
     public virtual string[] Permissions { get; protected set; } = [];
 
+    public async Task InvokeAsync(BaseCommandArgs args, ILogger log)
+    {
+        await (args switch
+        {
+            GroupCommandArgs groupArgs => InvokeAsync(groupArgs, log),
+            FriendCommandArgs friendArgs => InvokeAsync(friendArgs, log),
+            ServerCommandArgs serverArgs => InvokeAsync(serverArgs, log),
+            _ => throw new NotImplementedException($"Command not implemented for {args.GetType().Name}")
+        });
+    }
+
     public virtual async Task InvokeAsync(GroupCommandArgs args, ILogger log)
     {
         await args.Event.Reply("This command is not available in this context.");

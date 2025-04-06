@@ -106,7 +106,7 @@ public class SocketAdapter
     {
         if (args.BaseMessage is not PlayerCommandMessage data) return;
         if (OnPlayerCommand != null) await OnPlayerCommand(data);
-        if (!data.Handler) await CommandManager.CommandAdapter(data);
+        if (!data.Handler && data.HasServerUser) CommandManager.Adapter(XocMatAPI.BotContext, data);
     }
 
     private async ValueTask PlayerLeaveHandler(ServerMsgArgs args)
@@ -207,9 +207,9 @@ public class SocketAdapter
 
     }
 
-    internal async void GroupMessageForwardAdapter(BotContext bot, GroupMessageEvent args)
+    internal static async void GroupMessageForwardAdapter(BotContext bot, GroupMessageEvent args)
     {
-        if (args.Chain.GroupMemberInfo!.Uin == bot.BotUin)
+        if (args.Chain.GroupMemberInfo?.Uin == bot.BotUin)
         {
             return;
         }
@@ -218,7 +218,7 @@ public class SocketAdapter
         {
             foreach (var setting in XocMatSetting.Instance.Servers)
             {
-                if (file.FileUrl != null && setting != null && setting.Groups.Contains(args.Chain.GroupUin!.Value) && setting.WaitFile != null)
+                if (file.FileUrl != null && setting != null && setting.Groups.Contains(args.Chain.GroupUin ?? 0) && setting.WaitFile != null)
                 {
                     setting.WaitFile.SetResult(await HttpUtils.GetByteAsync(file.FileUrl));
                 }

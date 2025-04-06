@@ -51,7 +51,7 @@ public class XocMatAPI : IHostedService
     {
         PluginLoader.UnLoad();
         SystemMonitor.Dispose();
-        BotContext.Invoker.OnFriendMessageReceived -= CommandManager.FriendCommandAdapter;
+        BotContext.Invoker.OnFriendMessageReceived -= CommandManager.Adapter;
         WsServer.OnMessage -= SocketAdapter.Adapter;
         await WsServer.StopAsync(cancellationToken);
     }
@@ -67,10 +67,10 @@ public class XocMatAPI : IHostedService
         }
         PluginLoader.Load();
         SystemMonitor = new SystemMonitor();
-        BotContext.Invoker.OnFriendMessageReceived += CommandManager.FriendCommandAdapter;
+        BotContext.Invoker.OnFriendMessageReceived += CommandManager.Adapter;
         BotContext.Invoker.OnGroupMessageReceived += (bot, e) =>
         {
-            CommandManager.GroupCommandAdapter(bot, e);
+            CommandManager.Adapter(bot, e);
             SocketAdapter.GroupMessageForwardAdapter(bot, e);
             MessageRecord.Insert(e.Chain);
         };
