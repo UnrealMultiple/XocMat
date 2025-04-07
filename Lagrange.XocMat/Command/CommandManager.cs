@@ -115,7 +115,6 @@ public class CommandManager(BotContext bot, ILogger<CommandManager> logger)
             var cmdName = cmdParam[0];
             cmdParam.RemoveAt(0);
             var account = Account.GetAccountNullDefault(uin);
-            Console.WriteLine(Commands.Select(command => command.Alias.Contains(cmdName.ToLower())).FirstOrDefault());
             return Commands.Select(command => command.Alias.Contains(cmdName.ToLower()) switch
             {
                 true => new CommandParis(command, cmdParam, cmdName, account, ParseCommandLine(cmdParam), prefix),

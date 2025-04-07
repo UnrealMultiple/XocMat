@@ -2,6 +2,7 @@
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Entity;
 using LinqToDB;
+using LinqToDB.Data;
 using LinqToDB.Mapping;
 using MessagePack;
 using MessagePack.Resolvers;
@@ -64,15 +65,20 @@ public class MessageRecord : RecordBase<MessageRecord>
         return Contexts.Records.FirstOrDefault(x => (ulong)x.MessageIdLong == messageid);
     }
 
+    //SQLite Error 1: 'near "LIMIT": syntax error'.
     internal static void Insert(MessageRecord record)
     {
         var currentCount = Contexts.Records.Count();
         if (currentCount > XocMatSetting.Instance.MaxCacheMessage)
         {
-            Contexts.Records
-                .OrderBy(x => x.MessageIdLong)
-                .Take(Math.Min(XocMatSetting.Instance.MaxCacheMessage, XocMatSetting.Instance.DeleteCacheMessage))
-                .Delete();
+            var sql = @"
+                DELETE FROM MessageRecord
+                WHERE ROWID IN (
+                    SELECT ROWID FROM MessageRecord
+                    ORDER BY ROWID
+                    LIMIT @n
+                )";
+            Contexts.Execute(sql, new { n = Math.Min(XocMatSetting.Instance.DeleteCacheMessage, XocMatSetting.Instance.MaxCacheMessage) });   
         }
         Contexts.Insert(record);
     }
