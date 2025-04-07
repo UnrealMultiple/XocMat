@@ -50,19 +50,20 @@ jobs:
           
       - name: 更新发布标签
         run: |
-          git tag -f V1.2.8
-          git push -f origin V1.2.8
+          git tag -f V1.3.0
+          git push -f origin V1.3.0
 
       - name: 下载临时文件
         uses: dawidd6/action-download-artifact@v9
         with:
           path: bin
           skip_unpack: true
+          run_id: ${{ github.run_id }}
           
       - name: 发布Release
         uses: ncipollo/release-action@v1
         with:
-          tag: V1.2.8
+          tag: V1.3.0
           name: "最新版本"
           body: ""
           artifacts: |
