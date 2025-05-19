@@ -1,4 +1,5 @@
-﻿using Lagrange.Core.Message;
+﻿using Lagrange.Core.Common.Entity;
+using Lagrange.Core.Message;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Entity;
 using LinqToDB;
@@ -15,11 +16,11 @@ namespace Lagrange.XocMat.DB.Manager;
 public class MessageRecord : RecordBase<MessageRecord>
 {
     public static readonly MessagePackSerializerOptions OPTIONS = MessagePackSerializerOptions.Standard
-    .WithResolver(CompositeResolver.Create(
-            ContractlessStandardResolverAllowPrivate.Instance, // 支持私有成员
-            StandardResolver.Instance,                         // 标准解析器
-            new MessageEntityResolver()                        // 自定义解析器
-    ));
+        .WithResolver(CompositeResolver.Create(
+            new MessageEntityResolver(),
+            ContractlessStandardResolverAllowPrivate.Instance,
+            ContractlessStandardResolver.Instance
+        ));
 
     [PrimaryKey]
     public int Id { get; set; }
@@ -104,12 +105,12 @@ public class MessageRecord : RecordBase<MessageRecord>
             MessageType.Friend => chain.TargetUin,
             _ => throw new NotImplementedException(),
         },
+        
         Entities = MessagePackSerializer.Serialize<List<IMessageEntity>>(chain, OPTIONS)
     };
 
-    public static implicit operator MessageChain(MessageRecord? record)
+    public static implicit operator MessageChain(MessageRecord record)
     {
-        if (record is null) return new MessageChain(0, string.Empty, string.Empty);
         var chain = record.Type switch
         {
             MessageType.Group => new MessageChain(
@@ -133,7 +134,6 @@ public class MessageRecord : RecordBase<MessageRecord>
 
         var entities = MessagePackSerializer.Deserialize<List<IMessageEntity>>(record.Entities, OPTIONS);
         chain.AddRange(entities);
-
         chain.Time = record.Time.DateTime;
 
         return chain;

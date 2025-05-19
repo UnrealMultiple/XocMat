@@ -17,10 +17,7 @@ public static class GroupMessageEventExtension
         MessageBuilder builder = MessageBuilder.Group(e.Chain.GroupUin!.Value).Text(text);
         if (type)
         {
-            ForwardEntity forwardEntity = new ForwardEntity(e.Chain)
-            {
-                ClientSequence = 1
-            };
+            var forwardEntity = new ForwardEntity(e.Chain);
             builder.Add(forwardEntity);
 
         }

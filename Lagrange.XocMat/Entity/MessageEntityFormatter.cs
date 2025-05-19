@@ -2,6 +2,8 @@ using Lagrange.Core.Message;
 using Lagrange.Core.Message.Entity;
 using MessagePack;
 using MessagePack.Formatters;
+using System.Threading;
+using System;
 
 namespace Lagrange.XocMat.Entity;
 
@@ -34,7 +36,7 @@ public class MessageEntityFormatter : IMessagePackFormatter<IMessageEntity?>
         { 17, typeof(SpecialPokeEntity) },
         { 18, typeof(TextEntity) },
         { 19, typeof(VideoEntity) },
-        { 20, typeof(XmlEntity) }
+        { 20, typeof(XmlEntity) },
     };
 
     private static readonly Dictionary<Type, byte> TYPE_ID = ID_TYPE.ToDictionary(m => m.Value, m => m.Key);
@@ -49,9 +51,7 @@ public class MessageEntityFormatter : IMessagePackFormatter<IMessageEntity?>
     public void Serialize(ref MessagePackWriter writer, IMessageEntity? value, MessagePackSerializerOptions options)
     {
         if (value == null) return;
-
         var type = value.GetType();
-
         writer.Write(TYPE_ID[type]);
         MessagePackSerializer.Serialize(type, ref writer, value, options);
     }

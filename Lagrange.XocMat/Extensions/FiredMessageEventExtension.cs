@@ -16,10 +16,7 @@ public static class FiredMessageEventExtension
         MessageBuilder builder = MessageBuilder.Friend(e.Chain.FriendUin).Text(text);
         if (type)
         {
-            ForwardEntity forwardEntity = new ForwardEntity(e.Chain)
-            {
-                ClientSequence = 1
-            };
+            var forwardEntity = new ForwardEntity(e.Chain);
             builder.Add(forwardEntity);
 
         }
