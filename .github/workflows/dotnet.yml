@@ -50,8 +50,8 @@ jobs:
           
       - name: 更新发布标签
         run: |
-          git tag -f V1.3.0
-          git push -f origin V1.3.0
+          git tag -f V1.3.1
+          git push -f origin V1.3.1
 
       - name: 下载临时文件
         uses: dawidd6/action-download-artifact@v9
@@ -63,7 +63,7 @@ jobs:
       - name: 发布Release
         uses: ncipollo/release-action@v1
         with:
-          tag: V1.3.0
+          tag: V1.3.1
           name: "最新版本"
           body: ""
           artifacts: |

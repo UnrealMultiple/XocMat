@@ -69,7 +69,6 @@ public class XocMatAPI : IHostedService
             MessageRecord.Insert(e.Chain);
         };
         WsServer.OnMessage += SocketAdapter.Adapter;
-
         await WsServer.Start(cancellationToken);
     }
 }
