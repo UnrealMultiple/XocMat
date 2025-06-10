@@ -1,20 +1,14 @@
 ﻿using System.Data;
 using Lagrange.Core;
-using Lagrange.Core.Message;
 using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
-using Lagrange.XocMat.Entity;
 using Lagrange.XocMat.Event;
-using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Net;
 using Lagrange.XocMat.Plugin;
 using Lagrange.XocMat.Utility;
-using MessagePack;
-using MessagePack.Resolvers;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Hosting;
-
 
 namespace Lagrange.XocMat;
 
@@ -75,6 +69,7 @@ public class XocMatAPI : IHostedService
             MessageRecord.Insert(e.Chain);
         };
         WsServer.OnMessage += SocketAdapter.Adapter;
+
         await WsServer.Start(cancellationToken);
     }
 }
