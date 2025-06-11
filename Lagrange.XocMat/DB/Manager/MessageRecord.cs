@@ -63,7 +63,7 @@ public class MessageRecord : RecordBase<MessageRecord>
 
     public static MessageChain? Query(ulong messageid)
     {
-        return Contexts.Records.FirstOrDefault(x => (ulong)x.MessageIdLong == messageid);
+        return Contexts.Records.FirstOrDefault(x => (ulong)x.MessageIdLong == messageid)!;
     }
 
     //SQLite Error 1: 'near "LIMIT": syntax error'.

@@ -13,7 +13,7 @@
     <Nullable>enable</Nullable>
 	<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<PackageReadmeFile>README</PackageReadmeFile>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
 	<ItemGroup>
