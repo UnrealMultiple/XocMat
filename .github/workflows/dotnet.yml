@@ -54,7 +54,7 @@ jobs:
           git push -f origin V1.3.1
 
       - name: 下载临时文件
-        uses: dawidd6/action-download-artifact@v9
+        uses: dawidd6/action-download-artifact@v11
         with:
           path: bin
           skip_unpack: true
