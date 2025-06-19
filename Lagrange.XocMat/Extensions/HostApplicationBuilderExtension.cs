@@ -71,6 +71,7 @@ public static class HostApplicationBuilderExtension
                 services.GetRequiredService<BotAppInfo>()
             ))
             .AddHostedService<LoginService>()
+            .AddHostedService<LagrangeHooks>()
             .AddHostedService<XocMatAPI>()
             .AddHostedService<TimingUtils>();
 

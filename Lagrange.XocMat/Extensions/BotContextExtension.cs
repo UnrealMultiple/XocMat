@@ -3,6 +3,7 @@
 using Lagrange.Core;
 using Lagrange.Core.Common.Interface.Api;
 using Lagrange.Core.Message;
+using Lagrange.Core.Message.Entity;
 
 namespace Lagrange.XocMat.Extensions;
 
