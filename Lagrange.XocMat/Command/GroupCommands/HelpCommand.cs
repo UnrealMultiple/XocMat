@@ -41,7 +41,6 @@ public class HelpCommand : Command
                     {
                         Type = 2,
                         Data = args.CommandPrefix + command.Alias.First(),
-                        //Enter = true,
                         Permission = new()
                         {
                             Type = 2
