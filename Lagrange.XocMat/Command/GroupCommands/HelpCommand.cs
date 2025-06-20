@@ -20,35 +20,58 @@ public class HelpCommand : Command
     {
         var commands = XocMatAPI.CommandManager!.Commands
             .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(GroupCommandArgs), typeof(ILogger)]));
-        if (!commands.Any())
+
+        var keyboard = new Core.Message.Entity.KeyboardData();
+        var row = new Core.Message.Entity.Row();
+        keyboard.Rows.Add(row);
+        for (var i = 0; i < commands.Count(); i++)
         {
-            await args.Event.Reply("当前无指令可用!", true);
-            return;
+            var command = commands.ElementAt(i);
+            if (i != 0 && i % 4 != 0)
+            {
+                row.Buttons.Add(new Core.Message.Entity.Button()
+                {
+                    Id = command.Alias.JoinToString(""),
+                    RenderData = new Core.Message.Entity.RenderData()
+                    {
+                        Label = command.Alias.First(),
+                        Style = 1
+                    },
+                    Action = new()
+                    {
+                        Type = 2,
+                        Data = args.CommandPrefix + command.Alias.First(),
+                        //Enter = true,
+                        Permission = new()
+                        {
+                            Type = 2
+                        }
+                    }
+                });
+            }
+            else
+            { 
+                row = new Core.Message.Entity.Row();
+                keyboard.Rows.Add(row);
+            }
         }
-        var builder = MenuBuilder.Create()
-            .SetMemberUin(args.MemberUin);
-        foreach (var command in commands)
-        {
-            builder.AddCell(args.CommandPrefix + command.Alias.First(), command.HelpText);
-        }
-        await args.MessageBuilder.Image(builder.Build()).Reply();
+        await args.MessageBuilder.Keyboard(keyboard).Reply();
+        //if (!commands.Any())
+        //{
+        //    await args.Event.Reply("当前无指令可用!", true);
+        //    return;
+        //}
+        //var builder = MenuBuilder.Create()
+        //    .SetMemberUin(args.MemberUin);
+        //foreach (var command in commands)
+        //{
+        //    builder.AddCell(args.CommandPrefix + command.Alias.First(), command.HelpText);
+        //}
+        //await args.MessageBuilder.Image(builder.Build()).Reply();
     }
 
     public override async Task InvokeAsync(FriendCommandArgs args, ILogger log)
     {
-        //void Show(List<string> line)
-        //{
-        //    if (PaginationTools.TryParsePageNumber(args.Parameters, 0, args.Event, out int page))
-        //    {
-        //        PaginationTools.SendPage(args.Event, page, line, new PaginationTools.Settings()
-        //        {
-        //            MaxLinesPerPage = 15,
-        //            NothingToDisplayString = "当前没有指令可用",
-        //            HeaderFormat = "指令列表 ({0}/{1})：",
-        //            FooterFormat = $"输入 {args.CommamdPrefix}help {{0}} 查看更多"
-        //        });
-        //    }
-        //}
         var commands = XocMatAPI.CommandManager!.Commands
             .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(FriendCommandArgs), typeof(ILogger)]));
         if (!commands.Any())
