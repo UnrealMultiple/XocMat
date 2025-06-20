@@ -1,6 +1,3 @@
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
 using Lagrange.Core;
 using Lagrange.Core.Event.EventArg;
 using Lagrange.Core.Message;
@@ -21,6 +18,9 @@ using Lagrange.XocMat.Utility;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
 using ProtoBuf;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Reactive.Threading.Tasks;
 
 namespace Lagrange.XocMat.Event;
 

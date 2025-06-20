@@ -1,7 +1,6 @@
 using MessagePack;
 using MessagePack.Formatters;
 using System.Buffers;
-using System.IO;
 
 namespace Lagrange.XocMat.Entity;
 

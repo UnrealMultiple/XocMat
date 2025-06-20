@@ -1,6 +1,6 @@
 ﻿
-using System.Data;
 using Lagrange.XocMat.Enumerates;
+using System.Data;
 
 namespace Lagrange.XocMat.Extensions;
 

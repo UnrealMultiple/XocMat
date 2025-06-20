@@ -18,7 +18,7 @@ public class MessageEntityResolver : IFormatterResolver
 
         if (typeof(T) == typeof(MessageChain)) return (IMessagePackFormatter<T>)CHAIN_FORMATTER;
 
-        if(typeof(T) == typeof(Stream)) return (IMessagePackFormatter<T>)STREAM_FORMATTER;
+        if (typeof(T) == typeof(Stream)) return (IMessagePackFormatter<T>)STREAM_FORMATTER;
 
         return null;
     }

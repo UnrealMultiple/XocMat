@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Lagrange.XocMat.Command.CommandArgs;
+﻿using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
 using Lagrange.XocMat.Exceptions;
@@ -8,6 +7,7 @@ using Lagrange.XocMat.Internal;
 using Lagrange.XocMat.Terraria.Protocol.Action.Response;
 using Lagrange.XocMat.Utility;
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
 
 namespace Lagrange.XocMat.Command.GroupCommands;
 

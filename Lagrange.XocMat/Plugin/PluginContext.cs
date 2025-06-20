@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-using System.Runtime.Loader;
-using Lagrange.Core;
+﻿using Lagrange.Core;
 using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Lagrange.XocMat.Plugin;
 

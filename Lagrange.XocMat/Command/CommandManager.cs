@@ -1,9 +1,5 @@
-﻿using System.Drawing;
-using System.Reflection;
-using System.Text;
-using Lagrange.Core;
+﻿using Lagrange.Core;
 using Lagrange.Core.Event.EventArg;
-using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Command.CommandArgs;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
@@ -12,6 +8,9 @@ using Lagrange.XocMat.Extensions;
 using Lagrange.XocMat.Terraria.Protocol.PlayerMessage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Drawing;
+using System.Reflection;
+using System.Text;
 
 namespace Lagrange.XocMat.Command;
 
@@ -104,7 +103,7 @@ public class CommandManager(BotContext bot, ILogger<CommandManager> logger)
 
     private CommandParis? CanRun(string text, uint uin)
     {
-        if(string.IsNullOrEmpty(text) || uin == Bot.BotUin)
+        if (string.IsNullOrEmpty(text) || uin == Bot.BotUin)
             return null;
         var prefix = XocMatSetting.Instance.CommamdPrefix.FirstOrDefault(text.StartsWith) ?? string.Empty;
         if (XocMatSetting.Instance.CommamdPrefix.Count > 0 && string.IsNullOrEmpty(prefix))
@@ -133,7 +132,7 @@ public class CommandManager(BotContext bot, ILogger<CommandManager> logger)
         {
             case GroupMessageEvent groupMessageEvent:
                 comm = CanRun(groupMessageEvent.Chain.GetText(), groupMessageEvent.Chain.GroupMemberInfo?.Uin ?? bot.BotUin);
-                if(comm == null)
+                if (comm == null)
                     return;
                 commandArgs = new GroupCommandArgs(bot, comm.Name, groupMessageEvent, comm.Prefix, comm.CmdParams, comm.CommandLine, comm.Account);
                 break;

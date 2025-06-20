@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Lagrange.Core;
+﻿using Lagrange.Core;
 using Lagrange.XocMat.Command;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.DB.Manager;
@@ -9,6 +8,7 @@ using Lagrange.XocMat.Plugin;
 using Lagrange.XocMat.Utility;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Hosting;
+using System.Data;
 
 namespace Lagrange.XocMat;
 

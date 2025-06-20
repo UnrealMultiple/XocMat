@@ -1,5 +1,4 @@
-﻿using Lagrange.Core.Common.Entity;
-using Lagrange.Core.Message;
+﻿using Lagrange.Core.Message;
 using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Entity;
 using LinqToDB;
@@ -79,7 +78,7 @@ public class MessageRecord : RecordBase<MessageRecord>
                     ORDER BY ROWID
                     LIMIT @n
                 )";
-            Contexts.Execute(sql, new { n = Math.Min(XocMatSetting.Instance.DeleteCacheMessage, XocMatSetting.Instance.MaxCacheMessage) });   
+            Contexts.Execute(sql, new { n = Math.Min(XocMatSetting.Instance.DeleteCacheMessage, XocMatSetting.Instance.MaxCacheMessage) });
         }
         Contexts.Insert(record);
     }
@@ -105,7 +104,7 @@ public class MessageRecord : RecordBase<MessageRecord>
             MessageType.Friend => chain.TargetUin,
             _ => throw new NotImplementedException(),
         },
-        
+
         Entities = MessagePackSerializer.Serialize<List<IMessageEntity>>(chain, OPTIONS)
     };
 

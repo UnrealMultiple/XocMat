@@ -1,10 +1,10 @@
-﻿using System.Data;
-using Lagrange.XocMat.Configuration;
+﻿using Lagrange.XocMat.Configuration;
 using Lagrange.XocMat.Entity.Database;
 using Lagrange.XocMat.Exceptions;
 using Lagrange.XocMat.Extensions;
 using LinqToDB;
 using LinqToDB.Mapping;
+using System.Data;
 
 namespace Lagrange.XocMat.DB.Manager;
 
