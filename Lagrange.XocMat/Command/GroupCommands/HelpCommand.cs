@@ -21,52 +21,18 @@ public class HelpCommand : Command
         var commands = XocMatAPI.CommandManager!.Commands
             .Where(i => IsMethodOverridden(i.GetType(), nameof(i.InvokeAsync), [typeof(GroupCommandArgs), typeof(ILogger)]));
 
-        var keyboard = new Core.Message.Entity.KeyboardData();
-        var row = new Core.Message.Entity.Row();
-        keyboard.Rows.Add(row);
-        for (var i = 0; i < commands.Count(); i++)
+        if (!commands.Any())
         {
-            var command = commands.ElementAt(i);
-            if (i != 0 && i % 4 != 0)
-            {
-                row.Buttons.Add(new Core.Message.Entity.Button()
-                {
-                    Id = command.Alias.JoinToString(""),
-                    RenderData = new Core.Message.Entity.RenderData()
-                    {
-                        Label = command.Alias.First(),
-                        Style = 1
-                    },
-                    Action = new()
-                    {
-                        Type = 2,
-                        Data = args.CommandPrefix + command.Alias.First(),
-                        Permission = new()
-                        {
-                            Type = 2
-                        }
-                    }
-                });
-            }
-            else
-            { 
-                row = new Core.Message.Entity.Row();
-                keyboard.Rows.Add(row);
-            }
+            await args.Event.Reply("当前无指令可用!", true);
+            return;
         }
-        await args.MessageBuilder.Keyboard(keyboard).Reply();
-        //if (!commands.Any())
-        //{
-        //    await args.Event.Reply("当前无指令可用!", true);
-        //    return;
-        //}
-        //var builder = MenuBuilder.Create()
-        //    .SetMemberUin(args.MemberUin);
-        //foreach (var command in commands)
-        //{
-        //    builder.AddCell(args.CommandPrefix + command.Alias.First(), command.HelpText);
-        //}
-        //await args.MessageBuilder.Image(builder.Build()).Reply();
+        var builder = MenuBuilder.Create()
+            .SetMemberUin(args.MemberUin);
+        foreach (var command in commands)
+        {
+            builder.AddCell(args.CommandPrefix + command.Alias.First(), command.HelpText);
+        }
+        await args.MessageBuilder.Image(builder.Build()).Reply();
     }
 
     public override async Task InvokeAsync(FriendCommandArgs args, ILogger log)

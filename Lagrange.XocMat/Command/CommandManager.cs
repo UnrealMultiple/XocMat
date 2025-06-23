@@ -103,6 +103,7 @@ public class CommandManager(BotContext bot, ILogger<CommandManager> logger)
 
     private CommandParis? CanRun(string text, uint uin)
     {
+        text = text.Trim();
         if (string.IsNullOrEmpty(text) || uin == Bot.BotUin)
             return null;
         var prefix = XocMatSetting.Instance.CommamdPrefix.FirstOrDefault(text.StartsWith) ?? string.Empty;
