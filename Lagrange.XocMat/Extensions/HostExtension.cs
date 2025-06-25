@@ -9,7 +9,6 @@ public static class HostExtension
     public static T InitializeMusicSigner<T>(this T host) where T : IHost
     {
         host.Services.GetRequiredService<MusicSigner>();
-
         return host;
     }
 }
